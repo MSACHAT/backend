@@ -1,4 +1,4 @@
-package MSACHAT.entities;
+package MSACHAT.entity;
 
 
 import jakarta.persistence.*;
@@ -15,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,5 +33,5 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
-    private Set<Role> roles;
+    private Set<RoleEntity> roles;
 }
