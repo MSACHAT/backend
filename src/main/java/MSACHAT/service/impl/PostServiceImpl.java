@@ -1,4 +1,4 @@
-package MSACHAT.service.Impl;
+package MSACHAT.service.impl;
 
 import MSACHAT.service.PostService;
 
