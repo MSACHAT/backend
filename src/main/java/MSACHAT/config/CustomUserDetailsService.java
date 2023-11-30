@@ -1,7 +1,7 @@
 package MSACHAT.config;
 
 import lombok.AllArgsConstructor;
-import MSACHAT.entities.User;
+import MSACHAT.entity.UserEntity;
 import MSACHAT.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,16 +22,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+        UserEntity userEntity = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not exists by Username or Email"));
 
-        Set<GrantedAuthority> authorities = user.getRoles().stream()
+        Set<GrantedAuthority> authorities = userEntity.getRoles().stream()
                 .map((role) -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toSet());
 
         return new org.springframework.security.core.userdetails.User(
                 usernameOrEmail,
-                user.getPassword(),
+                userEntity.getPassword(),
                 authorities
         );
     }
