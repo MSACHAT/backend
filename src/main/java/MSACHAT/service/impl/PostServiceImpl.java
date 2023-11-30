@@ -1,11 +1,20 @@
-package MSACHAT.service.impl;
+package MSACHAT.service.Impl;
 
-import MSACHAT.repository.PostRepository;
 import MSACHAT.service.PostService;
 
+
 public class PostServiceImpl implements PostService {
-    private PostRepository postRepository;
-    PostServiceImpl(PostRepository postRepository){
-        this.postRepository=postRepository;
+
+
+     
+    private CommentReposito r y commentRepository; 
+  
+    public PostServiceImpl(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
+    }
+
+    @Override
+    public List<Comment> getCommentsForPost(Post post) {
+        return commentRepository.findCommentsByPost(post);
     }
 }
