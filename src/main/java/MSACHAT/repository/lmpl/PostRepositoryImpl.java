@@ -1,14 +1,13 @@
-package MSACHAT.repository;
 
 import java.util.List;
+import java.util.Optional;
 
-import MSACHAT.model.Comment;
-import MSACHAT.model.Post;
+import MSACHAT.entity.PostEntity;
+import MSACHAT.repository.PostRepository;
 
 public class PostRepositoryImpl implements PostRepository {
 
-    // 假设这里有一个用于存储帖子和评论的数据结构或者数据库连接等
-    private List<Post> posts; // 或者数据库连接等
+    private List<Post> posts;
 
     public PostRepositoryImpl(List<Post> posts) {
         this.posts = posts;
@@ -16,16 +15,86 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Comment> findCommentsByPostId(int postId) {
-        // 在实际应用中，可能会连接数据库执行查询
-        // 这里只是一个示例，假设 posts 是存储帖子的数据结构
+
         for (Post post : posts) {
             if (post.getId() == postId) {
                 return post.getComments();
             }
         }
 
-        return null; // 或者返回空列表，具体取决于你的需求
+        return null;
     }
 
-    // 其他与帖子相关的方法的实现...
+    @Override
+    public long count() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'count'");
+    }
+
+    @Override
+    public void delete(PostEntity entity) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    }
+
+    @Override
+    public void deleteAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteAll'");
+    }
+
+    @Override
+    public void deleteAll(Iterable<? extends PostEntity> entities) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteAll'");
+    }
+
+    @Override
+    public void deleteAllById(Iterable<? extends Long> ids) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteAllById'");
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'existsById'");
+    }
+
+    @Override
+    public Iterable<PostEntity> findAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+    }
+
+    @Override
+    public Iterable<PostEntity> findAllById(Iterable<Long> ids) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findAllById'");
+    }
+
+    @Override
+    public Optional<PostEntity> findById(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    }
+
+    @Override
+    public <S extends PostEntity> S save(S entity) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    }
+
+    @Override
+    public <S extends PostEntity> Iterable<S> saveAll(Iterable<S> entities) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'saveAll'");
+    }
+
 }
