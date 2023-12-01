@@ -1,7 +1,14 @@
 package MSACHAT.dto;
 
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentDto {
     private int id;
     private int userId;
