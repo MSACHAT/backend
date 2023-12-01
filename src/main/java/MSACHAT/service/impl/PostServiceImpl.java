@@ -1,5 +1,6 @@
 package MSACHAT.service.impl;
 
+import MSACHAT.dto.PostDto;
 import MSACHAT.entity.PostEntity;
 import MSACHAT.repository.PostRepository;
 import MSACHAT.service.PostService;
@@ -21,4 +22,11 @@ public class PostServiceImpl implements PostService {
                 .spliterator(),false)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public PostEntity addPost(PostEntity postEntity) {
+        return postRepository.save(postEntity);
+    }
+
+
 }
