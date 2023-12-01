@@ -1,13 +1,23 @@
 package MSACHAT.dto;
 
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.sql.Date;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostDto {
-    private int id;
-    private int userId;
+    private Integer id;
+    private Integer userId;
     private String title;
     private String content;
+<<<<<<< HEAD
     private List<String> images;
     private LocalDateTime time;
 
@@ -84,4 +94,8 @@ public class PostDto {
                 ", time=" + time +
                 '}';
     }
+=======
+    private String image;
+    private Date time;
+>>>>>>> 6f61a24794b4524f4013465234f0c03f1d89810d
 }
