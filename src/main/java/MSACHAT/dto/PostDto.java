@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Date;
 import java.util.List;
 
 @Getter
@@ -12,9 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDto {
+    private Integer id;
     private Integer userId;
     private String title;
     private String content;
-    private List<String> images;
-
+    private String image;
+    private Date time;
 }
