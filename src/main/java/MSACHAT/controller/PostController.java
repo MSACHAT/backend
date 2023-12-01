@@ -35,4 +35,6 @@ public class PostController {
     public List<PostEntity> getPosts(){
         return postService.findAll();
     }
+
+
 }
