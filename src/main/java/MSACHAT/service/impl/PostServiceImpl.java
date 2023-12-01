@@ -5,6 +5,7 @@ import MSACHAT.entity.PostEntity;
 import MSACHAT.repository.PostRepository;
 import MSACHAT.service.PostService;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -25,6 +26,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostEntity addPost(PostEntity postEntity) {
+        postEntity.setTime(new Date(System.currentTimeMillis()));
         return postRepository.save(postEntity);
     }
 
