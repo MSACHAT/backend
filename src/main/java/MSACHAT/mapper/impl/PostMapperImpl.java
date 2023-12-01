@@ -1,11 +1,11 @@
 package MSACHAT.mapper.impl;
 import MSACHAT.dto.PostDto;
-import MSACHAT.entities.Post;
+import MSACHAT.entity.PostEntity;
 import MSACHAT.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-public class PostMapperImpl implements Mapper<Post, PostDto> {
+public class PostMapperImpl implements Mapper<PostEntity, PostDto> {
 
 
     private ModelMapper modelMapper;
@@ -15,12 +15,12 @@ public class PostMapperImpl implements Mapper<Post, PostDto> {
 
 
     @Override
-    public PostDto mapTo(Post post) {
+    public PostDto mapTo(PostEntity post) {
         return this.modelMapper.map(post, PostDto.class);
     }
 
     @Override
-    public Post mapFrom(PostDto postDto) {
-        return this.modelMapper.map(postDto, Post.class);
+    public PostEntity mapFrom(PostDto postDto) {
+        return this.modelMapper.map(postDto, PostEntity.class);
     }
 }
