@@ -1,12 +1,17 @@
 package MSACHAT.service.impl;
 
+<<<<<<< HEAD
 import MSACHAT.dto.PostWithCommentsDTO;
+=======
+import MSACHAT.dto.PostDto;
+>>>>>>> 038cd2814504761c8bd1a2f888cd9051a1523d21
 import MSACHAT.entity.PostEntity;
 import MSACHAT.repository.CommentRepository;
 import MSACHAT.repository.PostRepository;
 import MSACHAT.service.PostService;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -54,4 +59,12 @@ public class PostServiceImpl implements PostService {
                 .map(comment -> new PostWithCommentsDTO.CommentDTO(comment.getId(), comment.getUserId(), comment.getComment(), comment.getTime()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public PostEntity addPost(PostEntity postEntity) {
+        postEntity.setTime(new Date(System.currentTimeMillis()));
+        return postRepository.save(postEntity);
+    }
+
+
 }
