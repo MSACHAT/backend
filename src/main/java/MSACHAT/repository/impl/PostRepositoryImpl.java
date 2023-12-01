@@ -1,3 +1,4 @@
+package MSACHAT.repository.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,20 +8,14 @@ import MSACHAT.repository.PostRepository;
 
 public class PostRepositoryImpl implements PostRepository {
 
-    private List<Post> posts;
+    private Post post;
 
-    public PostRepositoryImpl(List<Post> posts) {
-        this.posts = posts;
+    public PostRepositoryImpl(Post post) {
+        this.post = posts;
     }
 
     @Override
     public List<Comment> findCommentsByPostId(int postId) {
-
-        for (Post post : posts) {
-            if (post.getId() == postId) {
-                return post.getComments();
-            }
-        }
 
         return null;
     }
