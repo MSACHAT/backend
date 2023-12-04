@@ -6,24 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.util.Date;
+
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Data
-@Builder
-@Table(name = "posts")
-public class PostEntity {
+@Table(name = "like")
+public class LikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer userId;
-    private String title;
-    private String content;
-    private String image;
+    private Integer postId;
     private Date time;
-    private Integer likeCount;
-    private Integer commentCount;
-    @Transient
-    private boolean isLiked;
 }

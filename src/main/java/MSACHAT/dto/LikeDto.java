@@ -5,21 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
-import java.util.List;
+import java.util.Date;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDto {
+public class LikeDto {
     private Integer id;
     private Integer userId;
-    private String title;
-    private String content;
-    private List<String> image;
+    private Integer postId;
     private Date time;
-    private Integer likeCount;
-    private Integer commentCount;
-    private boolean isLiked;
 }
