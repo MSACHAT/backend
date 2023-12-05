@@ -13,6 +13,7 @@ import io.jsonwebtoken.Jwts;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -47,7 +48,7 @@ public class PostServiceImpl implements PostService {
                 posts.set(i, tmpEntity);
             } else {
                 tmpEntity.setLiked(false);
-                posts.set(i,tmpEntity);
+                posts.set(i, tmpEntity);
             }
         }
         return posts;
@@ -59,5 +60,35 @@ public class PostServiceImpl implements PostService {
         return postRepository.save(postEntity);
     }
 
+
+    @Override
+    public String likePost(Integer postId, Integer userId) {
+        LikeEntity newLike = new LikeEntity();
+        PostEntity post=postRepository.findPostEntityById(postId);
+        newLike.setUserId(userId);
+        newLike.setPostId(postId);
+        Date date = new Date(System.currentTimeMillis());
+        newLike.setTime(date);
+        likeRepository.save(newLike);
+        post.setLikeCount(post.getLikeCount()+1);
+        postRepository.save(post);
+        return "new like saved";
+    }
+
+    @Override
+    public String unlikePost(Integer postId, Integer userId) {
+        PostEntity post=postRepository.findPostEntityById(postId);
+       likeRepository.deleteLikeEntityByUserIdAndPostId(userId,postId);
+       post.setLikeCount(post.getLikeCount()+1);
+       postRepository.save(post);
+       return "successfully unliked";
+    }
+
+    @Override
+    public Integer getUserIdFromToken(String token, String secret) {
+        Jws<Claims> jws;
+        jws = Jwts.parserBuilder().setSigningKey(secret.getBytes()).build().parseClaimsJws(token);
+        return (Integer) jws.getBody().get("userId");
+    }
 
 }

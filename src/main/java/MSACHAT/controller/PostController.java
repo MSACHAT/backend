@@ -40,12 +40,15 @@ public class PostController {
     }
 
     @PatchMapping("/like/{id}")
-    public ResponseEntity<String> likePost(
-            @PathVariable("id") Integer id,
-            @RequestBody String type
+    public void likePost(
+            @PathVariable("id") Integer postId,
+            @RequestBody Object likeInfo
     ) {
-        if(type.equals("like")){
+        if(likeInfo.isLiked){
 
+        }
+        else{
+            postService.likePost(postId, postService.getUserIdFromToken(likeInfo.token,likeInfo.secret));
         }
     }
 
