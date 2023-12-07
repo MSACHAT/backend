@@ -1,4 +1,4 @@
-package MSACHAT.entity;
+package MSACHAT.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

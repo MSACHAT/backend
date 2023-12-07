@@ -1,6 +1,6 @@
-package MSACHAT.controller;
+package MSACHAT.backend.controller;
 
-import MSACHAT.service.AuthService;
+import MSACHAT.backend.service.AuthService;
 import MSACHAT.service.NotifService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -53,9 +53,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Integer getUserIdFromToken(String token, String secret) {
-        Jws<Claims> jws;
-        jws = Jwts.parserBuilder().setSigningKey(secret.getBytes()).build().parseClaimsJws(token);
-        return (Integer) jws.getBody().get("userId");
+    public Integer getUserIdFromToken(String token) {
+
+        return jwtTokenProvider.getUserId(token);
     }
 }

@@ -1,5 +1,6 @@
 package MSACHAT.backend.service.impl;
 
+import MSACHAT.backend.repository.CommentRepository;
 import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.LikeEntity;
@@ -8,19 +9,21 @@ import MSACHAT.backend.repository.LikeRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.stream.StreamSupport;
 
+@Service
 public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private LikeRepository likeRepository;
-    private MSACHAT.repository.CommentRepository commentRepository;
+    private CommentRepository commentRepository;
     PostServiceImpl(
             PostRepository postRepository,
             LikeRepository likeRepository,
-            MSACHAT.repository.CommentRepository commentRepository
+            CommentRepository commentRepository
     ) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
@@ -88,6 +91,11 @@ public class PostServiceImpl implements PostService {
         likeRepository.deleteAllByPostId(postId);
         commentRepository.deleteAllByPostId(postId);
         return "post Deleted successfully";
+    }
+
+    @Override
+    public PostEntity findPostById(Integer postId) {
+        return null;
     }
 
 }

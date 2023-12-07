@@ -1,5 +1,6 @@
 package MSACHAT.backend.controller;
 
+import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.dto.PostDto;
 import MSACHAT.backend.entity.PostEntity;

@@ -1,6 +1,6 @@
-package MSACHAT.repository;
+package MSACHAT.backend.repository;
 
-import MSACHAT.entity.NotifLikeEntity;
+import MSACHAT.backend.entity.NotifLikeEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

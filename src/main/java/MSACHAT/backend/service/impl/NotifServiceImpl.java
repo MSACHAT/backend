@@ -1,7 +1,7 @@
-package MSACHAT.service.impl;
+package MSACHAT.backend.service.impl;
 
-import MSACHAT.repository.NotifCommentRepository;
-import MSACHAT.repository.NotifLikeRepository;
+import MSACHAT.backend.repository.NotifCommentRepository;
+import MSACHAT.backend.repository.NotifLikeRepository;
 import MSACHAT.service.NotifService;
 
 import java.util.ArrayList;
