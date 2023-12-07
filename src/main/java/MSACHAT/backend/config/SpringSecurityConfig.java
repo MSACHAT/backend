@@ -1,4 +1,4 @@
-package MSACHAT.backend;
+package MSACHAT.backend.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;

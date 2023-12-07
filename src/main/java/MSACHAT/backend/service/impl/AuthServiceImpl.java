@@ -1,10 +1,10 @@
 package MSACHAT.backend.service.impl;
 
 
-import MSACHAT.repository.UserRepository;
+import MSACHAT.backend.repository.UserRepository;
 
-import MSACHAT.security.JwtTokenProvider;
-import MSACHAT.service.AuthService;
+import MSACHAT.backend.security.JwtTokenProvider;
+import MSACHAT.backend.service.AuthService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

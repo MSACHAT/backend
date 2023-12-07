@@ -1,4 +1,4 @@
-package MSACHAT.backend;
+package MSACHAT.backend.service.impl;
 
 import MSACHAT.backend.entity.UserEntity;
 import MSACHAT.backend.repository.UserRepository;
@@ -24,11 +24,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserEntity userEntity = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not exists by Username or Email"));
 
+        Long userId = userEntity.getId();
+
         Set<GrantedAuthority> authorities = userEntity.getRoles().stream()
                 .map((role) -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toSet());
 
+
         return new org.springframework.security.core.userdetails.User(
+
                 usernameOrEmail,
                 userEntity.getPassword(),
                 authorities

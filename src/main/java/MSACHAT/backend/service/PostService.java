@@ -15,4 +15,6 @@ public interface PostService {
 
     public String unlikePost(Integer postId,Integer userId);
     public String deletePost(Integer postId);
+
+    public PostEntity findPostById(Integer postId);
 }

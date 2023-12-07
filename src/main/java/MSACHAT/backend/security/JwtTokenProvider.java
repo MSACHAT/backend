@@ -1,5 +1,6 @@
 package MSACHAT.backend.security;
 
+import MSACHAT.backend.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -23,21 +24,36 @@ public class JwtTokenProvider {
     @Value("${app-jwt-expiration-milliseconds}")
     private long jwtExpirationDate;
 
+    private UserRepository userRepository;
+
+
     // generate JWT token
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
 
+
         Date currentDate = new Date();
 
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
+        Integer userId = userRepository.findUserIdByEmailOrderByUsername(username);
 
         String token = Jwts.builder()
+                .claim("id", userId)
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(key())
                 .compact();
         return token;
+    }
+    public Integer getUserId(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("id", Integer.class);
     }
 
     private Key key() {
@@ -56,6 +72,8 @@ public class JwtTokenProvider {
         String username = claims.getSubject();
         return username;
     }
+
+
 
     // validate Jwt token
     public boolean validateToken(String token){
