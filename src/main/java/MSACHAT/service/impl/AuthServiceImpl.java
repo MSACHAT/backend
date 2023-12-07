@@ -8,6 +8,9 @@ import MSACHAT.repository.UserRepository;
 import MSACHAT.security.JwtTokenProvider;
 import MSACHAT.service.AuthService;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,5 +49,12 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtTokenProvider.generateToken(authentication);
 
         return token;
+    }
+
+    @Override
+    public Integer getUserIdFromToken(String token, String secret) {
+        Jws<Claims> jws;
+        jws = Jwts.parserBuilder().setSigningKey(secret.getBytes()).build().parseClaimsJws(token);
+        return (Integer) jws.getBody().get("userId");
     }
 }

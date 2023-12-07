@@ -18,5 +18,5 @@ public interface PostService {
     public String likePost(Integer postId,Integer userId);
 
     public String unlikePost(Integer postId,Integer userId);
-    public Integer getUserIdFromToken(String token,String secret);
+    public String deletePost(Integer postId);
 }

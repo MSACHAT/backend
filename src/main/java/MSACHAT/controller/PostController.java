@@ -3,6 +3,7 @@ package MSACHAT.controller;
 import MSACHAT.dto.PostDto;
 import MSACHAT.entity.PostEntity;
 import MSACHAT.mapper.Mapper;
+import MSACHAT.service.AuthService;
 import MSACHAT.service.PostService;
 import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
@@ -16,18 +17,21 @@ import java.util.List;
 @RequestMapping("/post")
 public class PostController {
     private PostService postService;
+    private AuthService authService;
     private Mapper<PostEntity, PostDto> postMapper;
 
     PostController(
-            PostService postService
+            PostService postService,
+            AuthService authService
     ) {
         this.postService = postService;
+        this.authService = authService;
     }
 
     @PostMapping("/add")
     public ResponseEntity<String> addPost(@RequestBody PostDto postDto) {
-        if(postDto.getTitle()!=null && postDto.getContent()!=null && postDto.getImage()!=null){
-            PostEntity postEntity= postMapper.mapFrom(postDto);
+        if (postDto.getTitle() != null && postDto.getContent() != null && postDto.getImage() != null) {
+            PostEntity postEntity = postMapper.mapFrom(postDto);
             PostEntity savedPostEntity = postService.addPost(postEntity);
             return new ResponseEntity<>("success", HttpStatus.OK);
         }
@@ -36,20 +40,26 @@ public class PostController {
 
     @GetMapping("/all/get")
     public ArrayList<PostEntity> getPosts(@RequestBody Object tokenInfo) {
-        return postService.findAll(tokenInfo.token,tokenInfo.secret);
+        return postService.findAll(tokenInfo.token, tokenInfo.secret);
     }
 
-    @PatchMapping("/like/{id}")
+    @PatchMapping("/{id}/like")
     public void likePost(
             @PathVariable("id") Integer postId,
             @RequestBody Object likeInfo
     ) {
-        if(likeInfo.isLiked){
+        if (likeInfo.isLiked) {
 
+        } else {
+            postService.likePost(postId, authService.getUserIdFromToken(likeInfo.token, likeInfo.secret));
         }
-        else{
-            postService.likePost(postId, postService.getUserIdFromToken(likeInfo.token,likeInfo.secret));
-        }
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public void deletePost(
+            @PathVariable("id") Integer postId
+    ) {
+        postService.deletePost(postId);
     }
 
     @GetMapping("/test")

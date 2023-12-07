@@ -3,6 +3,7 @@ package MSACHAT.service.impl;
 import MSACHAT.dto.PostDto;
 import MSACHAT.entity.LikeEntity;
 import MSACHAT.entity.PostEntity;
+import MSACHAT.repository.CommentRepository;
 import MSACHAT.repository.LikeRepository;
 import MSACHAT.repository.PostRepository;
 import MSACHAT.service.PostService;
@@ -20,13 +21,15 @@ import java.util.stream.StreamSupport;
 public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private LikeRepository likeRepository;
-
+    private CommentRepository commentRepository;
     PostServiceImpl(
             PostRepository postRepository,
-            LikeRepository likeRepository
+            LikeRepository likeRepository,
+            CommentRepository commentRepository
     ) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
+        this.commentRepository=commentRepository;
     }
 
     @Override
@@ -85,10 +88,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Integer getUserIdFromToken(String token, String secret) {
-        Jws<Claims> jws;
-        jws = Jwts.parserBuilder().setSigningKey(secret.getBytes()).build().parseClaimsJws(token);
-        return (Integer) jws.getBody().get("userId");
+    public String deletePost(Integer postId) {
+        postRepository.deletePostEntityById(postId);
+        likeRepository.deleteAllByPostId(postId);
+        commentRepository.deleteAllByPostId(postId);
+        return "post Deleted successfully";
     }
 
 }
