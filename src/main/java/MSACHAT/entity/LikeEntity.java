@@ -15,9 +15,11 @@ import java.util.Date;
 @Entity
 @Table(name = "like")
 public class LikeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private Integer userId;
     private Integer postId;
     private Date time;

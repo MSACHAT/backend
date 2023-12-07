@@ -24,6 +24,16 @@ public class PostController {
         this.postService = postService;
     }
 
+
+
+    @GetMapping("/post")
+    public ResponseEntity<List<PostEntity>> getAllPosts() {
+        List<PostEntity> posts = postService.findAllPosts();
+        return ResponseEntity.ok(posts);
+    }
+
+
+    
     @PostMapping("/add")
     public ResponseEntity<String> addPost(@RequestBody PostDto postDto) {
         if(postDto.getTitle()!=null && postDto.getContent()!=null && postDto.getImage()!=null){
