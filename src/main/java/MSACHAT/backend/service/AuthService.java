@@ -1,7 +1,9 @@
 package MSACHAT.backend.service;
 
 import MSACHAT.backend.dto.LoginDto;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface AuthService {
     String login(LoginDto loginDto);
 

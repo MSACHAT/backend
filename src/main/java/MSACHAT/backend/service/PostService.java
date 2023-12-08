@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public interface PostService {
     public PostEntity addPost(PostEntity postEntity);
 
-    public ArrayList<PostEntity> findAll(String token, String secret);
+    public ArrayList<PostEntity> findAll(Integer userId);
 
     public String likePost(Integer postId,Integer userId);
 

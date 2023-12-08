@@ -20,7 +20,7 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private LikeRepository likeRepository;
     private CommentRepository commentRepository;
-    PostServiceImpl(
+    public PostServiceImpl(
             PostRepository postRepository,
             LikeRepository likeRepository,
             CommentRepository commentRepository
@@ -31,14 +31,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ArrayList<PostEntity> findAll(String token, String secret) {
+    public ArrayList<PostEntity> findAll(Integer userId) {
         ArrayList<PostEntity> posts = new java.util.ArrayList<>(StreamSupport.stream(postRepository
                         .findAll()
                         .spliterator(), false)
                 .toList());
-        Jws<Claims> jws;
-        jws = Jwts.parserBuilder().setSigningKey(secret.getBytes()).build().parseClaimsJws(token);
-        Integer userId = (Integer) jws.getBody().get("userId");
         for (int i = 0; i < posts.size(); i++) {
             int finalI = i;
             PostEntity tmpEntity = posts.get(i);

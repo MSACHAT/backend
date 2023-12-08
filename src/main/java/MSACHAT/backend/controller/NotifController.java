@@ -1,11 +1,8 @@
 package MSACHAT.backend.controller;
 
 import MSACHAT.backend.service.AuthService;
-import MSACHAT.service.NotifService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import MSACHAT.backend.service.NotifService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,7 +12,7 @@ public class NotifController {
     private AuthService authService;
     private NotifService notifService;
 
-    NotifController(
+    public NotifController(
             AuthService authService,
             NotifService notifService
     ) {
@@ -23,7 +20,7 @@ public class NotifController {
         this.notifService=notifService;
     }
     @GetMapping("/get")
-    public List getNotifs(@RequestBody Object tokenInfo){
-        return notifService.getNotifs(authService.getUserIdFromToken(tokenInfo.token,tokenInfo.secret));
+    public List getNotifs(@RequestHeader String token){
+        return notifService.getNotifs(authService.getUserIdFromToken(token));
     }
 }

@@ -38,19 +38,20 @@ public class PostController {
     }
 
     @GetMapping("/all/get")
-    public ArrayList<PostEntity> getPosts(@RequestBody Object tokenInfo) {
-        return postService.findAll(tokenInfo.token, tokenInfo.secret);
+    public ArrayList<PostEntity> getPosts(@RequestHeader String token) {
+        return postService.findAll(authService.getUserIdFromToken(token));
     }
 
     @PatchMapping("/{id}/like")
     public void likePost(
             @PathVariable("id") Integer postId,
-            @RequestBody Object likeInfo
+            @RequestBody Boolean isLiked,
+            @RequestHeader String token
     ) {
-        if (likeInfo.isLiked) {
+        if (isLiked) {
 
         } else {
-            postService.likePost(postId, authService.getUserIdFromToken(likeInfo.token, likeInfo.secret));
+            postService.likePost(postId, authService.getUserIdFromToken(token));
         }
     }
 
