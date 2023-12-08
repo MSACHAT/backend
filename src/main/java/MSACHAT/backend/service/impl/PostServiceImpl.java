@@ -54,7 +54,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostEntity addPost(PostEntity postEntity) {
-        postEntity.setTime(new Date(System.currentTimeMillis()));
+        postEntity.setTimeStamp(new Date(System.currentTimeMillis()));
         return postRepository.save(postEntity);
     }
 
@@ -66,7 +66,7 @@ public class PostServiceImpl implements PostService {
         newLike.setUserId(userId);
         newLike.setPostId(postId);
         Date date = new Date(System.currentTimeMillis());
-        newLike.setTime(date);
+        newLike.setTimeStamp(date);
         likeRepository.save(newLike);
         post.setLikeCount(post.getLikeCount()+1);
         postRepository.save(post);

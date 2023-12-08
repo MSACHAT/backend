@@ -21,6 +21,6 @@ public class NotifCommentEntity {
     private Integer postId;
     private Integer senderId;
     private Integer receiverId;
-    private Date time;
+    private Date timeStamp;
     private boolean isRead;
 }

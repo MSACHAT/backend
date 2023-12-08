@@ -21,5 +21,5 @@ public class CommentEntity {
     private Integer userId;
     private Integer postId;
     private String content;
-    private Date datetime;
+    private Date timeStamp;
 }
