@@ -16,5 +16,11 @@ public interface PostService {
     public String unlikePost(Integer postId,Integer userId);
     public String deletePost(Integer postId);
 
-    public PostEntity findPostById(Integer postId);
+
+
+    Boolean IsLiked(Integer postId, Integer userId);
+
+
+
+    PostEntity findPostById(Integer postId, Integer userId);
 }

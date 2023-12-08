@@ -11,11 +11,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/notif")
-public class NotifController {
+public class NotifyController {
     private AuthService authService;
     private NotifService notifService;
 
-    NotifController(
+    NotifyController(
             AuthService authService,
             NotifService notifService
     ) {

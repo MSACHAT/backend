@@ -12,4 +12,6 @@ List<LikeEntity> findAllByUserId(Integer userId);
 LikeEntity findLikeEntityByUserIdAndPostId(Integer userId, Integer postId);
 void deleteLikeEntityByUserIdAndPostId(Integer userId,Integer postId);
 void deleteAllByPostId(Integer postId);
+
+boolean existsByUserIdAndPostId(Integer userId,Integer postId);
 }

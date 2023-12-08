@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.sql.Date;
+
 
 @Data
 @Builder
@@ -22,4 +23,6 @@ public class CommentEntity {
     private Integer postId;
     private String content;
     private Date datetime;
+
+
 }

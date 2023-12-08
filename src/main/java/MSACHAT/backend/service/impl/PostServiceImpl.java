@@ -1,5 +1,6 @@
 package MSACHAT.backend.service.impl;
 
+import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.repository.CommentRepository;
 import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.PostService;
@@ -94,8 +95,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostEntity findPostById(Integer postId) {
-        return null;
+    public Boolean IsLiked(Integer postId, Integer userId) {
+
+
+        return likeRepository.existsByUserIdAndPostId(postId,userId);
     }
+    @Override
+    public PostEntity findPostById(Integer postId, Integer userId){
+        PostEntity post = postRepository.findPostEntityById(postId);
+
+        if (likeRepository.existsByUserIdAndPostId(userId,postId)){
+            post.setLiked(true);
+        } else {
+            post.setLiked(false);
+        }
+        return post;
+    }
+
+
 
 }
