@@ -1,4 +1,4 @@
-package MSACHAT.dto;
+package MSACHAT.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

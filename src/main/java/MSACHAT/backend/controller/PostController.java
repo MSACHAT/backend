@@ -1,6 +1,9 @@
 package MSACHAT.backend.controller;
 
+import MSACHAT.backend.dto.CommentInfoDto;
+import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.service.AuthService;
+import MSACHAT.backend.service.CommentService;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.dto.PostDto;
 import MSACHAT.backend.entity.PostEntity;
@@ -17,6 +20,10 @@ import java.util.ArrayList;
 public class PostController {
     private PostService postService;
     private AuthService authService;
+    @Autowired
+    private CommentService commentService;
+
+
     private Mapper<PostEntity, PostDto> postMapper;
 
     PostController(
@@ -25,6 +32,7 @@ public class PostController {
     ) {
         this.postService = postService;
         this.authService = authService;
+
     }
 
     @PostMapping("/add")
@@ -62,8 +70,29 @@ public class PostController {
         postService.deletePost(postId);
     }
 
+
+
     @GetMapping("/test")
     public String Test() {
         return "Connection made";
+    }
+
+    @GetMapping("/{id}/get")
+    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId,@RequestHeader("Authorization") String bearerToken){
+        String token = authService.getTokenFromHeader(bearerToken);
+        Integer userId = authService.getUserIdFromToken(token);
+
+        PostEntity post = postService.findPostById(postId, userId);
+
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/comment")
+    public ResponseEntity<String> addComment(@RequestBody CommentInfoDto commentInfo, @PathVariable("id") Integer postId,@RequestHeader("Authorization") String bearerToken) {
+        String token = authService.getTokenFromHeader(bearerToken);
+        Integer userId = authService.getUserIdFromToken(token);
+        String content = commentInfo.getContent();
+        CommentEntity comment = commentService.addComment(userId, postId, content);
+        return new ResponseEntity<>("success: true", HttpStatus.CREATED);
     }
 }

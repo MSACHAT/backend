@@ -6,18 +6,14 @@ import MSACHAT.backend.repository.UserRepository;
 import MSACHAT.backend.security.JwtTokenProvider;
 import MSACHAT.backend.service.AuthService;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import MSACHAT.backend.dto.LoginDto;
-import MSACHAT.backend.repository.UserRepository;
-import MSACHAT.backend.security.JwtTokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -56,5 +52,14 @@ public class AuthServiceImpl implements AuthService {
     public Integer getUserIdFromToken(String token) {
 
         return jwtTokenProvider.getUserId(token);
+    }
+
+    @Override
+    public String getTokenFromHeader(String bearerToken) {
+
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
+            return bearerToken.substring(7, bearerToken.length());
+        }
+        return null;
     }
 }
