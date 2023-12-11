@@ -1,6 +1,8 @@
 package MSACHAT.backend.controller;
 
 import MSACHAT.backend.dto.CommentDto;
+import MSACHAT.backend.dto.IsLikedDto;
+import MSACHAT.backend.dto.PageNumDto;
 import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.CommentService;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
@@ -43,20 +46,22 @@ public class PostController {
         return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/all/get")
-    public ArrayList<PostEntity> getPosts(@RequestHeader String token,
-                                          @RequestBody Integer pageNum
+    @GetMapping("/getbypagenum")
+    public List<PostEntity> getPosts(@RequestHeader("Authorization") String bearerToken,
+                                     @RequestBody PageNumDto pageNumDto
     ) {
-        return postService.findPostsByPageNum(authService.getUserIdFromToken(token),pageNum);
+        return postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNumDto.getPageNum());
     }
 
     @PatchMapping("/{id}/like")
     public void likePost(
             @PathVariable("id") Integer postId,
-            @RequestBody Boolean isLiked,
-            @RequestHeader String token) {
+            @RequestBody IsLikedDto isLikedDto,
+            @RequestHeader String token
+    ) {
+        boolean isLiked = isLikedDto.getIsLiked();
         if (isLiked) {
-            postService.unlikePost(postId,authService.getUserIdFromToken(token));
+            postService.unlikePost(postId, authService.getUserIdFromToken(token));
         } else {
             postService.likePost(postId, authService.getUserIdFromToken(token));
         }
@@ -75,7 +80,7 @@ public class PostController {
 
     @GetMapping("/{id}/get")
     public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId,
-            @RequestHeader("Authorization") String bearerToken) {
+                                                  @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
 
@@ -86,7 +91,7 @@ public class PostController {
 
     @PutMapping("/{id}/comment")
     public ResponseEntity<String> addComment(@RequestBody CommentDto commentInfo, @PathVariable("id") Integer postId,
-            @RequestHeader("Authorization") String bearerToken) {
+                                             @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
         String content = commentInfo.getContent();
