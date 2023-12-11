@@ -11,12 +11,11 @@ import MSACHAT.backend.repository.CommentRepository;
 import MSACHAT.backend.service.CommentService;
 
 @Service
-public class CommentServiceimpl implements CommentService {
+public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
-    @Autowired
-    public CommentServiceimpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
 

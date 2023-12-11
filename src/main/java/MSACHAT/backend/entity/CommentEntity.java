@@ -29,8 +29,4 @@ public class CommentEntity {
     private Integer postId; // 评论所属的帖子ID
     private String content; // 评论内容
     private Date dateTime; // 评论时间
-
-    @ManyToOne
-    @JoinColumn(name = "postid")
-    private PostEntity post; // 评论关联的帖子实体
 }
