@@ -30,7 +30,4 @@ public class CommentEntity {
     private String content; // 评论内容
     private Date timeStamp; // 评论时间
 
-    @ManyToOne
-    @JoinColumn(name = "postid")
-    private PostEntity post; // 评论关联的帖子实体
 }

@@ -22,7 +22,7 @@ public class CommentServiceimpl implements CommentService {
 
     @Override
     public List<CommentEntity> findCommentsByPostId(Integer postId) {
-        return commentRepository.findByPostId(postId);
+        return commentRepository.findAllByPostId(postId);
     }
 
     @Override
