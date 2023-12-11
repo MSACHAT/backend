@@ -16,11 +16,14 @@ public class NotifController {
             AuthService authService,
             NotifService notifService
     ) {
-        this.authService=authService;
-        this.notifService=notifService;
+        this.authService = authService;
+        this.notifService = notifService;
     }
+
     @GetMapping("/get")
-    public List getNotifs(@RequestHeader String token){
-        return notifService.getNotifs(authService.getUserIdFromToken(token));
+    public List getNotifs(@RequestHeader String token,
+                          @RequestBody Integer pageNum
+                          ) {
+        return notifService.getNotifsByPageNum(authService.getUserIdFromToken(token),pageNum);
     }
 }

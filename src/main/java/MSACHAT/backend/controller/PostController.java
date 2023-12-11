@@ -26,7 +26,7 @@ public class PostController {
 
     private Mapper<PostEntity, PostDto> postMapper;
 
-    PostController(
+    public PostController(
             PostService postService,
             AuthService authService
     ) {
@@ -46,8 +46,10 @@ public class PostController {
     }
 
     @GetMapping("/all/get")
-    public ArrayList<PostEntity> getPosts(@RequestHeader String token) {
-        return postService.findAll(authService.getUserIdFromToken(token));
+    public ArrayList<PostEntity> getPosts(@RequestHeader String token,
+                                          @RequestBody Integer pageNum
+    ) {
+        return postService.findPostsByPageNum(authService.getUserIdFromToken(token),pageNum);
     }
 
     @PatchMapping("/{id}/like")
@@ -57,7 +59,7 @@ public class PostController {
             @RequestHeader String token
     ) {
         if (isLiked) {
-
+            postService.unlikePost(postId,authService.getUserIdFromToken(token));
         } else {
             postService.likePost(postId, authService.getUserIdFromToken(token));
         }

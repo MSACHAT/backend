@@ -1,6 +1,7 @@
 package MSACHAT.backend.service;
 
 import MSACHAT.backend.entity.PostEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 public interface PostService {
     public PostEntity addPost(PostEntity postEntity);
 
-    public ArrayList<PostEntity> findAll(Integer userId);
+    public ArrayList<PostEntity> findPostsByPageNum(Integer userId,Integer pageNum);
 
     public String likePost(Integer postId,Integer userId);
 

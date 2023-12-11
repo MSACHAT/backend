@@ -10,10 +10,13 @@ import MSACHAT.backend.repository.LikeRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -32,11 +35,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ArrayList<PostEntity> findAll(Integer userId) {
-        ArrayList<PostEntity> posts = new java.util.ArrayList<>(StreamSupport.stream(postRepository
-                        .findAll()
-                        .spliterator(), false)
-                .toList());
+    public ArrayList<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum) {
+        PageRequest pageRequest= PageRequest.of(pageNum,10);
+        Page<PostEntity> postEntityPage=postRepository.findAll(pageRequest);
+        List<PostEntity> posts = postEntityPage.getContent();
         for (int i = 0; i < posts.size(); i++) {
             int finalI = i;
             PostEntity tmpEntity = posts.get(i);
@@ -50,7 +52,7 @@ public class PostServiceImpl implements PostService {
                 posts.set(i, tmpEntity);
             }
         }
-        return posts;
+        return (ArrayList<PostEntity>) posts;
     }
 
     @Override
