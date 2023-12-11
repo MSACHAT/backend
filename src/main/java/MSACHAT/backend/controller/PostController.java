@@ -1,6 +1,6 @@
 package MSACHAT.backend.controller;
 
-import MSACHAT.backend.dto.CommentInfoDto;
+import MSACHAT.backend.dto.CommentDto;
 import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.CommentService;
@@ -23,13 +23,11 @@ public class PostController {
     @Autowired
     private CommentService commentService;
 
-
     private Mapper<PostEntity, PostDto> postMapper;
 
     public PostController(
             PostService postService,
-            AuthService authService
-    ) {
+            AuthService authService) {
         this.postService = postService;
         this.authService = authService;
 
@@ -56,8 +54,7 @@ public class PostController {
     public void likePost(
             @PathVariable("id") Integer postId,
             @RequestBody Boolean isLiked,
-            @RequestHeader String token
-    ) {
+            @RequestHeader String token) {
         if (isLiked) {
             postService.unlikePost(postId,authService.getUserIdFromToken(token));
         } else {
@@ -67,12 +64,9 @@ public class PostController {
 
     @DeleteMapping("/{id}/delete")
     public void deletePost(
-            @PathVariable("id") Integer postId
-    ) {
+            @PathVariable("id") Integer postId) {
         postService.deletePost(postId);
     }
-
-
 
     @GetMapping("/test")
     public String Test() {
@@ -80,7 +74,8 @@ public class PostController {
     }
 
     @GetMapping("/{id}/get")
-    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId,@RequestHeader("Authorization") String bearerToken){
+    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId,
+            @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
 
@@ -90,7 +85,8 @@ public class PostController {
     }
 
     @PutMapping("/{id}/comment")
-    public ResponseEntity<String> addComment(@RequestBody CommentInfoDto commentInfo, @PathVariable("id") Integer postId,@RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<String> addComment(@RequestBody CommentDto commentInfo, @PathVariable("id") Integer postId,
+            @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
         String content = commentInfo.getContent();

@@ -15,27 +15,26 @@ import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        @Override
+        public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 
-        UserEntity userEntity = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User not exists by Username or Email"));
+                UserEntity userEntity = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                                .orElseThrow(() -> new UsernameNotFoundException(
+                                                "User not exists by Username or Email"));
 
-        Long userId = userEntity.getId();
+                Integer userId = userEntity.getId();
 
-        Set<GrantedAuthority> authorities = userEntity.getRoles().stream()
-                .map((role) -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toSet());
+                Set<GrantedAuthority> authorities = userEntity.getRoles().stream()
+                                .map((role) -> new SimpleGrantedAuthority(role.getName()))
+                                .collect(Collectors.toSet());
 
+                return new org.springframework.security.core.userdetails.User(
 
-        return new org.springframework.security.core.userdetails.User(
-
-                usernameOrEmail,
-                userEntity.getPassword(),
-                authorities
-        );
-    }
+                                usernameOrEmail,
+                                userEntity.getPassword(),
+                                authorities);
+        }
 }
