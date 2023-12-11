@@ -18,22 +18,25 @@ import java.util.ArrayList;
 @RestController
 @RequestMapping("/post")
 public class PostController {
-    private PostService postService;
-    private AuthService authService;
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
+    private final PostService postService;
+    private final AuthService authService;
+
 
 
     private Mapper<PostEntity, PostDto> postMapper;
 
-    PostController(
+    public PostController(
             PostService postService,
-            AuthService authService
+            AuthService authService,
+            CommentService commentService
     ) {
         this.postService = postService;
         this.authService = authService;
+        this.commentService = commentService;
 
     }
+
 
     @PostMapping("/add")
     public ResponseEntity<String> addPost(@RequestBody PostDto postDto) {
@@ -93,6 +96,7 @@ public class PostController {
         Integer userId = authService.getUserIdFromToken(token);
         String content = commentInfo.getContent();
         CommentEntity comment = commentService.addComment(userId, postId, content);
+        commentService.updateCommentsNumber(postId);
         return new ResponseEntity<>("success: true", HttpStatus.CREATED);
     }
 }
