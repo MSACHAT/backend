@@ -15,7 +15,7 @@ public class NotifLikeDto {
     private Integer id;
     private Integer postId;
     private String commentContent;
-    private Date time;
+    private Date timeStamp;
     private Integer senderId;
     private Integer receiverId;
     private boolean isRead;

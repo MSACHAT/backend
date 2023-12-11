@@ -32,8 +32,8 @@ public class CommentServiceimpl implements CommentService {
         commentEntity.setUserId(userId);
         commentEntity.setPostId(postId);
         commentEntity.setContent(content);
-        commentEntity.setDateTime(dateTime);
-        
+        commentEntity.setTimeStamp(dateTime);
+
         return commentRepository.save(commentEntity);
     }
 }

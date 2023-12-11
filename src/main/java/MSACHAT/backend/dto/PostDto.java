@@ -18,7 +18,7 @@ public class PostDto {
     private String title;
     private String content;
     private String image;
-    private Date time;
+    private Date timeStamp;
     private Integer likeCount;
     private Integer commentCount;
     private boolean isLiked;
