@@ -10,7 +10,7 @@ import java.util.List;
 public interface LikeRepository extends CrudRepository<LikeEntity,Integer> {
 List<LikeEntity> findAllByUserId(Integer userId);
 LikeEntity findLikeEntityByUserIdAndPostId(Integer userId, Integer postId);
-void deleteLikeEntityByUserIdAndPostId(Integer userId,Integer postId);
+void deleteByUserIdAndPostId(Integer userId,Integer postId);
 void deleteAllByPostId(Integer postId);
 
 boolean existsByUserIdAndPostId(Integer userId,Integer postId);

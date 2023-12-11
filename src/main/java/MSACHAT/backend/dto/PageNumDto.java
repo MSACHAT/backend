@@ -5,15 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikeDto {
-    private Integer id;
-    private Integer userId;
-    private Integer postId;
-    private Date timeStamp;
+public class PageNumDto {
+    private Integer pageNum;
 }

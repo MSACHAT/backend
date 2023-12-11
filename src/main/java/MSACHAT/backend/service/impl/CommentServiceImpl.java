@@ -1,5 +1,11 @@
 package MSACHAT.backend.service.impl;
 
+import java.sql.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.repository.CommentRepository;
 import MSACHAT.backend.repository.PostRepository;
@@ -10,10 +16,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Date;
 
-@AllArgsConstructor
+
+@Service
 public class CommentServiceImpl implements CommentService {
 
     private CommentRepository commentRepository;
+
+
+
+    public CommentServiceImpl(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
+    }
+
+    @Override
+    public List<CommentEntity> findCommentsByPostId(Integer postId) {
+        return commentRepository.findByPostId(postId);
+    }
 
     private PostRepository postRepository;
 
