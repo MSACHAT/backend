@@ -32,7 +32,7 @@ public class SpringSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> {
                     authorize.requestMatchers("/**").permitAll();
-                    authorize.anyRequest().authenticated();
+
                 });
 
         return http.build();
