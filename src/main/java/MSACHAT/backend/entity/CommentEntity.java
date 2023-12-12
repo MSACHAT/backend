@@ -11,23 +11,25 @@ import jakarta.persistence.Table;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "comment")
 public class CommentEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    private Integer userId; // 评论用户的ID
-    private Integer postId; // 评论所属的帖子ID
-    private String content; // 评论内容
-    private Date timeStamp; // 评论时间
+    private Integer userId;
+    private Integer postId;
+    private String content;
+    private Date timeStamp;
 
 }

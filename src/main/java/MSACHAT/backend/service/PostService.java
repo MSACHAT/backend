@@ -1,15 +1,19 @@
 package MSACHAT.backend.service;
 
 import MSACHAT.backend.entity.PostEntity;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
+@Transactional
 public interface PostService {
     public PostEntity addPost(PostEntity postEntity);
 
-    public ArrayList<PostEntity> findAll(Integer userId);
+    public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum);
 
     public String likePost(Integer postId,Integer userId);
 

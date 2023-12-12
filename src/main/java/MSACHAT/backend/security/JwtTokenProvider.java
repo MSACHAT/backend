@@ -35,10 +35,10 @@ public class JwtTokenProvider {
         Date currentDate = new Date();
 
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
-        Integer userId = userRepository.findUserIdByEmailOrderByUsername(username);
+        Integer userId = userRepository.findUserIdByEmailOrByUsername(username);
 
         String token = Jwts.builder()
-                .claim("id", userId)
+                .claim("UserId", userId)
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
@@ -53,7 +53,7 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        return claims.get("id", Integer.class);
+        return claims.get("UserId", Integer.class);
     }
 
     private Key key() {

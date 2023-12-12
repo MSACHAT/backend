@@ -10,13 +10,18 @@ import MSACHAT.backend.repository.LikeRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
 @Service
+@Transactional
 public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private LikeRepository likeRepository;
@@ -32,24 +37,25 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ArrayList<PostEntity> findAll(Integer userId) {
-        ArrayList<PostEntity> posts = new java.util.ArrayList<>(StreamSupport.stream(postRepository
-                        .findAll()
-                        .spliterator(), false)
-                .toList());
+    public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum) {
+        PageRequest pageRequest= PageRequest.of(pageNum,10);
+        Page<PostEntity> postEntityPage=postRepository.findAll(pageRequest);
+        List<PostEntity> posts = postEntityPage.getContent();
         for (int i = 0; i < posts.size(); i++) {
             int finalI = i;
-            PostEntity tmpEntity = posts.get(i);
-            if (likeRepository.findAllByUserId(userId).stream().anyMatch(
-                    likeEntity -> likeEntity.getPostId().equals(posts.get(finalI).getId())
-            )) {
-                tmpEntity.setLiked(true);
-                posts.set(i, tmpEntity);
-            } else {
-                tmpEntity.setLiked(false);
-                posts.set(i, tmpEntity);
+            PostEntity tmpEntity = posts.get(finalI);
+            if (likeRepository.findAllByUserId(userId) != null) {
+                if (likeRepository.findAllByUserId(userId).stream().anyMatch(
+                        likeEntity -> likeEntity.getPostId().equals(posts.get(finalI).getId())
+                )) {
+                    tmpEntity.setLiked(true);
+                    posts.set(finalI, tmpEntity);
+                }
+            }else {
+                    tmpEntity.setLiked(false);
+                    posts.set(finalI, tmpEntity);
+                }
             }
-        }
         return posts;
     }
 
@@ -77,7 +83,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public String unlikePost(Integer postId, Integer userId) {
         PostEntity post=postRepository.findPostEntityById(postId);
-       likeRepository.deleteLikeEntityByUserIdAndPostId(userId,postId);
+       likeRepository.deleteByUserIdAndPostId(userId,postId);
        post.setLikeCount(post.getLikeCount()+1);
        postRepository.save(post);
        return "successfully unliked";

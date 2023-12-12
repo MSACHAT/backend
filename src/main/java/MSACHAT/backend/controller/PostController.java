@@ -1,6 +1,8 @@
 package MSACHAT.backend.controller;
 
 import MSACHAT.backend.dto.CommentDto;
+import MSACHAT.backend.dto.IsLikedDto;
+import MSACHAT.backend.dto.PageNumDto;
 import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.CommentService;
@@ -14,22 +16,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
 public class PostController {
-    private PostService postService;
-    private AuthService authService;
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
+    private final PostService postService;
+    private final AuthService authService;
+
+
 
     private Mapper<PostEntity, PostDto> postMapper;
 
-    PostController(
+    public PostController(
             PostService postService,
-            AuthService authService) {
+            AuthService authService,
+            CommentService commentService
+    ) {
         this.postService = postService;
         this.authService = authService;
+        this.commentService = commentService;
 
     }
 
@@ -43,18 +50,22 @@ public class PostController {
         return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/all/get")
-    public ArrayList<PostEntity> getPosts(@RequestHeader String token) {
-        return postService.findAll(authService.getUserIdFromToken(token));
+    @GetMapping("/getbypagenum")
+    public List<PostEntity> getPosts(@RequestHeader("Authorization") String bearerToken,
+                                     @RequestBody PageNumDto pageNumDto
+    ) {
+        return postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNumDto.getPageNum());
     }
 
     @PatchMapping("/{id}/like")
     public void likePost(
             @PathVariable("id") Integer postId,
-            @RequestBody Boolean isLiked,
-            @RequestHeader String token) {
+            @RequestBody IsLikedDto isLikedDto,
+            @RequestHeader String token
+    ) {
+        boolean isLiked = isLikedDto.getIsLiked();
         if (isLiked) {
-
+            postService.unlikePost(postId, authService.getUserIdFromToken(token));
         } else {
             postService.likePost(postId, authService.getUserIdFromToken(token));
         }
@@ -66,14 +77,15 @@ public class PostController {
         postService.deletePost(postId);
     }
 
+
+
     @GetMapping("/test")
     public String Test() {
         return "Connection made";
     }
 
     @GetMapping("/{id}/get")
-    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId,
-            @RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId,@RequestHeader("Authorization") String bearerToken){
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
 
@@ -84,11 +96,12 @@ public class PostController {
 
     @PutMapping("/{id}/comment")
     public ResponseEntity<String> addComment(@RequestBody CommentDto commentInfo, @PathVariable("id") Integer postId,
-            @RequestHeader("Authorization") String bearerToken) {
+                                             @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
         String content = commentInfo.getContent();
         CommentEntity comment = commentService.addComment(userId, postId, content);
+        commentService.updateCommentsNumber(postId);
         return new ResponseEntity<>("success: true", HttpStatus.CREATED);
     }
 }

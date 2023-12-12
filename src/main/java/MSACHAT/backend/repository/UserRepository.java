@@ -18,6 +18,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer> {
     Optional<UserEntity> findByUsernameOrEmail(String username, String email);
 
     boolean existsByUsername(String username);
-    @Query(value = "SELECT id FROM UserEntity WHERE email =:emailOrUsername OR username =:emailOrUsername ORDER BY username ASC LIMIT 1")
-    Integer findUserIdByEmailOrderByUsername(@Param("emailOrUsername") String emailOrUsername );
+    @Query(value = "SELECT id FROM UserEntity WHERE email =:emailOrUsername OR username =:emailOrUsername LIMIT 1")
+    Integer findUserIdByEmailOrByUsername(@Param("emailOrUsername") String emailOrUsername );
 }

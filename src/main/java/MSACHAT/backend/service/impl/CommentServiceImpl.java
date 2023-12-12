@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import MSACHAT.backend.entity.CommentEntity;
@@ -11,18 +13,20 @@ import MSACHAT.backend.repository.CommentRepository;
 import MSACHAT.backend.service.CommentService;
 
 @Service
-public class CommentServiceimpl implements CommentService {
+public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
-    @Autowired
-    public CommentServiceimpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
 
     @Override
-    public List<CommentEntity> findCommentsByPostId(Integer postId) {
-        return commentRepository.findAllByPostId(postId);
+    public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum) {
+        PageRequest pageRequest = PageRequest.of(pageNum, 10);
+        Page<CommentEntity> commentEntityPage = commentRepository.findAll(pageRequest);
+        List<CommentEntity> posts = commentEntityPage.getContent();
+        return posts;
     }
 
     @Override
@@ -34,6 +38,14 @@ public class CommentServiceimpl implements CommentService {
         commentEntity.setContent(content);
         commentEntity.setTimeStamp(dateTime);
 
+        // 将 commentEntity 保存到数据库
         return commentRepository.save(commentEntity);
     }
+
+    @Override
+    public void updateCommentsNumber(Integer postId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateCommentsNumber'");
+    }
+
 }
