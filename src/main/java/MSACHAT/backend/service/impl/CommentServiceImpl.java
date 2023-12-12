@@ -7,6 +7,7 @@ import MSACHAT.backend.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import MSACHAT.backend.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import jakarta.transaction.Transactional;
 
 
 @Service
+@Transactional
 public class CommentServiceImpl implements CommentService {
 
     private CommentRepository commentRepository;

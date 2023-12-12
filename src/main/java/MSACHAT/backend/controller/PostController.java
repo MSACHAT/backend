@@ -38,12 +38,11 @@ public class PostController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addPost(@RequestBody PostDto postDto,@RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<String> addPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String bearerToken
+    ) {
         if (postDto.getTitle() != null && postDto.getContent() != null && postDto.getImage() != null) {
             Integer userId = authService.getUserIdFromToken(bearerToken);
-
-
-            PostEntity savedPostEntity = postService.addPost(userId,postDto.getTitle(), postDto.getContent());
+            PostEntity savedPostEntity = postService.addPost(userId, postDto.getTitle(), postDto.getContent());
             for (String image : postDto.getImage()) {
                 postService.addImage(savedPostEntity, image);
             }
@@ -74,7 +73,7 @@ public class PostController {
 
     @GetMapping("/getbypagenum")
     public List<PostEntity> getPosts(@RequestHeader("Authorization") String bearerToken,
-            @RequestBody PageNumDto pageNumDto) {
+                                     @RequestBody PageNumDto pageNumDto) {
         return postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNumDto.getPageNum());
     }
 
@@ -103,7 +102,8 @@ public class PostController {
     }
 
     @GetMapping("/{id}/get")
-    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId,
+    public ResponseEntity<PostEntity> getPostById(
+            @PathVariable("id") Integer postId,
             @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
@@ -126,8 +126,11 @@ public class PostController {
 
 
     @PutMapping("/{id}/comment")
-    public ResponseEntity<String> addComment(@RequestBody CommentInfoDto commentInfo, @PathVariable("id") Integer postId,
-            @RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<String> addComment(
+            @RequestBody CommentInfoDto commentInfo,
+            @PathVariable("id") Integer postId,
+            @RequestHeader("Authorization") String bearerToken
+                                             ) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
         String content = commentInfo.getContent();
