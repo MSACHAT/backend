@@ -15,7 +15,7 @@ import MSACHAT.backend.service.CommentService;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private final CommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
     public CommentServiceImpl(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;

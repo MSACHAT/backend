@@ -11,9 +11,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostRepository extends CrudRepository<PostEntity, Integer>,
-        PagingAndSortingRepository<PostEntity,Integer> {
+        PagingAndSortingRepository<PostEntity, Integer> {
     PostEntity findPostEntityById(Integer Id);
-    void deletePostEntityById(Integer id);
+
+    void deleteById(Integer id);
 
     @Modifying
     @Query(value = "UPDATE PostEntity SET likeCount = likeCount + 1 WHERE id = :postId")

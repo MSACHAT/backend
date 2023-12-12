@@ -26,6 +26,7 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private LikeRepository likeRepository;
     private CommentRepository commentRepository;
+
     public PostServiceImpl(
             PostRepository postRepository,
             LikeRepository likeRepository,
@@ -33,13 +34,13 @@ public class PostServiceImpl implements PostService {
     ) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
-        this.commentRepository=commentRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum) {
-        PageRequest pageRequest= PageRequest.of(pageNum,10);
-        Page<PostEntity> postEntityPage=postRepository.findAll(pageRequest);
+        PageRequest pageRequest = PageRequest.of(pageNum, 10);
+        Page<PostEntity> postEntityPage = postRepository.findAll(pageRequest);
         List<PostEntity> posts = postEntityPage.getContent();
         for (int i = 0; i < posts.size(); i++) {
             int finalI = i;
@@ -51,11 +52,11 @@ public class PostServiceImpl implements PostService {
                     tmpEntity.setLiked(true);
                     posts.set(finalI, tmpEntity);
                 }
-            }else {
-                    tmpEntity.setLiked(false);
-                    posts.set(finalI, tmpEntity);
-                }
+            } else {
+                tmpEntity.setLiked(false);
+                posts.set(finalI, tmpEntity);
             }
+        }
         return posts;
     }
 
@@ -69,29 +70,29 @@ public class PostServiceImpl implements PostService {
     @Override
     public String likePost(Integer postId, Integer userId) {
         LikeEntity newLike = new LikeEntity();
-        PostEntity post=postRepository.findPostEntityById(postId);
+        PostEntity post = postRepository.findPostEntityById(postId);
         newLike.setUserId(userId);
         newLike.setPostId(postId);
         Date date = new Date(System.currentTimeMillis());
         newLike.setTimeStamp(date);
         likeRepository.save(newLike);
-        post.setLikeCount(post.getLikeCount()+1);
+        post.setLikeCount(post.getLikeCount() + 1);
         postRepository.save(post);
         return "new like saved";
     }
 
     @Override
     public String unlikePost(Integer postId, Integer userId) {
-        PostEntity post=postRepository.findPostEntityById(postId);
-       likeRepository.deleteByUserIdAndPostId(userId,postId);
-       post.setLikeCount(post.getLikeCount()+1);
-       postRepository.save(post);
-       return "successfully unliked";
+        PostEntity post = postRepository.findPostEntityById(postId);
+        likeRepository.deleteByUserIdAndPostId(userId, postId);
+        post.setLikeCount(post.getLikeCount() + 1);
+        postRepository.save(post);
+        return "successfully unliked";
     }
 
     @Override
     public String deletePost(Integer postId) {
-        postRepository.deletePostEntityById(postId);
+        postRepository.deleteById(postId);
         likeRepository.deleteAllByPostId(postId);
         commentRepository.deleteAllByPostId(postId);
         return "post Deleted successfully";
@@ -101,20 +102,20 @@ public class PostServiceImpl implements PostService {
     public Boolean IsLiked(Integer postId, Integer userId) {
 
 
-        return likeRepository.existsByUserIdAndPostId(postId,userId);
+        return likeRepository.existsByUserIdAndPostId(postId, userId);
     }
+
     @Override
-    public PostEntity findPostById(Integer postId, Integer userId){
+    public PostEntity findPostById(Integer postId, Integer userId) {
         PostEntity post = postRepository.findPostEntityById(postId);
 
-        if (likeRepository.existsByUserIdAndPostId(userId,postId)){
+        if (likeRepository.existsByUserIdAndPostId(userId, postId)) {
             post.setLiked(true);
         } else {
             post.setLiked(false);
         }
         return post;
     }
-
 
 
 }

@@ -15,15 +15,14 @@ public interface PostService {
 
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum);
 
-    public String likePost(Integer postId,Integer userId);
+    public String likePost(Integer postId, Integer userId);
 
-    public String unlikePost(Integer postId,Integer userId);
+    public String unlikePost(Integer postId, Integer userId);
+
     public String deletePost(Integer postId);
 
 
-
     Boolean IsLiked(Integer postId, Integer userId);
-
 
 
     PostEntity findPostById(Integer postId, Integer userId);

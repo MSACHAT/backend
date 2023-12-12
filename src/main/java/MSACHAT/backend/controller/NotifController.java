@@ -1,5 +1,6 @@
 package MSACHAT.backend.controller;
 
+import MSACHAT.backend.dto.PageNumDto;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.NotifService;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +21,17 @@ public class NotifController {
         this.notifService = notifService;
     }
 
-    @GetMapping("/get")
-    public List getNotifs(@RequestHeader String token,
-                          @RequestBody Integer pageNum
-                          ) {
-        return notifService.getNotifsByPageNum(authService.getUserIdFromToken(token),pageNum);
+    @GetMapping("/getbypagenum")
+    public List getNotifs(
+            @RequestHeader String token,
+            @RequestBody PageNumDto pageNumDto
+    ) {
+        Integer pageNum = pageNumDto.getPageNum();
+        return notifService.getNotifsByPageNum(authService.getUserIdFromToken(token), pageNum);
+    }
+
+    @GetMapping("/test")
+    public String testConnection() {
+        return "Connected!";
     }
 }

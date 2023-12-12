@@ -10,5 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IsLikedDto {
-   private Boolean isLiked;
+    private Boolean isLiked;
 }

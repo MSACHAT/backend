@@ -26,7 +26,6 @@ public class PostController {
     private final AuthService authService;
 
 
-
     private Mapper<PostEntity, PostDto> postMapper;
 
     public PostController(
@@ -78,14 +77,13 @@ public class PostController {
     }
 
 
-
     @GetMapping("/test")
     public String Test() {
         return "Connection made";
     }
 
     @GetMapping("/{id}/get")
-    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId,@RequestHeader("Authorization") String bearerToken){
+    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId, @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
 
