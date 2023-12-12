@@ -21,7 +21,7 @@ public class NotifController {
         this.notifService = notifService;
     }
 
-    @GetMapping("/get")
+    @GetMapping("/getbypagenum")
     public List getNotifs(
             @RequestHeader String token,
             @RequestBody PageNumDto pageNumDto

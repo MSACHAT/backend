@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String getTokenFromHeader(String bearerToken) {
 
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
         }
         return null;

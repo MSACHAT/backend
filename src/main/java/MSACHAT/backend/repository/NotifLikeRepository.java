@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 
 @Repository
-public interface NotifLikeRepository extends CrudRepository<NotifLikeEntity,Integer>,
-        PagingAndSortingRepository<NotifLikeEntity,Integer> {
+public interface NotifLikeRepository extends CrudRepository<NotifLikeEntity, Integer>,
+        PagingAndSortingRepository<NotifLikeEntity, Integer> {
     Page<NotifLikeEntity> findAllByReceiverId(Integer receiverId, Pageable pageable);
 }

@@ -11,8 +11,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostRepository extends CrudRepository<PostEntity, Integer>,
-        PagingAndSortingRepository<PostEntity,Integer> {
+        PagingAndSortingRepository<PostEntity, Integer> {
     PostEntity findPostEntityById(Integer Id);
+
     void deleteById(Integer id);
 
     @Modifying

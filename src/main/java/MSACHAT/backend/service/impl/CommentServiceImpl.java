@@ -23,7 +23,6 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
 
 
-
     public CommentServiceImpl(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
@@ -38,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentEntity addComment(Integer userId, Integer postId, String content) {
-        Date dateTime= new Date(System.currentTimeMillis());
+        Date dateTime = new Date(System.currentTimeMillis());
         CommentEntity commentEntity = new CommentEntity();
         commentEntity.setUserId(userId);
         commentEntity.setPostId(postId);
