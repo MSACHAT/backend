@@ -25,14 +25,12 @@ public class PostController {
     private final PostService postService;
     private final AuthService authService;
 
-
     private Mapper<PostEntity, PostDto> postMapper;
 
     public PostController(
             PostService postService,
             AuthService authService,
-            CommentService commentService
-    ) {
+            CommentService commentService) {
         this.postService = postService;
         this.authService = authService;
         this.commentService = commentService;
@@ -51,8 +49,7 @@ public class PostController {
 
     @GetMapping("/getbypagenum")
     public List<PostEntity> getPosts(@RequestHeader("Authorization") String bearerToken,
-                                     @RequestBody PageNumDto pageNumDto
-    ) {
+            @RequestBody PageNumDto pageNumDto) {
         return postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNumDto.getPageNum());
     }
 
@@ -60,8 +57,7 @@ public class PostController {
     public void likePost(
             @PathVariable("id") Integer postId,
             @RequestBody IsLikedDto isLikedDto,
-            @RequestHeader String token
-    ) {
+            @RequestHeader String token) {
         boolean isLiked = isLikedDto.getIsLiked();
         if (isLiked) {
             postService.unlikePost(postId, authService.getUserIdFromToken(token));
@@ -76,14 +72,14 @@ public class PostController {
         postService.deletePost(postId);
     }
 
-
     @GetMapping("/test")
     public String Test() {
-        return "Connection made";
+        return "Connection";
     }
 
     @GetMapping("/{id}/get")
-    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId, @RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId,
+            @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
 
@@ -94,7 +90,7 @@ public class PostController {
 
     @PutMapping("/{id}/comment")
     public ResponseEntity<String> addComment(@RequestBody CommentDto commentInfo, @PathVariable("id") Integer postId,
-                                             @RequestHeader("Authorization") String bearerToken) {
+            @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
         String content = commentInfo.getContent();
