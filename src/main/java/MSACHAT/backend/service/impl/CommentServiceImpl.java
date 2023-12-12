@@ -3,7 +3,6 @@ package MSACHAT.backend.service.impl;
 import java.sql.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import MSACHAT.backend.entity.CommentEntity;
@@ -11,10 +10,6 @@ import MSACHAT.backend.repository.CommentRepository;
 import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.CommentService;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.sql.Date;
 
 
 @Service
@@ -52,6 +47,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void updateCommentsNumber(Integer postId) {
-        postRepository.addLikecount(postId);
+        postRepository.addLikesCount(postId);
     }
 }

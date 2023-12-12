@@ -16,6 +16,9 @@ public class ImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer semiId;
-    private Integer postId;
+    private String imageUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private PostEntity postId;
 }

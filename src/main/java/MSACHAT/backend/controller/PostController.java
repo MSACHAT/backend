@@ -15,8 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.System.currentTimeMillis;
 
 @RestController
 @RequestMapping("/post")
@@ -40,10 +43,16 @@ public class PostController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addPost(@RequestBody PostDto postDto) {
+    public ResponseEntity<String> addPost(@RequestBody PostDto postDto,@RequestHeader("Authorization") String bearerToken) {
         if (postDto.getTitle() != null && postDto.getContent() != null && postDto.getImage() != null) {
-            PostEntity postEntity = postMapper.mapFrom(postDto);
-            PostEntity savedPostEntity = postService.addPost(postEntity);
+            Integer userId = authService.getUserIdFromToken(bearerToken);
+
+
+            PostEntity savedPostEntity = postService.addPost(userId,postDto.getTitle(), postDto.getContent());
+            for (String image : postDto.getImage()) {
+                postService.addImage(savedPostEntity, image);
+            }
+
             return new ResponseEntity<>("success", HttpStatus.OK);
         }
         return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
@@ -103,3 +112,16 @@ public class PostController {
         return new ResponseEntity<>("success: true", HttpStatus.CREATED);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

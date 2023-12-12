@@ -1,24 +1,20 @@
 package MSACHAT.backend.service.impl;
 
-import MSACHAT.backend.entity.CommentEntity;
+import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.repository.CommentRepository;
+import MSACHAT.backend.repository.ImageEntityRepository;
 import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.LikeEntity;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.repository.LikeRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 @Service
 @Transactional
@@ -26,15 +22,19 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private LikeRepository likeRepository;
     private CommentRepository commentRepository;
+    private ImageEntityRepository imageEntityRepository;
 
     public PostServiceImpl(
             PostRepository postRepository,
             LikeRepository likeRepository,
-            CommentRepository commentRepository
+            CommentRepository commentRepository,
+            ImageEntityRepository imageEntityRepository
+
     ) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
         this.commentRepository = commentRepository;
+        this.imageEntityRepository = imageEntityRepository;
     }
 
     @Override
@@ -61,7 +61,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostEntity addPost(PostEntity postEntity) {
+    public PostEntity addPost(Integer userId,String title, String content) {
+
+        PostEntity postEntity = new PostEntity();
+        postEntity.setTitle(title);
+        postEntity.setContent(content);
+        postEntity.setUserId(userId);
+        postEntity.setLiked(false);
+        postEntity.setCommentCount(0);
+        postEntity.setLikeCount(0);
         postEntity.setTimeStamp(new Date(System.currentTimeMillis()));
         return postRepository.save(postEntity);
     }
@@ -115,6 +123,13 @@ public class PostServiceImpl implements PostService {
             post.setLiked(false);
         }
         return post;
+    }
+    @Override
+    public ImageEntity addImage(PostEntity postEntity, String imagePath) {
+        ImageEntity imageEntity = new ImageEntity();
+        imageEntity.setPostId(postEntity);
+        imageEntity.setImageUrl(imagePath);
+        return imageEntityRepository.save(imageEntity);
     }
 
 

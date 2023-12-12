@@ -1,8 +1,6 @@
 package MSACHAT.backend.repository;
 
 import MSACHAT.backend.entity.PostEntity;
-import org.springframework.data.domain.Page;
-import jakarta.persistence.Transient;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -18,5 +16,5 @@ public interface PostRepository extends CrudRepository<PostEntity, Integer>,
 
     @Modifying
     @Query(value = "UPDATE PostEntity SET likeCount = likeCount + 1 WHERE id = :postId")
-    void addLikecount(Integer postId);
+    void addLikesCount(Integer postId);
 }

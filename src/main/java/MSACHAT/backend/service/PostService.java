@@ -1,5 +1,6 @@
 package MSACHAT.backend.service;
 
+import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.entity.PostEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,7 @@ import java.util.List;
 @Service
 @Transactional
 public interface PostService {
-    public PostEntity addPost(PostEntity postEntity);
+    public PostEntity addPost(Integer userId,String title, String content);
 
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum);
 
@@ -26,4 +27,6 @@ public interface PostService {
 
 
     PostEntity findPostById(Integer postId, Integer userId);
+
+    ImageEntity addImage(PostEntity postEntity, String imagePath);
 }
