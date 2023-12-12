@@ -2,7 +2,7 @@ package MSACHAT.backend.service.impl;
 
 import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.repository.CommentRepository;
-import MSACHAT.backend.repository.ImageEntityRepository;
+import MSACHAT.backend.repository.ImageRepository;
 import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.LikeEntity;
@@ -22,19 +22,19 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private LikeRepository likeRepository;
     private CommentRepository commentRepository;
-    private ImageEntityRepository imageEntityRepository;
+    private ImageRepository imageRepository;
 
     public PostServiceImpl(
             PostRepository postRepository,
             LikeRepository likeRepository,
             CommentRepository commentRepository,
-            ImageEntityRepository imageEntityRepository
+            ImageRepository imageRepository
 
     ) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
         this.commentRepository = commentRepository;
-        this.imageEntityRepository = imageEntityRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Override
@@ -129,7 +129,7 @@ public class PostServiceImpl implements PostService {
         ImageEntity imageEntity = new ImageEntity();
         imageEntity.setPostId(postEntity);
         imageEntity.setImageUrl(imagePath);
-        return imageEntityRepository.save(imageEntity);
+        return imageRepository.save(imageEntity);
     }
 
 

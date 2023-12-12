@@ -9,12 +9,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public interface CommentService {
     public CommentEntity addComment(Integer userId, Integer postId, String content);
 
     List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum);
 
-    @Transactional
     public void updateCommentsNumber(Integer postId);
 
 }
