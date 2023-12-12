@@ -25,7 +25,8 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum) {
         PageRequest pageRequest = PageRequest.of(pageNum, 10);
         Page<CommentEntity> commentEntityPage = commentRepository.findAll(pageRequest);
-        List<CommentEntity> posts = commentEntityPage.getContent();
+        List<CommentEntity> posts = commentEntityPage.
+        getContent();
         return posts;
     }
 
