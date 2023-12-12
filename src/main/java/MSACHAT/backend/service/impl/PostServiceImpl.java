@@ -91,7 +91,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public String deletePost(Integer postId) {
-        postRepository.deletePostEntityById(postId);
+        postRepository.deleteById(postId);
         likeRepository.deleteAllByPostId(postId);
         commentRepository.deleteAllByPostId(postId);
         return "post Deleted successfully";
