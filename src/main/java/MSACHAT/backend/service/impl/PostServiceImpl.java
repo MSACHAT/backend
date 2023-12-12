@@ -2,7 +2,8 @@ package MSACHAT.backend.service.impl;
 
 import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.repository.CommentRepository;
-import MSACHAT.backend.repository.ImageEntityRepository;
+
+import MSACHAT.backend.repository.ImageRepository;
 import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.LikeEntity;
