@@ -1,13 +1,10 @@
 package MSACHAT.backend.controller;
 
-import MSACHAT.backend.dto.CommentDto;
-import MSACHAT.backend.dto.IsLikedDto;
-import MSACHAT.backend.dto.PageNumDto;
+import MSACHAT.backend.dto.*;
 import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.CommentService;
 import MSACHAT.backend.service.PostService;
-import MSACHAT.backend.dto.PostDto;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +55,25 @@ public class PostController {
         return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
     }
 
+
+    //测试代码
+    @PostMapping("/add/test")
+    public ResponseEntity<String> addPostTest(@RequestBody PostDto postDto) {
+        if (postDto.getTitle() != null && postDto.getContent() != null && postDto.getImage() != null) {
+            Integer userId = 1;
+
+
+            PostEntity savedPostEntity = postService.addPost(userId,postDto.getTitle(), postDto.getContent());
+            for (String image : postDto.getImage()) {
+                postService.addImage(savedPostEntity, image);
+            }
+
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
+    }
+
+
     @GetMapping("/getbypagenum")
     public List<PostEntity> getPosts(@RequestHeader("Authorization") String bearerToken,
                                      @RequestBody PageNumDto pageNumDto
@@ -101,8 +117,20 @@ public class PostController {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
+    //测试使用
+    @GetMapping("/{id}/get/test")
+    public ResponseEntity<PostEntity> getPostByIdTest(@PathVariable("id") Integer postId) {
+
+        Integer userId = 1;
+
+        PostEntity post = postService.findPostById(postId, userId);
+
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+
     @PutMapping("/{id}/comment")
-    public ResponseEntity<String> addComment(@RequestBody CommentDto commentInfo, @PathVariable("id") Integer postId,
+    public ResponseEntity<String> addComment(@RequestBody CommentInfoDto commentInfo, @PathVariable("id") Integer postId,
                                              @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);

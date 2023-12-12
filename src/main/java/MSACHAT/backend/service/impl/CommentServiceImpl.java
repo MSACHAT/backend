@@ -3,6 +3,10 @@ package MSACHAT.backend.service.impl;
 import java.sql.Date;
 import java.util.List;
 
+import MSACHAT.backend.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import MSACHAT.backend.entity.CommentEntity;
