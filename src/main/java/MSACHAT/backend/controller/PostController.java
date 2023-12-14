@@ -2,6 +2,7 @@ package MSACHAT.backend.controller;
 
 import MSACHAT.backend.dto.*;
 import MSACHAT.backend.entity.CommentEntity;
+import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.CommentService;
 import MSACHAT.backend.service.PostService;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -25,14 +29,12 @@ public class PostController {
     private final PostService postService;
     private final AuthService authService;
 
-
     private Mapper<PostEntity, PostDto> postMapper;
 
     public PostController(
             PostService postService,
             AuthService authService,
-            CommentService commentService
-    ) {
+            CommentService commentService) {
         this.postService = postService;
         this.authService = authService;
         this.commentService = commentService;
@@ -40,12 +42,11 @@ public class PostController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addPost(@RequestBody PostDto postDto,@RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<String> addPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String bearerToken
+    ) {
         if (postDto.getTitle() != null && postDto.getContent() != null && postDto.getImage() != null) {
             Integer userId = authService.getUserIdFromToken(bearerToken);
-
-
-            PostEntity savedPostEntity = postService.addPost(userId,postDto.getTitle(), postDto.getContent());
+            PostEntity savedPostEntity = postService.addPost(userId, postDto.getTitle(), postDto.getContent());
             for (String image : postDto.getImage()) {
                 postService.addImage(savedPostEntity, image);
             }
@@ -63,10 +64,34 @@ public class PostController {
             Integer userId = 1;
 
 
-            PostEntity savedPostEntity = postService.addPost(userId,postDto.getTitle(), postDto.getContent());
-            for (String image : postDto.getImage()) {
-                postService.addImage(savedPostEntity, image);
+            PostEntity savedPostEntity = postService.addPost(userId, postDto.getTitle(), postDto.getContent());
+
+            List<String> images = postDto.getImage();
+            List<Future<Void>> imageUploadTasks = new ArrayList<>();
+
+
+            ExecutorService executorService = Executors.newFixedThreadPool(images.size());
+
+            for (String image : images) {
+
+                Future<Void> imageUploadTask = executorService.submit(() -> {
+                    postService.addImage(savedPostEntity, image);
+                    return null;
+                });
+                imageUploadTasks.add(imageUploadTask);
             }
+
+            for (Future<Void> task : imageUploadTasks) {
+                try {
+                    task.get();
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                }
+            }
+
+
+            executorService.shutdown();
 
             return new ResponseEntity<>("success", HttpStatus.OK);
         }
@@ -76,8 +101,7 @@ public class PostController {
 
     @GetMapping("/getbypagenum")
     public List<PostEntity> getPosts(@RequestHeader("Authorization") String bearerToken,
-                                     @RequestBody PageNumDto pageNumDto
-    ) {
+                                     @RequestBody PageNumDto pageNumDto) {
         return postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNumDto.getPageNum());
     }
 
@@ -85,8 +109,7 @@ public class PostController {
     public void likePost(
             @PathVariable("id") Integer postId,
             @RequestBody IsLikedDto isLikedDto,
-            @RequestHeader String token
-    ) {
+            @RequestHeader String token) {
         boolean isLiked = isLikedDto.getIsLiked();
         if (isLiked) {
             postService.unlikePost(postId, authService.getUserIdFromToken(token));
@@ -101,37 +124,54 @@ public class PostController {
         postService.deletePost(postId);
     }
 
-
     @GetMapping("/test")
     public String Test() {
-        return "Connection made";
+        return "Connection";
     }
 
     @GetMapping("/{id}/get")
-    public ResponseEntity<PostEntity> getPostById(@PathVariable("id") Integer postId, @RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<PostReturnDto> getPostById(
+            @PathVariable("id") Integer postId,
+            @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
 
         PostEntity post = postService.findPostById(postId, userId);
+        if (post == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
 
-        return new ResponseEntity<>(post, HttpStatus.OK);
+        List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserId(), post.getTitle(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
+
+        return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
 
     //测试使用
     @GetMapping("/{id}/get/test")
-    public ResponseEntity<PostEntity> getPostByIdTest(@PathVariable("id") Integer postId) {
+    public ResponseEntity<PostReturnDto> getPostByIdTest(@PathVariable("id") Integer postId) {
 
         Integer userId = 1;
 
-        PostEntity post = postService.findPostById(postId, userId);
 
-        return new ResponseEntity<>(post, HttpStatus.OK);
+        PostEntity post = postService.findPostById(postId, userId);
+        if (post == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserId(), post.getTitle(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
+
+        return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
 
 
     @PutMapping("/{id}/comment")
-    public ResponseEntity<String> addComment(@RequestBody CommentInfoDto commentInfo, @PathVariable("id") Integer postId,
-                                             @RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<String> addComment(
+            @RequestBody CommentInfoDto commentInfo,
+            @PathVariable("id") Integer postId,
+            @RequestHeader("Authorization") String bearerToken
+                                             ) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
         String content = commentInfo.getContent();
@@ -140,16 +180,3 @@ public class PostController {
         return new ResponseEntity<>("success: true", HttpStatus.CREATED);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
