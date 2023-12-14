@@ -17,5 +17,5 @@ public class CommentDto {
     private int userId;
     private int postId;
     private String content;
-    private Date dateTime;
+    private Date timeStamp;
 }

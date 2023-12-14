@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -33,6 +32,5 @@ public class CommentEntity {
     private Integer postId;
     private String content;
     private Date timeStamp;
-
 
 }

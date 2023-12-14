@@ -29,12 +29,14 @@ public class PostController {
     private final PostService postService;
     private final AuthService authService;
 
+
     private Mapper<PostEntity, PostDto> postMapper;
 
     public PostController(
             PostService postService,
             AuthService authService,
-            CommentService commentService) {
+            CommentService commentService
+    ) {
         this.postService = postService;
         this.authService = authService;
         this.commentService = commentService;
