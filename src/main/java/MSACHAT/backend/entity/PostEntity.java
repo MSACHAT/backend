@@ -23,10 +23,18 @@ public class PostEntity {
     private String title;
     private String content;
     private String image;
+<<<<<<< HEAD
     private Date time;
     private int commentcount;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<CommentEntity> comments = new ArrayList<>();
 
+=======
+    private Date timeStamp;
+    private Integer likeCount;
+    private Integer commentCount;
+    @Transient
+    private boolean isLiked;
+>>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
 }

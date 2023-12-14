@@ -12,6 +12,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+<<<<<<< HEAD
+=======
+import java.sql.Date;
+
+
+>>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +28,7 @@ public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+<<<<<<< HEAD
 
     private Integer userId; // 评论用户的ID
     private Integer postId; // 评论所属的帖子ID
@@ -31,4 +38,12 @@ public class CommentEntity {
     @ManyToOne
     @JoinColumn(name = "postid")
     private PostEntity post; // 评论关联的帖子实体
+=======
+    private Integer userId;
+    private Integer postId;
+    private String content;
+    private Date datetime;
+
+
+>>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
 }

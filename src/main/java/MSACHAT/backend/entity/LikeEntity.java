@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "like")
+@Table(name = "likes")
 public class LikeEntity {
 
     @Id
@@ -22,5 +22,5 @@ public class LikeEntity {
 
     private Integer userId;
     private Integer postId;
-    private Date time;
+    private Date timeStamp;
 }

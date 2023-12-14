@@ -1,4 +1,4 @@
-package MSACHAT.entity;
+package MSACHAT.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,6 +21,6 @@ public class NotifCommentEntity {
     private Integer postId;
     private Integer senderId;
     private Integer receiverId;
-    private Date time;
+    private Date timeStamp;
     private boolean isRead;
 }

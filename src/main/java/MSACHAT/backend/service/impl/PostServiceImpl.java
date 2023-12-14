@@ -1,5 +1,7 @@
 package MSACHAT.backend.service.impl;
 
+import MSACHAT.backend.entity.CommentEntity;
+import MSACHAT.backend.repository.CommentRepository;
 import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.LikeEntity;
@@ -8,6 +10,7 @@ import MSACHAT.backend.repository.LikeRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.stream.StreamSupport;
@@ -16,26 +19,32 @@ import java.util.stream.StreamSupport;
 public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private LikeRepository likeRepository;
+<<<<<<< HEAD
     private MSACHAT.repository.CommentRepository commentRepository;
 
     PostServiceImpl(
             PostRepository postRepository,
             LikeRepository likeRepository,
             MSACHAT.repository.CommentRepository commentRepository) {
+=======
+    private CommentRepository commentRepository;
+    public PostServiceImpl(
+            PostRepository postRepository,
+            LikeRepository likeRepository,
+            CommentRepository commentRepository
+    ) {
+>>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
         this.commentRepository = commentRepository;
     }
 
     @Override
-    public ArrayList<PostEntity> findAll(String token, String secret) {
+    public ArrayList<PostEntity> findAll(Integer userId) {
         ArrayList<PostEntity> posts = new java.util.ArrayList<>(StreamSupport.stream(postRepository
                 .findAll()
                 .spliterator(), false)
                 .toList());
-        Jws<Claims> jws;
-        jws = Jwts.parserBuilder().setSigningKey(secret.getBytes()).build().parseClaimsJws(token);
-        Integer userId = (Integer) jws.getBody().get("userId");
         for (int i = 0; i < posts.size(); i++) {
             int finalI = i;
             PostEntity tmpEntity = posts.get(i);
@@ -51,6 +60,13 @@ public class PostServiceImpl implements PostService {
         return posts;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public PostEntity addPost(PostEntity postEntity) {
+        postEntity.setTimeStamp(new Date(System.currentTimeMillis()));
+        return postRepository.save(postEntity);
+>>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
     }
 
     @Override
@@ -66,7 +82,7 @@ public class PostServiceImpl implements PostService {
         newLike.setUserId(userId);
         newLike.setPostId(postId);
         Date date = new Date(System.currentTimeMillis());
-        newLike.setTime(date);
+        newLike.setTimeStamp(date);
         likeRepository.save(newLike);
         post.setLikeCount(post.getLikeCount() + 1);
         postRepository.save(post);
@@ -89,5 +105,25 @@ public class PostServiceImpl implements PostService {
         commentRepository.deleteAllByPostId(postId);
         return "post Deleted successfully";
     }
+
+    @Override
+    public Boolean IsLiked(Integer postId, Integer userId) {
+
+
+        return likeRepository.existsByUserIdAndPostId(postId,userId);
+    }
+    @Override
+    public PostEntity findPostById(Integer postId, Integer userId){
+        PostEntity post = postRepository.findPostEntityById(postId);
+
+        if (likeRepository.existsByUserIdAndPostId(userId,postId)){
+            post.setLiked(true);
+        } else {
+            post.setLiked(false);
+        }
+        return post;
+    }
+
+
 
 }

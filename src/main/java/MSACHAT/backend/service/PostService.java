@@ -9,12 +9,18 @@ import java.util.ArrayList;
 public interface PostService {
     public PostEntity addPost(PostEntity postEntity);
 
-    public ArrayList<PostEntity> findAll(String token, String secret);
+    public ArrayList<PostEntity> findAll(Integer userId);
 
     public String likePost(Integer postId,Integer userId);
 
     public String unlikePost(Integer postId,Integer userId);
     public String deletePost(Integer postId);
 
-    public PostEntity findPostById(Integer postId);
+
+
+    Boolean IsLiked(Integer postId, Integer userId);
+
+
+
+    PostEntity findPostById(Integer postId, Integer userId);
 }

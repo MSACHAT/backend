@@ -1,17 +1,19 @@
-package MSACHAT.service.impl;
+package MSACHAT.backend.service.impl;
 
-import MSACHAT.repository.NotifCommentRepository;
-import MSACHAT.repository.NotifLikeRepository;
-import MSACHAT.service.NotifService;
+import MSACHAT.backend.repository.NotifCommentRepository;
+import MSACHAT.backend.repository.NotifLikeRepository;
+import MSACHAT.backend.service.NotifService;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class NotifServiceImpl implements NotifService {
     NotifLikeRepository notifLikeRepository;
     NotifCommentRepository notifCommentRepository;
 
-    NotifServiceImpl(
+    public NotifServiceImpl(
             NotifLikeRepository notifLikeRepository,
             NotifCommentRepository notifCommentRepository
     ) {
