@@ -101,10 +101,11 @@ public class PostController {
     }
 
 
-    @GetMapping("/getbypagenum")
-    public List<PostEntity> getPosts(@RequestHeader("Authorization") String bearerToken,
-                                     @RequestBody PageNumDto pageNumDto) {
-        return postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNumDto.getPageNum());
+    @GetMapping("/getbypagenumandpagesize")
+    public List<PostEntity> getPosts(
+            @RequestHeader("Authorization") String bearerToken,
+            @RequestBody PageNumDto pageNumDto) {
+        return postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNumDto.getPageNum(),pageNumDto.getPageSize());
     }
 
     @PatchMapping("/{id}/like")

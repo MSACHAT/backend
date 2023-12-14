@@ -21,13 +21,12 @@ public class NotifController {
         this.notifService = notifService;
     }
 
-    @GetMapping("/getbypagenum")
+    @GetMapping("/getbypagenumandpagesize")
     public List getNotifs(
             @RequestHeader String token,
             @RequestBody PageNumDto pageNumDto
     ) {
-        Integer pageNum = pageNumDto.getPageNum();
-        return notifService.getNotifsByPageNum(authService.getUserIdFromToken(token), pageNum);
+        return notifService.getNotifsByPageNum(authService.getUserIdFromToken(token), pageNumDto.getPageNum(),pageNumDto.getPageSize());
     }
 
     @GetMapping("/test")

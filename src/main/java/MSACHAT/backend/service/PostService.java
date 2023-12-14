@@ -14,7 +14,7 @@ import java.util.List;
 public interface PostService {
     public PostEntity addPost(Integer userId,String title, String content);
 
-    public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum);
+    public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum,Integer pageSize);
 
     public String likePost(Integer postId, Integer userId);
 

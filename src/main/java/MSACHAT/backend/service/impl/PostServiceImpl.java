@@ -39,8 +39,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum) {
-        PageRequest pageRequest = PageRequest.of(pageNum, 10);
+    public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum,Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
         Page<PostEntity> postEntityPage = postRepository.findAll(pageRequest);
         List<PostEntity> posts = postEntityPage.getContent();
         for (int i = 0; i < posts.size(); i++) {
