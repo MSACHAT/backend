@@ -11,6 +11,8 @@ import jakarta.persistence.Table;
 import java.sql.Date;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,4 +35,13 @@ public class CommentEntity {
     private String content;
     private Date timeStamp;
 
+    @JsonIgnore
+    public Integer getId() {
+        return id;
+    }
+
+    @JsonIgnore
+    public Integer getUserId() {
+        return userId;
+    }
 }
