@@ -1,14 +1,11 @@
 package MSACHAT.backend.service.impl;
 
 import MSACHAT.backend.entity.ImageEntity;
-import MSACHAT.backend.repository.CommentRepository;
+import MSACHAT.backend.repository.*;
 
-import MSACHAT.backend.repository.ImageRepository;
-import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.LikeEntity;
 import MSACHAT.backend.entity.PostEntity;
-import MSACHAT.backend.repository.LikeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,18 +21,20 @@ public class PostServiceImpl implements PostService {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
 
     public PostServiceImpl(
             PostRepository postRepository,
             LikeRepository likeRepository,
             CommentRepository commentRepository,
-            ImageRepository imageRepository
+            ImageRepository imageRepository,
 
-    ) {
+            UserRepository userRepository) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
         this.commentRepository = commentRepository;
         this.imageRepository = imageRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -63,8 +62,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostEntity addPost(Integer userId,String title, String content) {
+        String userName = userRepository.findNameById(userId);
 
         PostEntity postEntity = new PostEntity();
+        postEntity.setUserName(userName);
         postEntity.setTitle(title);
         postEntity.setContent(content);
         postEntity.setUserId(userId);

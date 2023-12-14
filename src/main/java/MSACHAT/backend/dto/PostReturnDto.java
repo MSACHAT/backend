@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PostReturnDto {
     Integer id;
-    Integer userId;
+    String userName;
     String title;
     String content;
     List<String> images;
