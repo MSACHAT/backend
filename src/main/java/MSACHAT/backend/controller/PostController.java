@@ -171,11 +171,14 @@ public class PostController {
 
 
     @PutMapping("/{id}/comment")
-    public ResponseEntity<String> addComment(
+    public ResponseEntity<Object> addComment(
             @RequestBody CommentInfoDto commentInfo,
             @PathVariable("id") Integer postId,
             @RequestHeader("Authorization") String bearerToken
                                              ) {
+        if (postService.IsPostExist(postId)){
+            return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
+        }
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
         String content = commentInfo.getContent();

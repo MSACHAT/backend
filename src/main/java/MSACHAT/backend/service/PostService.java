@@ -29,4 +29,6 @@ public interface PostService {
     PostEntity findPostById(Integer postId, Integer userId);
 
     ImageEntity addImage(PostEntity postEntity, String imagePath);
+
+    Boolean IsPostExist(Integer postId);
 }

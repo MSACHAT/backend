@@ -133,6 +133,9 @@ public class PostServiceImpl implements PostService {
         imageEntity.setImageUrl(imagePath);
         return imageRepository.save(imageEntity);
     }
-
+    @Override
+    public Boolean IsPostExist(Integer postId) {
+        return postRepository.existsById(postId);
+    }
 
 }
