@@ -40,7 +40,7 @@ public class PostController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String bearerToken
+    public ResponseEntity<Object> addPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String bearerToken
     ) {
         if (postDto.getTitle() != null && postDto.getContent() != null && postDto.getImage() != null) {
             Integer userId = authService.getUserIdFromToken(bearerToken);
@@ -49,9 +49,9 @@ public class PostController {
                 postService.addImage(savedPostEntity, image);
             }
 
-            return new ResponseEntity<>("success", HttpStatus.OK);
+            return new ResponseEntity<>("success: created", HttpStatus.CREATED);
         }
-        return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>((new ErrorDto("error: Missing Parameters",10001)), HttpStatus.BAD_REQUEST);
     }
 
 
@@ -148,7 +148,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}/get")
-    public ResponseEntity<PostReturnDto> getPostById(
+    public ResponseEntity<Object> getPostById(
             @PathVariable("id") Integer postId,
             @RequestHeader("Authorization") String bearerToken) {
         String token = authService.getTokenFromHeader(bearerToken);
@@ -156,18 +156,19 @@ public class PostController {
 
         PostEntity post = postService.findPostByIdAndUserId(postId, userId);
         if (post == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+
+            return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
         }
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
-        PostReturnDto postReturn = new PostReturnDto(post.getId(), post.getUserId(), post.getTitle(), post.getContent(), imageList, post.getTimeStamp(), post.getLikeCount(), post.getCommentCount(), post.isLiked());
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(), post.getTitle(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
 
     //测试使用
     @GetMapping("/{id}/get/test")
-    public ResponseEntity<PostReturnDto> getPostByIdTest(@PathVariable("id") Integer postId) {
+    public ResponseEntity<Object> getPostByIdTest(@PathVariable("id") Integer postId) {
 
         Integer userId = 1;
 
@@ -178,7 +179,7 @@ public class PostController {
         }
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
-        PostReturnDto postReturn = new PostReturnDto(post.getId(), post.getUserId(), post.getTitle(), post.getContent(), imageList, post.getTimeStamp(), post.getLikeCount(), post.getCommentCount(), post.isLiked());
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(), post.getTitle(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
