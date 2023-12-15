@@ -11,7 +11,6 @@ MSACHAT/backend 是一个使用 Spring Boot、Spring Security 和 PostgreSQL 构
     - [依赖项](#依赖项)
     - [Docker Compose](#docker-compose)
 - [如何运行](#如何运行)
-- [如何使用 Spring Security](#如何使用-spring-security)
 - [贡献](#贡献)
 - [许可证](#许可证)
 
