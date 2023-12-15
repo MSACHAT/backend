@@ -115,7 +115,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostEntity findPostById(Integer postId, Integer userId) {
+    public PostEntity findPostByIdAndUserId(Integer postId, Integer userId) {
         PostEntity post = postRepository.findPostEntityById(postId);
 
         if (likeRepository.existsByUserIdAndPostId(userId, postId)) {
@@ -133,5 +133,8 @@ public class PostServiceImpl implements PostService {
         return imageRepository.save(imageEntity);
     }
 
-
+    @Override
+    public PostEntity findPostById(Integer postId){
+        return postRepository.findPostEntityById(postId);
+    }
 }

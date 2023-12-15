@@ -17,4 +17,6 @@ public interface PostRepository extends CrudRepository<PostEntity, Integer>,
     @Modifying
     @Query(value = "UPDATE PostEntity SET likeCount = likeCount + 1 WHERE id = :postId")
     void addLikesCount(Integer postId);
+
+
 }
