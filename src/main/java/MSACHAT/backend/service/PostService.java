@@ -3,10 +3,8 @@ package MSACHAT.backend.service;
 import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.entity.PostEntity;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,12 +21,14 @@ public interface PostService {
     public String deletePost(Integer postId);
 
 
-    Boolean IsLiked(Integer postId, Integer userId);
+    public Boolean IsLiked(Integer postId, Integer userId);
 
 
-    PostEntity findPostById(Integer postId, Integer userId);
+    public PostEntity findPostByIdAndUserId(Integer postId, Integer userId);
 
-    ImageEntity addImage(PostEntity postEntity, String imagePath);
 
     Boolean IsPostExist(Integer postId);
+    public ImageEntity addImage(PostEntity postEntity, String imagePath);
+
+    public PostEntity findPostById(Integer postId);
 }
