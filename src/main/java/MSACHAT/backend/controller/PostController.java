@@ -46,7 +46,10 @@ public class PostController {
     @PostMapping("/add")
     public ResponseEntity<Object> addPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String bearerToken
     ) {
-        if (postDto.getTitle() != null && postDto.getContent() != null && postDto.getImage() != null) {
+        if (postDto.getImage()==null){
+            return new ResponseEntity<>(new ErrorDto("error: Missing Images",1002),HttpStatus.BAD_GATEWAY);
+        }
+        if (postDto.getTitle() != null && postDto.getContent() != null ) {
             Integer userId = authService.getUserIdFromToken(bearerToken);
             PostEntity savedPostEntity = postService.addPost(userId, postDto.getTitle(), postDto.getContent());
             for (String image : postDto.getImage()) {
