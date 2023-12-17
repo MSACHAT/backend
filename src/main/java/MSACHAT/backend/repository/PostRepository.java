@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.Query;
 >>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -36,8 +37,15 @@ public interface PostRepository extends CrudRepository<PostEntity, Integer>,
 
     void deleteById(Integer id);
 
+    boolean existsById(Integer id);
+
     @Modifying
     @Query(value = "UPDATE PostEntity SET likeCount = likeCount + 1 WHERE id = :postId")
+<<<<<<< HEAD
     void addLikesCount(Integer postId);
 >>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
+=======
+    void addLikesCount(@Param("postId") Integer postId);
+
+>>>>>>> 726cd29aca422765ef93c1fdf257065f18ba4fe2
 }

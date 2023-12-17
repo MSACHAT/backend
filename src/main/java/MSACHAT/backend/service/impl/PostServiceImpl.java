@@ -1,14 +1,11 @@
 package MSACHAT.backend.service.impl;
 
 import MSACHAT.backend.entity.ImageEntity;
-import MSACHAT.backend.repository.CommentRepository;
+import MSACHAT.backend.repository.*;
 
-import MSACHAT.backend.repository.ImageRepository;
-import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.LikeEntity;
 import MSACHAT.backend.entity.PostEntity;
-import MSACHAT.backend.repository.LikeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,16 +39,21 @@ public class PostServiceImpl implements PostService {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
 
 >>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
     public PostServiceImpl(
             PostRepository postRepository,
             LikeRepository likeRepository,
             CommentRepository commentRepository,
-            ImageRepository imageRepository
+            ImageRepository imageRepository,
 
+<<<<<<< HEAD
     ) {
 >>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
+=======
+            UserRepository userRepository) {
+>>>>>>> 726cd29aca422765ef93c1fdf257065f18ba4fe2
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
         this.commentRepository = commentRepository;
@@ -73,6 +75,7 @@ public class PostServiceImpl implements PostService {
                 posts.set(i, tmpEntity);
 =======
         this.imageRepository = imageRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -103,8 +106,10 @@ public class PostServiceImpl implements PostService {
 =======
     @Override
     public PostEntity addPost(Integer userId,String title, String content) {
+        String userName = userRepository.findNameById(userId);
 
         PostEntity postEntity = new PostEntity();
+        postEntity.setUserName(userName);
         postEntity.setTitle(title);
         postEntity.setContent(content);
         postEntity.setUserId(userId);
@@ -165,7 +170,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostEntity findPostById(Integer postId, Integer userId) {
+    public PostEntity findPostByIdAndUserId(Integer postId, Integer userId) {
         PostEntity post = postRepository.findPostEntityById(postId);
 
         if (likeRepository.existsByUserIdAndPostId(userId, postId)) {
@@ -182,6 +187,12 @@ public class PostServiceImpl implements PostService {
         imageEntity.setImageUrl(imagePath);
         return imageRepository.save(imageEntity);
     }
-
-
+    @Override
+    public Boolean IsPostExist(Integer postId) {
+        return postRepository.existsById(postId);
+    }
+    @Override
+    public PostEntity findPostById(Integer postId){
+        return postRepository.findPostEntityById(postId);
+    }
 }
