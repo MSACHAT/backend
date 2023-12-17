@@ -6,5 +6,5 @@ import java.util.List;
 
 @Service
 public interface NotifService {
-    public List getNotifs(Integer receiverId);
+    public List getNotifsByPageNum(Integer receiverId, Integer pageNum,Integer pageSize);
 }

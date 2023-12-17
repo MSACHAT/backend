@@ -26,6 +26,12 @@ public class JwtTokenProvider {
 
     private UserRepository userRepository;
 
+    public JwtTokenProvider(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+
+
 
     // generate JWT token
     public String generateToken(Authentication authentication) {
@@ -35,10 +41,10 @@ public class JwtTokenProvider {
         Date currentDate = new Date();
 
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
-        Integer userId = userRepository.findUserIdByEmailOrderByUsername(username);
+        Integer userId = userRepository.findUserIdByEmailOrByUsername(username);
 
         String token = Jwts.builder()
-                .claim("id", userId)
+                .claim("UserId", userId)
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
@@ -46,6 +52,7 @@ public class JwtTokenProvider {
                 .compact();
         return token;
     }
+
     public Integer getUserId(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key())
@@ -53,7 +60,7 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        return claims.get("id", Integer.class);
+        return claims.get("UserId", Integer.class);
     }
 
     private Key key() {
@@ -63,7 +70,7 @@ public class JwtTokenProvider {
     }
 
     // get username from Jwt token
-    public String getUsername(String token){
+    public String getUsername(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key())
                 .build()
@@ -74,9 +81,8 @@ public class JwtTokenProvider {
     }
 
 
-
     // validate Jwt token
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key())

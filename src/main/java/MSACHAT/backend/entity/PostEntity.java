@@ -8,7 +8,10 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< HEAD
 @Data
+=======
+>>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -22,6 +25,7 @@ public class PostEntity {
     private Integer userId;
     private String title;
     private String content;
+<<<<<<< HEAD
     private String image;
 <<<<<<< HEAD
     private Date time;
@@ -31,6 +35,12 @@ public class PostEntity {
     private List<CommentEntity> comments = new ArrayList<>();
 
 =======
+=======
+
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
+    private List<ImageEntity> images;
+
+>>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
     private Date timeStamp;
     private Integer likeCount;
     private Integer commentCount;

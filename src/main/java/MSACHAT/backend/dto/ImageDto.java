@@ -9,6 +9,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentInfoDto {
-    private String content;
+public class ImageDto {
+    private Integer id;
+    private Integer semiId;
+    private Integer postId;
 }

@@ -13,13 +13,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDto {
-    private Integer id;
-    private Integer userId;
+
+
     private String title;
     private String content;
     private List<String> image;
+<<<<<<< HEAD
     private Date time;
     private Integer likeCount;
     private Integer commentCount;
     private boolean isLiked;
+=======
+
+>>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
 }

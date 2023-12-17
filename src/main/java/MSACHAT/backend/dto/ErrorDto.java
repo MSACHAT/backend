@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentInfoDto {
-    private String content;
+public class ErrorDto {
+    String errorMessage;
+    Integer errorCode;
 }

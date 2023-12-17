@@ -7,7 +7,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+<<<<<<< HEAD
 import java.time.LocalDateTime;
+=======
+
+import java.sql.Date;
+import java.time.LocalDateTime;
+
+>>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +23,11 @@ import lombok.NoArgsConstructor;
 =======
 import java.sql.Date;
 
+<<<<<<< HEAD
 
 >>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
+=======
+>>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,8 +52,7 @@ public class CommentEntity {
     private Integer userId;
     private Integer postId;
     private String content;
-    private Date datetime;
-
+    private Date timeStamp;
 
 >>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
 }
