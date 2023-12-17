@@ -100,7 +100,19 @@ public class PostController {
 
     @GetMapping("/getbypagenumandpagesize")
     public ResponseEntity<Object> getPosts(
-//            @RequestHeader("Authorization") String bearerToken,
+            @RequestHeader("Authorization") String bearerToken,
+            @RequestBody PageNumDto pageNumDto) {
+        if (pageNumDto.getPageSize() == null || pageNumDto.getPageNum() == null) {//RequestBody Info Insufficient 10001 Error
+            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
+            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+        }
+        List<PostEntity> posts = postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNumDto.getPageNum(), pageNumDto.getPageSize());
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
+    //For API Test
+    @GetMapping("/getbypagenumandpagesize/test")
+    public ResponseEntity<Object> getPostsTest(
             @RequestBody PageNumDto pageNumDto) {
         if (pageNumDto.getPageSize() == null || pageNumDto.getPageNum() == null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
@@ -114,7 +126,8 @@ public class PostController {
     public ResponseEntity<Object> likePost(
             @PathVariable("id") Integer postId,
             @RequestBody IsLikedDto isLikedDto,
-            @RequestHeader String token) {
+            @RequestHeader String token
+    ) {
         if (isLikedDto.getIsLiked() == null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
@@ -132,6 +145,28 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //For API Test
+    @PatchMapping("/{id}/like/test")
+    public ResponseEntity<Object> likePostTest(
+            @PathVariable("id") Integer postId,
+            @RequestBody IsLikedDto isLikedDto
+    ) {
+        if (isLikedDto.getIsLiked() == null) {//RequestBody Info Insufficient 10001 Error
+            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
+            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+        }
+        if (postService.findPostById(postId) == null) {
+            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
+            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+        }
+        boolean isLiked = isLikedDto.getIsLiked();
+        if (isLiked) {
+            postService.unlikePost(postId, 1);
+        } else {
+            postService.likePost(postId, 1);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Object> deletePost(
             @PathVariable("id") Integer postId) {

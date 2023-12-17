@@ -36,7 +36,17 @@ public class NotifController {
         List notifs = notifService.getNotifsByPageNum(authService.getUserIdFromToken(token), pageNumDto.getPageNum(),pageNumDto.getPageSize());
         return new ResponseEntity<>(notifs,HttpStatus.OK);
     }
-
+    @GetMapping("/getbypagenumandpagesize/test")
+    public ResponseEntity<Object> getNotifsTest(
+            @RequestBody PageNumDto pageNumDto
+    ) {
+        if (pageNumDto.getPageNum()==null||pageNumDto.getPageSize()==null) {//RequestBody Info Insufficient 10001 Error
+            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
+            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+        }
+        List notifs = notifService.getNotifsByPageNum(1, pageNumDto.getPageNum(),pageNumDto.getPageSize());
+        return new ResponseEntity<>(notifs,HttpStatus.OK);
+    }
     @GetMapping("/test")
     public String testConnection() {
         return "Connected!";
