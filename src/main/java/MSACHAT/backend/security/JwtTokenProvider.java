@@ -26,6 +26,12 @@ public class JwtTokenProvider {
 
     private UserRepository userRepository;
 
+    public JwtTokenProvider(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+
+
 
     // generate JWT token
     public String generateToken(Authentication authentication) {

@@ -3,6 +3,11 @@ package MSACHAT.backend.service.impl;
 import java.sql.Date;
 import java.util.List;
 
+import MSACHAT.backend.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import MSACHAT.backend.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,14 +16,19 @@ import org.springframework.stereotype.Service;
 import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.repository.CommentRepository;
 import MSACHAT.backend.service.CommentService;
+import jakarta.transaction.Transactional;
+
 
 @Service
+@Transactional
 public class CommentServiceImpl implements CommentService {
 
     private CommentRepository commentRepository;
+    private PostRepository postRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository,PostRepository postRepository) {
         this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
     }
 
     @Override
@@ -29,6 +39,8 @@ public class CommentServiceImpl implements CommentService {
         getContent();
         return posts;
     }
+
+
 
     @Override
     public CommentEntity addComment(Integer userId, Integer postId, String content) {
@@ -45,8 +57,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void updateCommentsNumber(Integer postId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateCommentsNumber'");
+        postRepository.addLikesCount(postId);
     }
 
 }

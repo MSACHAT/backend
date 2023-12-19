@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,9 +21,13 @@ public class PostEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer userId;
+    private String userName;
     private String title;
     private String content;
-    private String image;
+
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
+    private List<ImageEntity> images;
+
     private Date timeStamp;
     private Integer likeCount;
     private Integer commentCount;

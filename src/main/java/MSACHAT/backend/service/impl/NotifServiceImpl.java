@@ -25,8 +25,8 @@ public class NotifServiceImpl implements NotifService {
         this.notifLikeRepository = notifLikeRepository;
     }
 
-    public List getNotifsByPageNum(Integer receiverId, Integer pageNum) {
-        PageRequest pageRequest = PageRequest.of(pageNum, 10);
+    public List getNotifsByPageNum(Integer receiverId, Integer pageNum,Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
         Page<NotifLikeEntity> notifLikeEntityPage = notifLikeRepository.findAllByReceiverId(receiverId, pageRequest);
         Page<NotifCommentEntity> notifCommentEntityPage = notifCommentRepository.findAllByReceiverId(receiverId, pageRequest);
         List notifs = new ArrayList<>();

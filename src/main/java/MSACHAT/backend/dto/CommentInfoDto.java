@@ -5,11 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageNumDto {
-    private Integer pageNum;
-    private Integer pageSize;
+public class CommentInfoDto {
+    private String content;
 }
