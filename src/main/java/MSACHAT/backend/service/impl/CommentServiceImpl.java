@@ -59,4 +59,9 @@ public class CommentServiceImpl implements CommentService {
         postRepository.addLikesCount(postId);
     }
 
+    @Override
+    public Integer countTotalPagesByPageSize(Integer pageSize){
+        double pageCount=postRepository.count()/(pageSize*1.0);
+        return (Integer) (int)Math.ceil(pageCount)-1;
+    }
 }

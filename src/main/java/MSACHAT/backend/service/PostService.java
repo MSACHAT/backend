@@ -31,4 +31,6 @@ public interface PostService {
     public ImageEntity addImage(PostEntity postEntity, String imagePath);
 
     public PostEntity findPostById(Integer postId);
+
+    public Integer countTotalPagesByPageSize(Integer pageSize);
 }
