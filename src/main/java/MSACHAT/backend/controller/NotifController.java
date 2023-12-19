@@ -27,24 +27,26 @@ public class NotifController {
     @GetMapping("/getbypagenumandpagesize")
     public ResponseEntity<Object> getNotifs(
             @RequestHeader String token,
-            @RequestBody PageNumDto pageNumDto
+            @RequestParam(value="pageNum") Integer pageNum,
+            @RequestParam(value="pageSize") Integer pageSize
     ) {
-        if (pageNumDto.getPageNum()==null||pageNumDto.getPageSize()==null) {//RequestBody Info Insufficient 10001 Error
+        if (pageNum==null||pageSize==null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List notifs = notifService.getNotifsByPageNum(authService.getUserIdFromToken(token), pageNumDto.getPageNum(),pageNumDto.getPageSize());
+        List notifs = notifService.getNotifsByPageNum(authService.getUserIdFromToken(token), pageNum,pageSize);
         return new ResponseEntity<>(notifs,HttpStatus.OK);
     }
     @GetMapping("/getbypagenumandpagesize/test")
     public ResponseEntity<Object> getNotifsTest(
-            @RequestBody PageNumDto pageNumDto
+            @RequestParam(value="pageNum") Integer pageNum,
+            @RequestParam(value="pageSize") Integer pageSize
     ) {
-        if (pageNumDto.getPageNum()==null||pageNumDto.getPageSize()==null) {//RequestBody Info Insufficient 10001 Error
+        if (pageNum==null||pageSize==null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List notifs = notifService.getNotifsByPageNum(1, pageNumDto.getPageNum(),pageNumDto.getPageSize());
+        List notifs = notifService.getNotifsByPageNum(1, pageNum,pageSize);
         return new ResponseEntity<>(notifs,HttpStatus.OK);
     }
     @GetMapping("/test")

@@ -13,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -101,25 +103,37 @@ public class PostController {
     @GetMapping("/getbypagenumandpagesize")
     public ResponseEntity<Object> getPosts(
             @RequestHeader("Authorization") String bearerToken,
-            @RequestBody PageNumDto pageNumDto) {
-        if (pageNumDto.getPageSize() == null || pageNumDto.getPageNum() == null) {//RequestBody Info Insufficient 10001 Error
+            @RequestParam(value="pageNum") Integer pageNum,
+            @RequestParam(value="pageSize") Integer pageSize
+    ) {
+        if (pageSize == null || pageNum == null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List<PostEntity> posts = postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNumDto.getPageNum(), pageNumDto.getPageSize());
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+        List<PostEntity> posts = postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNum, pageSize);
+        Map<String, Object> returnResult = new HashMap<>();
+        returnResult.put("posts", posts);
+        returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
+        return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
     //For API Test
     @GetMapping("/getbypagenumandpagesize/test")
     public ResponseEntity<Object> getPostsTest(
-            @RequestBody PageNumDto pageNumDto) {
-        if (pageNumDto.getPageSize() == null || pageNumDto.getPageNum() == null) {//RequestBody Info Insufficient 10001 Error
+            @RequestParam(value="pageNum") Integer pageNum,
+            @RequestParam(value="pageSize") Integer pageSize
+    ) {
+        System.out.println("PageNum Param: "+pageNum);
+        System.out.println("PageSize Param: "+pageSize);
+        if (pageSize == null || pageNum == null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List<PostEntity> posts = postService.findPostsByPageNum(1, pageNumDto.getPageNum(), pageNumDto.getPageSize());
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+        List<PostEntity> posts = postService.findPostsByPageNum(1, pageNum, pageSize);
+        Map<String, Object> returnResult = new HashMap<>();
+        returnResult.put("posts", posts);
+        returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
+        return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/like")
