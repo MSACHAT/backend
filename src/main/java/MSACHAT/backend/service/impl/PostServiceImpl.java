@@ -96,7 +96,7 @@ public class PostServiceImpl implements PostService {
     public String unlikePost(Integer postId, Integer userId) {
         PostEntity post = postRepository.findPostEntityById(postId);
         likeRepository.deleteByUserIdAndPostId(userId, postId);
-        post.setLikeCount(post.getLikeCount() + 1);
+        post.setLikeCount(post.getLikeCount() - 1);
         postRepository.save(post);
         return "successfully unliked";
     }

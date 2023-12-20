@@ -20,7 +20,6 @@ public interface PostService {
 
     public String deletePost(Integer postId);
 
-
     public Boolean IsLiked(Integer postId, Integer userId);
 
 

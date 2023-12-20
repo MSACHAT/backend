@@ -8,14 +8,12 @@ import MSACHAT.backend.service.CommentService;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.mapper.Mapper;
+import org.springframework.cglib.beans.BeanMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -103,8 +101,8 @@ public class PostController {
     @GetMapping("/getbypagenumandpagesize")
     public ResponseEntity<Object> getPosts(
             @RequestHeader("Authorization") String bearerToken,
-            @RequestParam(value="pageNum") Integer pageNum,
-            @RequestParam(value="pageSize") Integer pageSize
+            @RequestParam(value = "pageNum") Integer pageNum,
+            @RequestParam(value = "pageSize") Integer pageSize
     ) {
         if (pageSize == null || pageNum == null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
@@ -120,11 +118,11 @@ public class PostController {
     //For API Test
     @GetMapping("/getbypagenumandpagesize/test")
     public ResponseEntity<Object> getPostsTest(
-            @RequestParam(value="pageNum") Integer pageNum,
-            @RequestParam(value="pageSize") Integer pageSize
+            @RequestParam(value = "pageNum") Integer pageNum,
+            @RequestParam(value = "pageSize") Integer pageSize
     ) {
-        System.out.println("PageNum Param: "+pageNum);
-        System.out.println("PageSize Param: "+pageSize);
+        System.out.println("PageNum Param: " + pageNum);
+        System.out.println("PageSize Param: " + pageSize);
         if (pageSize == null || pageNum == null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
@@ -136,51 +134,48 @@ public class PostController {
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}/like")
+    @PatchMapping("/like")
     public ResponseEntity<Object> likePost(
-            @PathVariable("id") Integer postId,
-            @RequestBody IsLikedDto isLikedDto,
+            @RequestBody Object posts,
             @RequestHeader String token
     ) {
-        if (isLikedDto.getIsLiked() == null) {//RequestBody Info Insufficient 10001 Error
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+        Map<String, Boolean> postsMap = (Map<String, Boolean>) posts;
+        List<Object> postIds = new ArrayList<>();
+        for (Map.Entry<String, Boolean> entry : postsMap.entrySet()) {
+            Integer postId = Integer.valueOf(entry.getKey());
+            Boolean isLiked = entry.getValue();
+            if (postService.findPostById(postId) == null) {
+                ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
+                return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+            }
+            if (isLiked) {
+                postService.likePost(postId, authService.getUserIdFromToken(token));//这里1是userId
+            } else {
+                postService.unlikePost(postId, authService.getUserIdFromToken(token));
+            }
         }
-        if (postService.findPostById(postId) == null) {
-            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
-            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
-        }
-        boolean isLiked = isLikedDto.getIsLiked();
-        if (isLiked) {
-            postService.unlikePost(postId, authService.getUserIdFromToken(token));
-        } else {
-            postService.likePost(postId, authService.getUserIdFromToken(token));
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(postIds, HttpStatus.OK);
     }
 
     //For API Test
-    @PatchMapping("/{id}/like/test")
+    @PatchMapping("/like/test")
     public ResponseEntity<Object> likePostTest(
-            @PathVariable("id") Integer postId,
-            @RequestBody IsLikedDto isLikedDto
+            @RequestBody Object posts
     ) {
-        if (isLikedDto.getIsLiked() == null) {//RequestBody Info Insufficient 10001 Error
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+        Map<String, Boolean> postsMap = (Map<String, Boolean>) posts;
+        List<Object> postIds = new ArrayList<>();
+        for (Map.Entry<String, Boolean> entry : postsMap.entrySet()) {
+            String postId = entry.getKey();
+            Boolean isLiked = entry.getValue();
+            if (isLiked) {
+                postService.likePost(Integer.valueOf(postId), 1);//这里1是userId
+            } else {
+                postService.unlikePost(Integer.valueOf(postId), 1);
+            }
         }
-        if (postService.findPostById(postId) == null) {
-            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
-            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
-        }
-        boolean isLiked = isLikedDto.getIsLiked();
-        if (isLiked) {
-            postService.unlikePost(postId, 1);
-        } else {
-            postService.likePost(postId, 1);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(postIds, HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Object> deletePost(
             @PathVariable("id") Integer postId) {
