@@ -22,7 +22,6 @@ public interface PostService {
 
     public String deletePost(Integer postId);
 
-
     public Boolean IsLiked(Integer postId, Integer userId);
 
 
@@ -33,4 +32,6 @@ public interface PostService {
     public ImageEntity addImage(PostEntity postEntity, String imagePath);
 
     public PostEntity findPostById(Integer postId);
+
+    public Integer countTotalPagesByPageSize(Integer pageSize);
 }

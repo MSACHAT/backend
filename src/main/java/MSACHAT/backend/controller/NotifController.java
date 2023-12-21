@@ -2,13 +2,17 @@ package MSACHAT.backend.controller;
 
 import MSACHAT.backend.dto.ErrorDto;
 import MSACHAT.backend.dto.PageNumDto;
+import MSACHAT.backend.entity.NotifEntity;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.NotifService;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/notif")
@@ -27,16 +31,34 @@ public class NotifController {
     @GetMapping("/getbypagenumandpagesize")
     public ResponseEntity<Object> getNotifs(
             @RequestHeader String token,
-            @RequestBody PageNumDto pageNumDto
+            @RequestParam(value="pageNum") Integer pageNum,
+            @RequestParam(value="pageSize") Integer pageSize
     ) {
-        if (pageNumDto.getPageNum()==null||pageNumDto.getPageSize()==null) {//RequestBody Info Insufficient 10001 Error
+        if (pageNum==null||pageSize==null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List notifs = notifService.getNotifsByPageNum(authService.getUserIdFromToken(token), pageNumDto.getPageNum(),pageNumDto.getPageSize());
-        return new ResponseEntity<>(notifs,HttpStatus.OK);
+        List<NotifEntity> notifs = notifService.getNotifsByPageNum(authService.getUserIdFromToken(token), pageNum,pageSize);
+        Map<String, Object> returnResult=new HashMap<>();
+        returnResult.put("notifs",notifs);
+        returnResult.put("totalPages",notifService.countTotalPagesByPageSize(pageSize));
+        return new ResponseEntity<>(returnResult,HttpStatus.OK);
     }
-
+    @GetMapping("/getbypagenumandpagesize/test")
+    public ResponseEntity<Object> getNotifsTest(
+            @RequestParam(value="pageNum") Integer pageNum,
+            @RequestParam(value="pageSize") Integer pageSize
+    ) {
+        if (pageNum==null||pageSize==null) {//RequestBody Info Insufficient 10001 Error
+            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
+            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+        }
+        List<NotifEntity> notifs = notifService.getNotifsByPageNum(1, pageNum,pageSize);
+        Map<String, Object> returnResult=new HashMap<>();
+        returnResult.put("notifs",notifs);
+        returnResult.put("totalPages",notifService.countTotalPagesByPageSize(pageSize));
+        return new ResponseEntity<>(returnResult,HttpStatus.OK);
+    }
     @GetMapping("/test")
     public String testConnection() {
         return "Connected!";
