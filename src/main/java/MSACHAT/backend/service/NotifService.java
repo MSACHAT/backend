@@ -10,4 +10,6 @@ public interface NotifService {
     public List<NotifEntity> getNotifsByPageNum(Integer receiverId, Integer pageNum, Integer pageSize);
 
     public Integer countTotalPagesByPageSize(Integer pageSize);
+
+    public void isRead(List<NotifEntity> notifs);
 }

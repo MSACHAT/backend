@@ -42,4 +42,12 @@ public class NotifServiceImpl implements NotifService {
         double pageCount=notifRepository.count()/(pageSize*1.0);
         return (int)Math.ceil(pageCount)-1;
     }
+
+    @Override
+    public void isRead(List<NotifEntity> notifs) {
+        for (NotifEntity notif: notifs){
+            notif.setRead(true);
+            notifRepository.save(notif);
+        }
+    }
 }
