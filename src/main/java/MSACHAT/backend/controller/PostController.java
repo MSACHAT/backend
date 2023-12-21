@@ -142,14 +142,14 @@ public class PostController {
         Map<String, Boolean> postsMap = (Map<String, Boolean>) posts;
         List<Object> postIds = new ArrayList<>();
         for (Map.Entry<String, Boolean> entry : postsMap.entrySet()) {
-            Integer postId = Integer.valueOf(entry.getKey());
+            int postId = Integer.parseInt(entry.getKey());
             Boolean isLiked = entry.getValue();
             if (postService.findPostById(postId) == null) {
                 ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
                 return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
             }
             if (isLiked) {
-                postService.likePost(postId, authService.getUserIdFromToken(token));//这里1是userId
+                postService.likePost(postId, authService.getUserIdFromToken(token));
             } else {
                 postService.unlikePost(postId, authService.getUserIdFromToken(token));
             }
@@ -165,12 +165,12 @@ public class PostController {
         Map<String, Boolean> postsMap = (Map<String, Boolean>) posts;
         List<Object> postIds = new ArrayList<>();
         for (Map.Entry<String, Boolean> entry : postsMap.entrySet()) {
-            String postId = entry.getKey();
+            int postId = Integer.parseInt(entry.getKey());
             Boolean isLiked = entry.getValue();
             if (isLiked) {
-                postService.likePost(Integer.valueOf(postId), 1);//这里1是userId
+                postService.likePost(postId, 1);//这里1是userId
             } else {
-                postService.unlikePost(Integer.valueOf(postId), 1);
+                postService.unlikePost(postId, 1);
             }
         }
         return new ResponseEntity<>(postIds, HttpStatus.OK);
