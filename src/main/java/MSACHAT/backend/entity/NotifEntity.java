@@ -13,8 +13,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "notif_comment")
-public class NotifCommentEntity {
+@Table(name = "notifs")
+public class NotifEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -23,4 +23,7 @@ public class NotifCommentEntity {
     private Integer receiverId;
     private Date timeStamp;
     private boolean isRead;
+    private String commentContent;
+    @Transient
+    private String userName;
 }

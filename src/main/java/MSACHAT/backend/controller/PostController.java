@@ -13,9 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -44,28 +42,30 @@ public class PostController {
     @PostMapping("/add")
     public ResponseEntity<Object> addPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String bearerToken
     ) {
-        if (postDto.getTitle() == null && postDto.getContent() == null && postDto.getImage() == null) {
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-        }
-        Integer userId = authService.getUserIdFromToken(bearerToken);
-        PostEntity savedPostEntity = postService.addPost(userId, postDto.getTitle(), postDto.getContent());
-        for (String image : postDto.getImage()) {
-            postService.addImage(savedPostEntity, image);
-        }
 
-        return new ResponseEntity<>("success: created", HttpStatus.CREATED);
+        if ( postDto.getContent() != null ) {
+            Integer userId = authService.getUserIdFromToken(bearerToken);
+            PostEntity savedPostEntity = postService.addPost(userId, postDto.getContent());
+            if (postDto.getImage() !=null){
+                for (String image : postDto.getImage()) {
+                    postService.addImage(savedPostEntity, image);
+                }
+            }
+
+            return new ResponseEntity<>("success: true", HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>((new ErrorDto("error: Missing Parameters",10001)), HttpStatus.BAD_REQUEST);
     }
 
 
     //测试代码
     @PostMapping("/add/test")
     public ResponseEntity<String> addPostTest(@RequestBody PostDto postDto) {
-        if (postDto.getTitle() != null && postDto.getContent() != null && postDto.getImage() != null) {
+        if ( postDto.getContent() != null ) {
             Integer userId = 1;
 
 
-            PostEntity savedPostEntity = postService.addPost(userId, postDto.getTitle(), postDto.getContent());
+            PostEntity savedPostEntity = postService.addPost(userId,  postDto.getContent());
 
             List<String> images = postDto.getImage();
             List<Future<Void>> imageUploadTasks = new ArrayList<>();
@@ -102,53 +102,28 @@ public class PostController {
 
     @GetMapping("/getbypagenumandpagesize")
     public ResponseEntity<Object> getPosts(
-            @RequestHeader("Authorization") String bearerToken,
-            @RequestParam(value="pageNum") Integer pageNum,
-            @RequestParam(value="pageSize") Integer pageSize
-    ) {
-        if (pageSize == null || pageNum == null) {//RequestBody Info Insufficient 10001 Error
+//            @RequestHeader("Authorization") String bearerToken,
+            @RequestBody PageNumDto pageNumDto) {
+        if (pageNumDto.getPageSize() == null || pageNumDto.getPageNum() == null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List<PostEntity> posts = postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNum, pageSize);
-        Map<String, Object> returnResult = new HashMap<>();
-        returnResult.put("posts", posts);
-        returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
-        return new ResponseEntity<>(returnResult, HttpStatus.OK);
-    }
-
-    //For API Test
-    @GetMapping("/getbypagenumandpagesize/test")
-    public ResponseEntity<Object> getPostsTest(
-            @RequestParam(value="pageNum") Integer pageNum,
-            @RequestParam(value="pageSize") Integer pageSize
-    ) {
-        System.out.println("PageNum Param: "+pageNum);
-        System.out.println("PageSize Param: "+pageSize);
-        if (pageSize == null || pageNum == null) {//RequestBody Info Insufficient 10001 Error
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-        }
-        List<PostEntity> posts = postService.findPostsByPageNum(1, pageNum, pageSize);
-        Map<String, Object> returnResult = new HashMap<>();
-        returnResult.put("posts", posts);
-        returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
-        return new ResponseEntity<>(returnResult, HttpStatus.OK);
+        List<PostEntity> posts = postService.findPostsByPageNum(1, pageNumDto.getPageNum(), pageNumDto.getPageSize());
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/like")
     public ResponseEntity<Object> likePost(
             @PathVariable("id") Integer postId,
             @RequestBody IsLikedDto isLikedDto,
-            @RequestHeader String token
-    ) {
-        if (isLikedDto.getIsLiked() == null) {//RequestBody Info Insufficient 10001 Error
+            @RequestHeader String token) {
+        if (isLikedDto.getIsLiked()==null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        if (postService.findPostById(postId) == null) {
-            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
-            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+        if(postService.findPostById(postId)==null){
+            ErrorDto err = new ErrorDto("Post No Longer Exists.",10002);
+            return new ResponseEntity<>(err,HttpStatus.NOT_FOUND);
         }
         boolean isLiked = isLikedDto.getIsLiked();
         if (isLiked) {
@@ -159,34 +134,12 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //For API Test
-    @PatchMapping("/{id}/like/test")
-    public ResponseEntity<Object> likePostTest(
-            @PathVariable("id") Integer postId,
-            @RequestBody IsLikedDto isLikedDto
-    ) {
-        if (isLikedDto.getIsLiked() == null) {//RequestBody Info Insufficient 10001 Error
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-        }
-        if (postService.findPostById(postId) == null) {
-            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
-            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
-        }
-        boolean isLiked = isLikedDto.getIsLiked();
-        if (isLiked) {
-            postService.unlikePost(postId, 1);
-        } else {
-            postService.likePost(postId, 1);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Object> deletePost(
             @PathVariable("id") Integer postId) {
-        if (postService.findPostById(postId) == null) {
-            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+        if(postService.findPostById(postId)==null){
+            ErrorDto err= new ErrorDto("Post No Longer Exists.",10001);
+            return new ResponseEntity<>(err,HttpStatus.NOT_FOUND);
         }
         postService.deletePost(postId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -206,12 +159,12 @@ public class PostController {
 
         PostEntity post = postService.findPostByIdAndUserId(postId, userId);
         if (post == null) {
-            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+
+            return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
         }
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
-        PostReturnDto postReturn = new PostReturnDto(post.getId(), post.getUserName(), post.getTitle(), post.getContent(), imageList, post.getTimeStamp(), post.getLikeCount(), post.getCommentCount(), post.isLiked());
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(),  post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
@@ -229,7 +182,7 @@ public class PostController {
         }
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
-        PostReturnDto postReturn = new PostReturnDto(post.getId(), post.getUserName(), post.getTitle(), post.getContent(), imageList, post.getTimeStamp(), post.getLikeCount(), post.getCommentCount(), post.isLiked());
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
@@ -241,13 +194,8 @@ public class PostController {
             @PathVariable("id") Integer postId,
             @RequestHeader("Authorization") String bearerToken
     ) {
-        if (commentInfo.getContent() == null) {
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-        }
-        if (postService.findPostById(postId) == null) {
-            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
-            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+        if (postService.IsPostExist(postId)){
+            return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
         }
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);

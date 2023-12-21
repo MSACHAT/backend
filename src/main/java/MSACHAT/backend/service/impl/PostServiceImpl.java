@@ -60,12 +60,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostEntity addPost(Integer userId, String title, String content) {
+    public PostEntity addPost(Integer userId, String content) {
         String userName = userRepository.findNameById(userId);
 
         PostEntity postEntity = new PostEntity();
         postEntity.setUserName(userName);
-        postEntity.setTitle(title);
+
         postEntity.setContent(content);
         postEntity.setUserId(userId);
         postEntity.setLiked(false);
@@ -93,7 +93,7 @@ public class PostServiceImpl implements PostService {
     public String unlikePost(Integer postId, Integer userId) {
         PostEntity post = postRepository.findPostEntityById(postId);
         likeRepository.deleteByUserIdAndPostId(userId, postId);
-        post.setLikeCount(post.getLikeCount() + 1);
+        post.setLikeCount(post.getLikeCount() - 1);
         postRepository.save(post);
         return "successfully unliked";
     }

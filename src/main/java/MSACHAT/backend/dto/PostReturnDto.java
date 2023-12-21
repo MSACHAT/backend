@@ -15,7 +15,7 @@ import java.util.List;
 public class PostReturnDto {
     Integer id;
     String userName;
-    String title;
+
     String content;
     List<String> images;
     Date timeStamp;

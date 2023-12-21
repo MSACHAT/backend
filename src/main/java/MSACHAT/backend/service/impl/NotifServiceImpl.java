@@ -1,9 +1,8 @@
 package MSACHAT.backend.service.impl;
 
-import MSACHAT.backend.entity.NotifCommentEntity;
-import MSACHAT.backend.entity.NotifLikeEntity;
-import MSACHAT.backend.repository.NotifCommentRepository;
-import MSACHAT.backend.repository.NotifLikeRepository;
+import MSACHAT.backend.entity.NotifEntity;
+import MSACHAT.backend.repository.NotifRepository;
+import MSACHAT.backend.repository.UserRepository;
 import MSACHAT.backend.service.NotifService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,24 +13,33 @@ import java.util.List;
 
 @Service
 public class NotifServiceImpl implements NotifService {
-    NotifLikeRepository notifLikeRepository;
-    NotifCommentRepository notifCommentRepository;
+    NotifRepository notifRepository;
+    UserRepository userRepository;
 
     public NotifServiceImpl(
-            NotifLikeRepository notifLikeRepository,
-            NotifCommentRepository notifCommentRepository
+            NotifRepository notifRepository,
+            UserRepository userRepository
     ) {
-        this.notifCommentRepository = notifCommentRepository;
-        this.notifLikeRepository = notifLikeRepository;
+        this.notifRepository = notifRepository;
+        this.userRepository=userRepository;
     }
 
-    public List getNotifsByPageNum(Integer receiverId, Integer pageNum,Integer pageSize) {
+    public List<NotifEntity> getNotifsByPageNum(Integer receiverId, Integer pageNum,Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
-        Page<NotifLikeEntity> notifLikeEntityPage = notifLikeRepository.findAllByReceiverId(receiverId, pageRequest);
-        Page<NotifCommentEntity> notifCommentEntityPage = notifCommentRepository.findAllByReceiverId(receiverId, pageRequest);
-        List notifs = new ArrayList<>();
-        notifs.addAll(notifCommentEntityPage.getContent());
-        notifs.addAll(notifLikeEntityPage.getContent());
+        Page<NotifEntity> notifPage = notifRepository.findAllByReceiverIdOrderByTimeStamp(receiverId, pageRequest);
+        List<NotifEntity> notifs =
+                new ArrayList<>(notifPage.getContent());
+        for(int i=0;i<notifs.size();i++){
+            NotifEntity notifDetail=notifs.get(i);
+            notifDetail.setUserName(userRepository.findNameById(notifDetail.getSenderId()));
+            notifs.set(i,notifDetail);
+        }
         return notifs;
+    }
+
+    @Override
+    public Integer countTotalPagesByPageSize(Integer pageSize){
+        double pageCount=notifRepository.count()/(pageSize*1.0);
+        return (int)Math.ceil(pageCount)-1;
     }
 }
