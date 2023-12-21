@@ -64,4 +64,8 @@ public class AuthServiceImpl implements AuthService {
         return null;
 
     }
+    @Override
+    public Boolean IsUserExist(String usernameOrEmail){
+        return userRepository.existsByEmailOrUsername(usernameOrEmail,usernameOrEmail);
+    }
 }

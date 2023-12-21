@@ -8,12 +8,13 @@ import MSACHAT.backend.service.CommentService;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.mapper.Mapper;
-import org.springframework.cglib.beans.BeanMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -42,28 +43,30 @@ public class PostController {
     @PostMapping("/add")
     public ResponseEntity<Object> addPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String bearerToken
     ) {
-        if (postDto.getTitle() == null && postDto.getContent() == null && postDto.getImage() == null) {
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-        }
-        Integer userId = authService.getUserIdFromToken(bearerToken);
-        PostEntity savedPostEntity = postService.addPost(userId, postDto.getTitle(), postDto.getContent());
-        for (String image : postDto.getImage()) {
-            postService.addImage(savedPostEntity, image);
-        }
 
-        return new ResponseEntity<>("success: created", HttpStatus.CREATED);
+        if (postDto.getContent() != null) {
+            Integer userId = authService.getUserIdFromToken(bearerToken);
+            PostEntity savedPostEntity = postService.addPost(userId, postDto.getContent());
+            if (postDto.getImage() != null) {
+                for (String image : postDto.getImage()) {
+                    postService.addImage(savedPostEntity, image);
+                }
+            }
+
+            return new ResponseEntity<>("success: true", HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>((new ErrorDto("error: Missing Parameters", 10001)), HttpStatus.BAD_REQUEST);
     }
 
 
     //测试代码
     @PostMapping("/add/test")
     public ResponseEntity<String> addPostTest(@RequestBody PostDto postDto) {
-        if (postDto.getTitle() != null && postDto.getContent() != null && postDto.getImage() != null) {
+        if (postDto.getContent() != null) {
             Integer userId = 1;
 
 
-            PostEntity savedPostEntity = postService.addPost(userId, postDto.getTitle(), postDto.getContent());
+            PostEntity savedPostEntity = postService.addPost(userId, postDto.getContent());
 
             List<String> images = postDto.getImage();
             List<Future<Void>> imageUploadTasks = new ArrayList<>();
@@ -173,7 +176,7 @@ public class PostController {
                 postService.unlikePost(postId, 1);
             }
         }
-        return new ResponseEntity<>(postIds, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/delete")
@@ -201,12 +204,12 @@ public class PostController {
 
         PostEntity post = postService.findPostByIdAndUserId(postId, userId);
         if (post == null) {
-            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+
+            return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
         }
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
-        PostReturnDto postReturn = new PostReturnDto(post.getId(), post.getUserName(), post.getTitle(), post.getContent(), imageList, post.getTimeStamp(), post.getLikeCount(), post.getCommentCount(), post.isLiked());
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(),  post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
@@ -224,7 +227,7 @@ public class PostController {
         }
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
-        PostReturnDto postReturn = new PostReturnDto(post.getId(), post.getUserName(), post.getTitle(), post.getContent(), imageList, post.getTimeStamp(), post.getLikeCount(), post.getCommentCount(), post.isLiked());
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
@@ -236,13 +239,8 @@ public class PostController {
             @PathVariable("id") Integer postId,
             @RequestHeader("Authorization") String bearerToken
     ) {
-        if (commentInfo.getContent() == null) {
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-        }
-        if (postService.findPostById(postId) == null) {
-            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
-            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+        if (postService.IsPostExist(postId)){
+            return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
         }
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);

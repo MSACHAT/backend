@@ -62,12 +62,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostEntity addPost(Integer userId,String title, String content) {
+    public PostEntity addPost(Integer userId, String content) {
         String userName = userRepository.findNameById(userId);
 
         PostEntity postEntity = new PostEntity();
         postEntity.setUserName(userName);
-        postEntity.setTitle(title);
+
         postEntity.setContent(content);
         postEntity.setUserId(userId);
         postEntity.setLiked(false);
