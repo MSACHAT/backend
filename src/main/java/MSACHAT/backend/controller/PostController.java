@@ -42,17 +42,17 @@ public class PostController {
     @PostMapping("/add")
     public ResponseEntity<Object> addPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String bearerToken
     ) {
-        if (postDto.getImage()==null){
-            return new ResponseEntity<>(new ErrorDto("error: Missing Images",1002),HttpStatus.BAD_GATEWAY);
-        }
-        if (postDto.getTitle() != null && postDto.getContent() != null ) {
+
+        if ( postDto.getContent() != null ) {
             Integer userId = authService.getUserIdFromToken(bearerToken);
-            PostEntity savedPostEntity = postService.addPost(userId, postDto.getTitle(), postDto.getContent());
-            for (String image : postDto.getImage()) {
-                postService.addImage(savedPostEntity, image);
+            PostEntity savedPostEntity = postService.addPost(userId, postDto.getContent());
+            if (postDto.getImage() !=null){
+                for (String image : postDto.getImage()) {
+                    postService.addImage(savedPostEntity, image);
+                }
             }
 
-            return new ResponseEntity<>("success: created", HttpStatus.CREATED);
+            return new ResponseEntity<>("success: true", HttpStatus.CREATED);
         }
         return new ResponseEntity<>((new ErrorDto("error: Missing Parameters",10001)), HttpStatus.BAD_REQUEST);
     }
@@ -61,11 +61,11 @@ public class PostController {
     //测试代码
     @PostMapping("/add/test")
     public ResponseEntity<String> addPostTest(@RequestBody PostDto postDto) {
-        if (postDto.getTitle() != null && postDto.getContent() != null && postDto.getImage() != null) {
+        if ( postDto.getContent() != null ) {
             Integer userId = 1;
 
 
-            PostEntity savedPostEntity = postService.addPost(userId, postDto.getTitle(), postDto.getContent());
+            PostEntity savedPostEntity = postService.addPost(userId,  postDto.getContent());
 
             List<String> images = postDto.getImage();
             List<Future<Void>> imageUploadTasks = new ArrayList<>();
@@ -164,7 +164,7 @@ public class PostController {
         }
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
-        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(), post.getTitle(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(),  post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
@@ -182,7 +182,7 @@ public class PostController {
         }
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
-        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(), post.getTitle(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }

@@ -10,4 +10,6 @@ public interface AuthService {
     public Integer getUserIdFromToken(String token);
 
     String getTokenFromHeader(String BearerToken);
+
+    Boolean IsUserExist(String usernameOrEmail);
 }

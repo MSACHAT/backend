@@ -10,9 +10,11 @@ import java.util.List;
 @Service
 @Transactional
 public interface PostService {
-    public PostEntity addPost(Integer userId,String title, String content);
+
 
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum,Integer pageSize);
+
+    public PostEntity addPost(Integer userId, String content);
 
     public String likePost(Integer postId, Integer userId);
 

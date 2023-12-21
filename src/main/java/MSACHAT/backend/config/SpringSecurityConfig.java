@@ -1,6 +1,7 @@
 package MSACHAT.backend.config;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,11 +16,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@AllArgsConstructor
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
+    public SpringSecurityConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
     private UserDetailsService userDetailsService;
+
+    @Value("${app.encryption-key}")
+    private String secretkey;
 
     @Bean
     public static PasswordEncoder passwordEncoder(){
@@ -34,6 +41,7 @@ public class SpringSecurityConfig {
                     authorize.requestMatchers("/**").permitAll();
 
                 });
+        http.rememberMe(e -> e.tokenValiditySeconds(60 * 60 * 24 * 30));
 
         return http.build();
     }
