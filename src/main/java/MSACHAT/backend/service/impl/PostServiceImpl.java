@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -42,7 +41,7 @@ public class PostServiceImpl implements PostService {
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
         Page<PostEntity> postEntityPage = postRepository.findAll(pageRequest);
-        List<PostEntity> posts = postEntityPage.get().collect(Collectors.toList());
+        List<PostEntity> posts = postEntityPage.getContent();
         for (int i = 0; i < posts.size(); i++) {
             int finalI = i;
             PostEntity tmpEntity = posts.get(finalI);
@@ -125,13 +124,13 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
-    // @Override
-    // public ImageEntity addImage(PostEntity postEntity, String imagePath) {
-    // ImageEntity imageEntity = new ImageEntity();
-    // imageEntity.setPostId(postEntity);
-    // imageEntity.setImageUrl(imagePath);
-    // return imageRepository.save(imageEntity);
-    // }
+    @Override
+    public ImageEntity addImage(PostEntity postEntity, String imagePath) {
+        ImageEntity imageEntity = new ImageEntity();
+        imageEntity.setPostId(postEntity);
+        imageEntity.setImageUrl(imagePath);
+        return imageRepository.save(imageEntity);
+    }
 
     @Override
     public Boolean IsPostExist(Integer postId) {
@@ -145,7 +144,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Integer countTotalPagesByPageSize(Integer pageSize) {
-        double pageCount = postRepository.count() / (pageSize * 1.0);
-        return (Integer) (int) Math.ceil(pageCount) - 1;
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'countTotalPagesByPageSize'");
     }
 }

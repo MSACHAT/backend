@@ -36,11 +36,6 @@ public class CommentEntity {
     private Date timeStamp;
 
     @JsonIgnore
-    public Integer getId() {
-        return id;
-    }
-
-    @JsonIgnore
     public Integer getUserId() {
         return userId;
     }

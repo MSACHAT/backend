@@ -18,7 +18,6 @@ import MSACHAT.backend.repository.CommentRepository;
 import MSACHAT.backend.service.CommentService;
 import jakarta.transaction.Transactional;
 
-
 @Service
 @Transactional
 public class CommentServiceImpl implements CommentService {
@@ -26,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
     private PostRepository postRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository,PostRepository postRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
     }
@@ -35,12 +34,9 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum) {
         PageRequest pageRequest = PageRequest.of(pageNum, 10);
         Page<CommentEntity> commentEntityPage = commentRepository.findAll(pageRequest);
-        List<CommentEntity> posts = commentEntityPage.
-        getContent();
+        List<CommentEntity> posts = commentEntityPage.getContent();
         return posts;
     }
-
-
 
     @Override
     public CommentEntity addComment(Integer userId, Integer postId, String content) {
@@ -61,8 +57,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Integer countTotalPagesByPageSize(Integer pageSize){
-        double pageCount=postRepository.count()/(pageSize*1.0);
-        return (Integer) (int)Math.ceil(pageCount)-1;
+    public Integer countTotalPagesByPageSize(Integer pageSize) {
+        double pageCount = postRepository.count() / (pageSize * 1.0);
+        return (Integer) (int) Math.ceil(pageCount) - 1;
+    }
+
+    @Override
+    public CommentEntity findCommentById(Integer commentId) {
+        return commentRepository.findCommentEntityById(commentId);
+
+    }
+
+    @Override
+    public String deleteComment(Integer commentId) {
+
+        commentRepository.deleteById(commentId);
+        return "comment Deleted successfully";
     }
 }

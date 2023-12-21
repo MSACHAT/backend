@@ -23,4 +23,7 @@ public interface CommentRepository extends CrudRepository<CommentEntity, Integer
 
     CommentEntity findAllCommentsByPostId(Integer postId, PageRequest pageRequest);
 
+    CommentEntity findCommentEntityById(Integer commentId);
+
+    void deleteById(Integer Id);
 }
