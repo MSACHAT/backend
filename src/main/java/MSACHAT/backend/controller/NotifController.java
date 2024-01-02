@@ -59,20 +59,23 @@ public class NotifController {
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("notifs", notifs);
         returnResult.put("totalPages", notifService.countTotalPagesByPageSize(pageSize));
+        returnResult.put("totalNotifs",notifService.countNotifNums());
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
     @PostMapping("/isread")
     public ResponseEntity<Object> isRead(
-            @RequestBody List<NotifEntity> notifs
+            @RequestBody Integer notifId
             ){
-        if(notifs==null){
+        if(notifId==null){
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        notifService.isRead(notifs);
+        NotifEntity notifEntity=notifService.getNotifById(notifId);
+        notifService.isRead(notifEntity);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @GetMapping("/test")
     public String testConnection() {
         return "Connected!";

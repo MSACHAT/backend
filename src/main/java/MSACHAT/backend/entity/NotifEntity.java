@@ -26,4 +26,8 @@ public class NotifEntity {
     private String commentContent;
     @Transient
     private String userName;
+    @Transient
+    private String previewType;
+    @Transient
+    private String previewString;
 }

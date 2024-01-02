@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -121,8 +122,9 @@ public class PostController {
     //For API Test
     @GetMapping("/getbypagenumandpagesize/test")
     public ResponseEntity<Object> getPostsTest(
-            @RequestParam(value = "pageNum") Integer pageNum,
-            @RequestParam(value = "pageSize") Integer pageSize
+
+            @RequestParam(value = "pageNum",required = false) Integer pageNum,
+            @RequestParam(value = "pageSize",required = false) Integer pageSize
     ) {
         System.out.println("PageNum Param: " + pageNum);
         System.out.println("PageSize Param: " + pageSize);
