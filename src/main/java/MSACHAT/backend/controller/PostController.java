@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -43,9 +44,10 @@ public class PostController {
     @PostMapping("/add")
     public ResponseEntity<Object> addPost(@RequestBody PostDto postDto, @RequestHeader("Authorization") String bearerToken
     ) {
+        String token = authService.getTokenFromHeader(bearerToken);
+        Integer userId = authService.getUserIdFromToken(token);
 
         if (postDto.getContent() != null) {
-            Integer userId = authService.getUserIdFromToken(bearerToken);
             PostEntity savedPostEntity = postService.addPost(userId, postDto.getContent());
             if (postDto.getImage() != null) {
                 for (String image : postDto.getImage()) {
@@ -61,43 +63,22 @@ public class PostController {
 
     //测试代码
     @PostMapping("/add/test")
-    public ResponseEntity<String> addPostTest(@RequestBody PostDto postDto) {
-        if (postDto.getContent() != null) {
+    public ResponseEntity<Object> addPost(@RequestBody PostDto postDto
+    ) {
             Integer userId = 1;
 
+        if ( postDto.getContent() != null ) {
 
             PostEntity savedPostEntity = postService.addPost(userId, postDto.getContent());
-
-            List<String> images = postDto.getImage();
-            List<Future<Void>> imageUploadTasks = new ArrayList<>();
-
-
-            ExecutorService executorService = Executors.newFixedThreadPool(images.size());
-
-            for (String image : images) {
-
-                Future<Void> imageUploadTask = executorService.submit(() -> {
+            if (postDto.getImage() !=null){
+                for (String image : postDto.getImage()) {
                     postService.addImage(savedPostEntity, image);
-                    return null;
-                });
-                imageUploadTasks.add(imageUploadTask);
-            }
-
-            for (Future<Void> task : imageUploadTasks) {
-                try {
-                    task.get();
-                } catch (Exception e) {
-
-                    e.printStackTrace();
                 }
             }
 
-
-            executorService.shutdown();
-
-            return new ResponseEntity<>("success", HttpStatus.OK);
+            return new ResponseEntity<>("success: true", HttpStatus.CREATED);
         }
-        return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>((new ErrorDto("error: Missing Parameters",10001)), HttpStatus.BAD_REQUEST);
     }
 
 
