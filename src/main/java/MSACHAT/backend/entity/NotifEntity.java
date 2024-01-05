@@ -22,7 +22,6 @@ public class NotifEntity {
     private Integer senderId;
     private Integer receiverId;
     private Date timeStamp;
-    private boolean isRead;
     private String commentContent;
     @Transient
     private String userName;

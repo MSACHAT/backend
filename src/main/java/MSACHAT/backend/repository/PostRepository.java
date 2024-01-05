@@ -14,7 +14,6 @@ public interface PostRepository extends CrudRepository<PostEntity, Integer>,
     PostEntity findPostEntityById(Integer Id);
 
     void deleteById(Integer id);
-
     boolean existsById(Integer id);
 
     @Modifying

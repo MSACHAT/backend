@@ -24,7 +24,6 @@ public class PostEntity {
     private String userName;
 
     private String content;
-    private String title;
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
     private List<ImageEntity> images;
 

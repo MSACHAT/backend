@@ -21,7 +21,6 @@ public class NotifDto {
     private Integer senderId;
     private Integer receiverId;
     private Date timeStamp;
-    private boolean isRead;
     private String commentContent;
     private String userName;
 }
