@@ -48,7 +48,7 @@ public class PostServiceImpl implements PostService {
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
         Page<PostEntity> postEntityPage = postRepository.findAll(pageRequest);
-        List<PostEntity> posts = postEntityPage.getContent();
+        List<PostEntity> posts = postEntityPage.get().collect(Collectors.toList());
         for (int i = 0; i < posts.size(); i++) {
             int finalI = i;
             PostEntity tmpEntity = posts.get(finalI);
@@ -153,48 +153,6 @@ public class PostServiceImpl implements PostService {
     public Integer countTotalPagesByPageSize(Integer pageSize) {
         double pageCount = postRepository.count() / (pageSize * 1.0);
         return (Integer) (int) Math.ceil(pageCount) - 1;
-    }
-
-    // @Override
-    // public Page<PostEntity> getPostsByUserId(Integer userId, Pageable pageable) {
-    // return postRepository.findByUserId(userId, pageable);
-    // }
-
-    // @Override
-    // public List<PostEntity> findPostsByPageNumselected(Integer userId, Integer
-    // pageNum, Integer pageSize) {
-    // PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
-
-    // Page<PostEntity> postEntityPage = postRepository.findByUserId(userId,
-    // pageRequest);
-    // List<PostEntity> posts = postEntityPage.getContent();
-    // //
-    // for (int i = 0; i < posts.size(); i++) {
-    // int finalI = i;
-    // PostEntity tmpEntity = posts.get(finalI);
-    // if (likeRepository.findAllByUserId(userId) != null) {
-    // if (likeRepository.findAllByUserId(userId).stream().anyMatch(
-    // likeEntity -> likeEntity.getPostId().equals(posts.get(finalI).getId()))) {
-    // tmpEntity.setLiked(true);
-    // posts.set(finalI, tmpEntity);
-    // }
-    // } else {
-    // tmpEntity.setLiked(false);
-    // posts.set(finalI, tmpEntity);
-    // }
-    // }
-    // return posts;
-    // }
-
-    // @Override
-    // public Page<PostDto> getAllByUserId(Integer userId, Integer pageNum, Integer
-    // pageSize) {
-    // PageRequest pageable = PageRequest.of(pageNum, pageSize);
-    // return postRepository.findAllByUserId(userId, pageable);
-    // }
-    private Boolean isPostLiked(Integer userId, Integer postId) {
-        LikeEntity likeEntity = likeRepository.findByUserIdAndPostId(userId, postId);
-        return likeEntity != null;
     }
 
     // @Override
