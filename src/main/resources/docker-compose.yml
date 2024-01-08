@@ -7,7 +7,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/msachatdb
       - SPRING_DATASOURCE_USERNAME=msachat
-      - SPRING_DATASOURCE_PASSWORD= 000000
+      - SPRING_DATASOURCE_PASSWORD=000000
     depends_on:
       - db
   db:

@@ -4,7 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+<<<<<<< HEAD
 import java.sql.Date;
+=======
+
+import java.util.Date;
+>>>>>>> ac06df0c1f8b04ce94c65a3848c3a7b510029156
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +29,7 @@ public class PostEntity {
 
     private Integer userId;
     private String userName;
+<<<<<<< HEAD
 <<<<<<< HEAD
     private String title;
     private String content;
@@ -46,6 +52,11 @@ public class PostEntity {
     private List<ImageEntity> images;
 
 >>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
+=======
+    private String content;
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
+    private List<ImageEntity> images;
+>>>>>>> ac06df0c1f8b04ce94c65a3848c3a7b510029156
     private Date timeStamp;
     private Integer likeCount;
     private Integer commentCount;

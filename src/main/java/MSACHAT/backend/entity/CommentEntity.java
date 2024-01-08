@@ -1,5 +1,6 @@
 package MSACHAT.backend.entity;
 
+<<<<<<< HEAD
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,9 +11,11 @@ import jakarta.persistence.Table;
 <<<<<<< HEAD
 import java.time.LocalDateTime;
 =======
+=======
+import jakarta.persistence.*;
+>>>>>>> ac06df0c1f8b04ce94c65a3848c3a7b510029156
 
-import java.sql.Date;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 >>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
 import lombok.AllArgsConstructor;
@@ -20,8 +23,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import java.sql.Date;
+=======
+>>>>>>> ac06df0c1f8b04ce94c65a3848c3a7b510029156
 
 <<<<<<< HEAD
 
@@ -53,6 +59,9 @@ public class CommentEntity {
     private Integer postId;
     private String content;
     private Date timeStamp;
+<<<<<<< HEAD
 
 >>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
+=======
+>>>>>>> ac06df0c1f8b04ce94c65a3848c3a7b510029156
 }

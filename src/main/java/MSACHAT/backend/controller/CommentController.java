@@ -39,11 +39,15 @@ public class CommentController {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<CommentEntity>> getCommentsByPostId(@PathVariable Integer postId) {
         List<CommentEntity> comments = commentService.findCommentsByPostId(postId);
 =======
     @GetMapping("/{postId}")
+=======
+    @GetMapping("/get/{postId}")
+>>>>>>> ac06df0c1f8b04ce94c65a3848c3a7b510029156
     public ResponseEntity<List<CommentEntity>> getAllCommentsByPostId(
             @PathVariable Integer postId,
             @RequestParam Integer pageNum) {
