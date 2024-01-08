@@ -14,8 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PostDto {
 
-
-
     private String content;
     private List<String> image;
 

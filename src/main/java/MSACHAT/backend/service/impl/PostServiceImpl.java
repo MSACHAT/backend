@@ -1,5 +1,7 @@
 package MSACHAT.backend.service.impl;
 
+import MSACHAT.backend.dto.PostDto;
+import MSACHAT.backend.dto.PostUserIsLikeDto;
 import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.repository.*;
 
@@ -7,12 +9,17 @@ import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.LikeEntity;
 import MSACHAT.backend.entity.PostEntity;
 import jakarta.transaction.Transactional;
+
+import org.hibernate.annotations.DialectOverride.OverridesAnnotation;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -144,7 +151,114 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Integer countTotalPagesByPageSize(Integer pageSize) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'countTotalPagesByPageSize'");
+        double pageCount = postRepository.count() / (pageSize * 1.0);
+        return (Integer) (int) Math.ceil(pageCount) - 1;
     }
+
+    // @Override
+    // public Page<PostEntity> getPostsByUserId(Integer userId, Pageable pageable) {
+    // return postRepository.findByUserId(userId, pageable);
+    // }
+
+    // @Override
+    // public List<PostEntity> findPostsByPageNumselected(Integer userId, Integer
+    // pageNum, Integer pageSize) {
+    // PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
+
+    // Page<PostEntity> postEntityPage = postRepository.findByUserId(userId,
+    // pageRequest);
+    // List<PostEntity> posts = postEntityPage.getContent();
+    // //
+    // for (int i = 0; i < posts.size(); i++) {
+    // int finalI = i;
+    // PostEntity tmpEntity = posts.get(finalI);
+    // if (likeRepository.findAllByUserId(userId) != null) {
+    // if (likeRepository.findAllByUserId(userId).stream().anyMatch(
+    // likeEntity -> likeEntity.getPostId().equals(posts.get(finalI).getId()))) {
+    // tmpEntity.setLiked(true);
+    // posts.set(finalI, tmpEntity);
+    // }
+    // } else {
+    // tmpEntity.setLiked(false);
+    // posts.set(finalI, tmpEntity);
+    // }
+    // }
+    // return posts;
+    // }
+
+    // @Override
+    // public Page<PostDto> getAllByUserId(Integer userId, Integer pageNum, Integer
+    // pageSize) {
+    // PageRequest pageable = PageRequest.of(pageNum, pageSize);
+    // return postRepository.findAllByUserId(userId, pageable);
+    // }
+    private Boolean isPostLiked(Integer userId, Integer postId) {
+        LikeEntity likeEntity = likeRepository.findByUserIdAndPostId(userId, postId);
+        return likeEntity != null;
+    }
+
+    // @Override
+    // public Page<PostUserIsLikeDto> findAllByUserId(Integer userId, Integer
+    // pageNum, Integer pageSize) {
+
+    // PageRequest pageable = PageRequest.of(pageNum, pageSize);
+
+    // Page<PostUserIsLikeDto> postDtoPage = postRepository.findAllByUserId(userId,
+    // pageable)
+    // .map(postEntity -> new PostUserIsLikeDto(postEntity, isPostLiked(userId,
+    // postEntity.getId())));
+    // return postDtoPage;
+
+    // }
+
+    // ______________________________________________________________________________
+    @Override
+    public Page<PostDto> getAllByUserId(Integer userId, Integer pageNum, Integer pageSize) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAllByUserId'");
+    }
+
+    // @Override
+    // public Page<PostEntity> getPostsByUserId(Integer userId, Pageable pageable) {
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'getPostsByUserId'");
+    // }
+    @Override
+    public List<PostEntity> getAllPostsByUserId(Integer userId, Integer pageNum, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
+        Page<PostEntity> postEntityPage = postRepository.findAllByUserId(userId, pageRequest);
+        List<PostEntity> posts = postEntityPage.getContent();
+        for (int i = 0; i < posts.size(); i++) {
+            int finalI = i;
+            PostEntity tmpEntity = posts.get(finalI);
+            if (likeRepository.findAllByUserId(userId) != null) {
+                if (likeRepository.findAllByUserId(userId).stream().anyMatch(
+                        likeEntity -> likeEntity.getPostId().equals(posts.get(finalI).getId()))) {
+                    tmpEntity.setLiked(true);
+                    posts.set(finalI, tmpEntity);
+                }
+            } else {
+                tmpEntity.setLiked(false);
+                posts.set(finalI, tmpEntity);
+            }
+        }
+        return posts;
+    }
+
+    // @Override
+    // public List<PostEntity> findPostsByUserIdAndPageNum(Integer userId, Integer
+    // pageNum, Integer pageSize) {
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'findPostsByUserIdAndPageNum'");
+    // }
+
+    // @Override
+    // public Page<PostUserIsLikeDto> findAllByUserId(Integer userId, Integer
+    // pageNum, Integer pageSize) {
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'findAllByUserId'");
+    // }
 }

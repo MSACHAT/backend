@@ -8,6 +8,8 @@ import MSACHAT.backend.service.CommentService;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.mapper.Mapper;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -115,6 +117,7 @@ public class PostController {
     // For API Test
     @GetMapping("/getbypagenumandpagesize/test")
     public ResponseEntity<Object> getPostsTest(
+
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize) {
         System.out.println("PageNum Param: " + pageNum);
@@ -124,6 +127,27 @@ public class PostController {
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
         List<PostEntity> posts = postService.findPostsByPageNum(1, pageNum, pageSize);
+        Map<String, Object> returnResult = new HashMap<>();
+        returnResult.put("posts", posts);
+        returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
+        return new ResponseEntity<>(returnResult, HttpStatus.OK);
+    }
+
+    @GetMapping("/getbypagenumandpagesize/{userId}/test")
+    public ResponseEntity<Object> getPostsTestByUserId(
+            @PathVariable Integer userId,
+            @RequestParam(value = "pageNum") Integer pageNum,
+            @RequestParam(value = "pageSize") Integer pageSize) {
+        System.out.println("PageNum Param: " + pageNum);
+        System.out.println("PageSize Param: " + pageSize);
+
+        if (pageSize == null || pageNum == null) {
+            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
+            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+        }
+
+        List<PostEntity> posts = postService.getAllPostsByUserId(userId, pageNum, pageSize);
+
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("posts", posts);
         returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
