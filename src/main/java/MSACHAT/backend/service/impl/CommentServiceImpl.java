@@ -4,11 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import MSACHAT.backend.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import MSACHAT.backend.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -32,11 +28,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum) {
-        PageRequest pageRequest = PageRequest.of(pageNum, 10);
-        Page<CommentEntity> commentEntityPage = commentRepository.findAll(pageRequest);
-        List<CommentEntity> posts = commentEntityPage.getContent();
-        return posts;
+    public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize, Sort.by("timeStamp").descending());
+        Page<CommentEntity> commentEntityPage = commentRepository.findAllByPostId(postId, pageRequest);
+        return commentEntityPage.getContent();
     }
 
 
@@ -52,6 +47,11 @@ public class CommentServiceImpl implements CommentService {
 
         // 将 commentEntity 保存到数据库
         return commentRepository.save(commentEntity);
+    }
+
+    @Override
+    public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum) {
+        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package MSACHAT.backend.controller;
 
+import MSACHAT.backend.dto.CommentsReturn;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,11 +26,13 @@ public class CommentController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<List<CommentEntity>> getAllCommentsByPostId(
+    public ResponseEntity<Object> getAllCommentsByPostId(
             @PathVariable Integer postId,
             @RequestParam Integer pageNum) {
         List<CommentEntity> comments = commentService.findAllCommentsByPostId(postId, pageNum);
-        return ResponseEntity.ok(comments);
+        Object CommentsReturn = new CommentsReturn(comments,20,true);
+
+        return ResponseEntity.ok(CommentsReturn);
     }
 
 }

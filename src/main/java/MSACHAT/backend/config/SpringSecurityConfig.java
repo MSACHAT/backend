@@ -1,5 +1,7 @@
 package MSACHAT.backend.config;
 
+import MSACHAT.backend.security.JwtAuthenticationFilter;
+import MSACHAT.backend.security.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,9 +16,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
 public class SpringSecurityConfig {
 
     public SpringSecurityConfig(UserDetailsService userDetailsService) {
@@ -40,8 +42,11 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests((authorize) -> {
                     authorize.requestMatchers("/**").permitAll();
 
+
+
                 });
         http.rememberMe(e -> e.tokenValiditySeconds(60 * 60 * 24 * 30));
+
 
         return http.build();
     }
