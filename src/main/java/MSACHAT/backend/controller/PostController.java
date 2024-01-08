@@ -231,4 +231,23 @@ public class PostController {
         commentService.updateCommentsNumber(postId);
         return new ResponseEntity<>("success: true", HttpStatus.CREATED);
     }
+    @PutMapping("/{id}/comment/test")
+    public ResponseEntity<Object> addCommentTest(
+            @RequestBody CommentInfoDto commentInfo,
+            @PathVariable("id") Integer postId
+    ) {
+//        if (postService.IsPostExist(postId)){
+//            return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
+//        }
+        Integer userId = 1;
+        String content = commentInfo.getContent();
+        CommentEntity comment = commentService.addComment(userId, postId, content);
+        commentService.updateCommentsNumber(postId);
+        return new ResponseEntity<>("success: true", HttpStatus.CREATED);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getPostById(@PathVariable("id") Integer postId){
+
+        return new ResponseEntity<>(postService.IsPostExist(postId), HttpStatus.OK);
+    }
 }
