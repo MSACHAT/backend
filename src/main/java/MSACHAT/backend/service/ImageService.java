@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
 public interface ImageService {
     public void uploadAvatar(String avatarPath, Integer userId);
 
-    public UserEntity getAvatar(Integer userId);
+    public String getAvatar(Integer userId);
 }

@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,7 +35,8 @@ public class ImageController {
             Path filePath = Path.of(uploadDir, fileName);
 
             // 复制文件到本地
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+//            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            file.transferTo(new File(String.valueOf(filePath)));
 
             // 返回存储的本地地址
             String localFilePath = filePath.toAbsolutePath().toString();
@@ -55,13 +58,12 @@ public class ImageController {
             // 构建本地文件路径
             Path filePath = Path.of(uploadDir, fileName);
 
-            // 复制文件到本地
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            file.transferTo(new File(String.valueOf(filePath)));
 
             // 返回存储的本地地址
-            String localFilePath = filePath.toAbsolutePath().toString();
-            imageService.uploadAvatar(localFilePath,userId);
-            return ResponseEntity.ok("File uploaded successfully. Local file path: " + localFilePath);
+            String serverFilePath = "http://localhost:8085/uploads/"+fileName;
+            imageService.uploadAvatar(serverFilePath,userId);
+            return ResponseEntity.ok("success");
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading file");
@@ -77,13 +79,12 @@ public class ImageController {
             // 构建本地文件路径
             Path filePath = Path.of(uploadDir, fileName);
 
-            // 复制文件到本地
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            file.transferTo(new File(String.valueOf(filePath)));
 
             // 返回存储的本地地址
-            String localFilePath = filePath.toAbsolutePath().toString();
-            imageService.uploadAvatar(localFilePath,userId);
-            return ResponseEntity.ok("File uploaded successfully. Local file path: " + localFilePath);
+            String serverFilePath = "http://localhost:8085/uploads/"+fileName;
+            imageService.uploadAvatar(serverFilePath,userId);
+            return ResponseEntity.ok(serverFilePath);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading file");
@@ -94,15 +95,15 @@ public class ImageController {
             @RequestHeader String token
     ){
         Integer userId= authService.getUserIdFromToken(token);
-        UserEntity user=imageService.getAvatar(userId);
-        return new ResponseEntity<>(user.getAvatar(),HttpStatus.OK);
+        String userAvatar=imageService.getAvatar(userId);
+        return new ResponseEntity<>(userAvatar,HttpStatus.OK);
     }
 
     @GetMapping("/getavatar/test")
     public ResponseEntity<String> getAvatarTest(
     ){
         Integer userId=2;
-        UserEntity user=imageService.getAvatar(userId);
-        return new ResponseEntity<>(user.getAvatar(),HttpStatus.OK);
+        String userAvatar=imageService.getAvatar(userId);
+        return new ResponseEntity<>(userAvatar,HttpStatus.OK);
     }
 }

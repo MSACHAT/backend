@@ -22,8 +22,9 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public UserEntity getAvatar(Integer userId) {
-        return userRepository.findUserEntityById(userId);
+    public String getAvatar(Integer userId) {
+        System.out.println(userRepository.findUserEntityById(userId).getAvatar());
+        return userRepository.findUserEntityById(userId).getAvatar();
     }
 
 
