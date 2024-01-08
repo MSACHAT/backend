@@ -40,6 +40,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    @Override
+    public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum, Integer pageSize) {
+        return null;
+    }
 
     @Override
     public CommentEntity addComment(Integer userId, Integer postId, String content) {
