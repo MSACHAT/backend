@@ -10,16 +10,17 @@ import java.util.List;
 @Service
 @Transactional
 public interface PostService {
-    public PostEntity addPost(Integer userId,String title, String content);
+
 
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum,Integer pageSize);
+
+    public PostEntity addPost(Integer userId, String content);
 
     public String likePost(Integer postId, Integer userId);
 
     public String unlikePost(Integer postId, Integer userId);
 
     public String deletePost(Integer postId);
-
 
     public Boolean IsLiked(Integer postId, Integer userId);
 
@@ -31,4 +32,6 @@ public interface PostService {
     public ImageEntity addImage(PostEntity postEntity, String imagePath);
 
     public PostEntity findPostById(Integer postId);
+
+    public Integer countTotalPagesByPageSize(Integer pageSize);
 }

@@ -7,15 +7,11 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotifCommentDto {
-    private Integer id;
-    private Integer postId;
-    private Integer senderId;
-    private Integer receiverId;
-    private Date timeStamp;
-    private boolean isRead;
+public class NewNotifDto {
+    Integer newNotifCounts;
+    Date notifTag;
 }

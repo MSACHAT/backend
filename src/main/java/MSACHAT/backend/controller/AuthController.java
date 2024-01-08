@@ -1,5 +1,6 @@
 package MSACHAT.backend.controller;
 
+import MSACHAT.backend.dto.ErrorDto;
 import MSACHAT.backend.dto.JWTAuthResponse;
 import MSACHAT.backend.dto.LoginDto;
 import lombok.AllArgsConstructor;
@@ -16,9 +17,13 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<JWTAuthResponse> authenticate(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<Object> authenticate(@RequestBody LoginDto loginDto) {
+        System.out.println(authService.IsUserExist(loginDto.getEmail()));
+        if (!authService.IsUserExist(loginDto.getEmail())) {
+            return new ResponseEntity<>(new ErrorDto("User Do Not Exist",10001),HttpStatus.UNAUTHORIZED);
+        };
         String token = authService.login(loginDto);
-
+        System.out.println("token"+token);
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
         jwtAuthResponse.setAccessToken(token);
 

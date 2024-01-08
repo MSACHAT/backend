@@ -15,7 +15,7 @@ import java.util.List;
 public class PostDto {
 
 
-    private String title;
+
     private String content;
     private List<String> image;
 <<<<<<< HEAD

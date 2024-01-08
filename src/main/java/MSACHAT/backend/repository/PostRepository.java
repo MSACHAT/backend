@@ -36,7 +36,6 @@ public interface PostRepository extends CrudRepository<PostEntity, Integer>,
     PostEntity findPostEntityById(Integer Id);
 
     void deleteById(Integer id);
-
     boolean existsById(Integer id);
 
     @Modifying
@@ -46,6 +45,9 @@ public interface PostRepository extends CrudRepository<PostEntity, Integer>,
 >>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
 =======
     void addLikesCount(@Param("postId") Integer postId);
+<<<<<<< HEAD
 
 >>>>>>> 726cd29aca422765ef93c1fdf257065f18ba4fe2
+=======
+>>>>>>> a37652f6c2b5e42127bf363b1c448a7a195a1f20
 }

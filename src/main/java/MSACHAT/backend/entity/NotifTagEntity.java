@@ -8,21 +8,17 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "notif_like")
-public class NotifLikeEntity {
+@Data
+@Builder
+@Table(name = "notif_tags")
+public class NotifTagEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer postId;
-    private String commentContent;
+    private Integer userId;
     private Date timeStamp;
-    private Integer senderId;
-    private Integer receiverId;
-    private boolean isRead;
 
 }

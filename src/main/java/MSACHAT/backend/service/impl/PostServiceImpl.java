@@ -17,7 +17,11 @@ import java.util.stream.StreamSupport;
 =======
 import java.sql.Date;
 import java.util.List;
+<<<<<<< HEAD
 >>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
+=======
+import java.util.stream.Collectors;
+>>>>>>> a37652f6c2b5e42127bf363b1c448a7a195a1f20
 
 @Service
 @Transactional
@@ -82,7 +86,7 @@ public class PostServiceImpl implements PostService {
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum,Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
         Page<PostEntity> postEntityPage = postRepository.findAll(pageRequest);
-        List<PostEntity> posts = postEntityPage.getContent();
+        List<PostEntity> posts = postEntityPage.get().collect(Collectors.toList());
         for (int i = 0; i < posts.size(); i++) {
             int finalI = i;
             PostEntity tmpEntity = posts.get(finalI);
@@ -105,12 +109,12 @@ public class PostServiceImpl implements PostService {
 <<<<<<< HEAD
 =======
     @Override
-    public PostEntity addPost(Integer userId,String title, String content) {
+    public PostEntity addPost(Integer userId, String content) {
         String userName = userRepository.findNameById(userId);
 
         PostEntity postEntity = new PostEntity();
         postEntity.setUserName(userName);
-        postEntity.setTitle(title);
+
         postEntity.setContent(content);
         postEntity.setUserId(userId);
         postEntity.setLiked(false);
@@ -148,8 +152,12 @@ public class PostServiceImpl implements PostService {
         likeRepository.deleteLikeEntityByUserIdAndPostId(userId, postId);
 =======
         likeRepository.deleteByUserIdAndPostId(userId, postId);
+<<<<<<< HEAD
 >>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
         post.setLikeCount(post.getLikeCount() + 1);
+=======
+        post.setLikeCount(post.getLikeCount() - 1);
+>>>>>>> a37652f6c2b5e42127bf363b1c448a7a195a1f20
         postRepository.save(post);
         return "successfully unliked";
     }
@@ -194,5 +202,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostEntity findPostById(Integer postId){
         return postRepository.findPostEntityById(postId);
+    }
+
+    @Override
+    public Integer countTotalPagesByPageSize(Integer pageSize){
+        double pageCount=postRepository.count()/(pageSize*1.0);
+        return (Integer) (int)Math.ceil(pageCount)-1;
     }
 }
