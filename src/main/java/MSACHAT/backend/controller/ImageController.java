@@ -23,8 +23,8 @@ public class ImageController {
         this.imageService=imageService;
         this.authService=authService;
     }
-
-    private String uploadDir="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/UserAvatar";
+    private String uploadRootPath="http://localhost:8085/uploads/";//TODO:改成自己的
+    private String uploadDir="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/UserAvatar";//TODO:改成自己的
     @PostMapping("/uploadimage")
     public ResponseEntity<String> uploadImage(@RequestPart("file") MultipartFile file) {
         try {
@@ -34,13 +34,11 @@ public class ImageController {
             // 构建本地文件路径
             Path filePath = Path.of(uploadDir, fileName);
 
-            // 复制文件到本地
-//            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
             file.transferTo(new File(String.valueOf(filePath)));
 
             // 返回存储的本地地址
-            String localFilePath = filePath.toAbsolutePath().toString();
-            return ResponseEntity.ok("File uploaded successfully. Local file path: " + localFilePath);
+            String serverFilePath = uploadRootPath+fileName;
+            return ResponseEntity.ok("File uploaded successfully. Local file path: " + uploadRootPath);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading file");
@@ -61,7 +59,7 @@ public class ImageController {
             file.transferTo(new File(String.valueOf(filePath)));
 
             // 返回存储的本地地址
-            String serverFilePath = "http://localhost:8085/uploads/"+fileName;
+            String serverFilePath = uploadRootPath+fileName;
             imageService.uploadAvatar(serverFilePath,userId);
             return ResponseEntity.ok("success");
         } catch (IOException e) {
@@ -82,7 +80,7 @@ public class ImageController {
             file.transferTo(new File(String.valueOf(filePath)));
 
             // 返回存储的本地地址
-            String serverFilePath = "http://localhost:8085/uploads/"+fileName;
+            String serverFilePath = uploadRootPath+fileName;
             imageService.uploadAvatar(serverFilePath,userId);
             return ResponseEntity.ok(serverFilePath);
         } catch (IOException e) {
