@@ -32,7 +32,7 @@ public class NotifController {
 
     @GetMapping("/getbypagenumandpagesize")
     public ResponseEntity<Object> getNotifs(
-            @RequestHeader String token,
+            @RequestHeader("Authorization") String token,
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
@@ -40,19 +40,18 @@ public class NotifController {
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        Integer userId=authService.getUserIdFromToken(token);
+        Integer userId= authService.getUserIdFromToken(token);
         List<NotifEntity> notifs = notifService.getNotifsByPageNum(userId, pageNum, pageSize);
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("notifs", notifs);
         returnResult.put("totalPages", notifService.countTotalPagesByPageSize(pageSize));
         NotifTagEntity notifTag= notifService.findNotifTagByUserId(userId);
         if(notifTag==null){
-            notifService.setNotifTag(notifs.get(0).getTimeStamp(),userId);
-            returnResult.put("notifTag",null);
+            notifService.newNotifTag(notifs.get(0).getTimeStamp(),userId);
         }
         else{
+            System.out.println("assihasiudhas"+notifs.get(0).getTimeStamp());
             notifService.setNotifTag(notifs.get(0).getTimeStamp(),userId);
-            returnResult.put("notifTag",notifTag.getTimeStamp());
         }
         returnResult.put("totalNotifs",notifService.countNotifNums());
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
@@ -85,7 +84,7 @@ public class NotifController {
     }
 
     @GetMapping("/countnewnotifs")
-    public NewNotifDto countNewNotifs(@RequestHeader String token){
+    public NewNotifDto countNewNotifs(@RequestHeader("Authorization") String token){
         Integer userId= authService.getUserIdFromToken(token);
         NotifTagEntity notifTag=notifService.findNotifTagByUserId(userId);
         NewNotifDto newNotifDto=new NewNotifDto();
