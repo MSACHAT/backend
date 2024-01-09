@@ -88,11 +88,13 @@ public class PostController {
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
+        String token = authService.getTokenFromHeader(bearerToken);
+        Integer userId = authService.getUserIdFromToken(token);
         if (pageSize == null || pageNum == null) {//RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List<PostEntity> posts = postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNum, pageSize);
+        List<PostEntity> posts = postService.findPostsByPageNum(userId, pageNum, pageSize);
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("posts", posts);
         returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
@@ -122,8 +124,10 @@ public class PostController {
     @PatchMapping("/like")
     public ResponseEntity<Object> likePost(
             @RequestBody Object posts,
-            @RequestHeader String token
+            @RequestHeader String bearerToken
     ) {
+        String token = authService.getTokenFromHeader(bearerToken);
+        Integer userId = authService.getUserIdFromToken(token);
         Map<String, Boolean> postsMap = (Map<String, Boolean>) posts;
         List<Object> postIds = new ArrayList<>();
         for (Map.Entry<String, Boolean> entry : postsMap.entrySet()) {

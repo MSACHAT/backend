@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 public interface CommentService {
-    List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum, Integer pageSize);
-
     public CommentEntity addComment(Integer userId, Integer postId, String content);
 
-    List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum);
+    List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum,Integer pageSize);
 
     public void updateCommentsNumber(Integer postId);
 

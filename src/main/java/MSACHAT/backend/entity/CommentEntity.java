@@ -24,4 +24,8 @@ public class CommentEntity {
     private Integer postId;
     private String content;
     private Date timeStamp;
+    @Transient
+    private String userAvatar;
+    @Transient
+    private String userName;
 }

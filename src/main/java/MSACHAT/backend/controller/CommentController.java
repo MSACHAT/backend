@@ -12,7 +12,9 @@ import MSACHAT.backend.dto.PageNumDto;
 import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.service.CommentService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/comments")
@@ -25,11 +27,16 @@ public class CommentController {
     }
 
     @GetMapping("/get/{postId}")
-    public ResponseEntity<List<CommentEntity>> getAllCommentsByPostId(
+    public ResponseEntity<Object> getAllCommentsByPostId(
             @PathVariable Integer postId,
-            @RequestParam Integer pageNum) {
-        List<CommentEntity> comments = commentService.findAllCommentsByPostId(postId, pageNum);
-        return ResponseEntity.ok(comments);
+            @RequestParam Integer pageNum,
+            @RequestParam Integer pageSize
+    ) {
+        List<CommentEntity> comments = commentService.findAllCommentsByPostId(postId, pageNum,pageSize);
+        Map<String, Object> returnResult = new HashMap<>();
+        returnResult.put("comments",comments);
+        returnResult.put("totalPages",commentService.countTotalPagesByPageSize(pageSize));
+        return ResponseEntity.ok(returnResult);
     }
 
 }
