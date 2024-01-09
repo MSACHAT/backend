@@ -17,7 +17,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,10 +51,12 @@ public class PostServiceImpl implements PostService {
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
         Page<PostEntity> postEntityPage = postRepository.findAll(pageRequest);
-        List<PostEntity> posts = postEntityPage.get().collect(Collectors.toList());
+        List<PostEntity> posts = postEntityPage.getContent();
         for (int i = 0; i < posts.size(); i++) {
             int finalI = i;
             PostEntity tmpEntity = posts.get(finalI);
+            // List<ImageEntity> images = new ArrayList<>();
+            // images.get(0).setImageUrl("2312312313123");
             if (likeRepository.findAllByUserId(userId) != null) {
                 if (likeRepository.findAllByUserId(userId).stream().anyMatch(
                         likeEntity -> likeEntity.getPostId().equals(posts.get(finalI).getId()))) {
@@ -152,7 +157,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public Integer countTotalPagesByPageSize(Integer pageSize) {
         double pageCount = postRepository.count() / (pageSize * 1.0);
-        return (Integer) (int) Math.ceil(pageCount) - 1;
+        System.out.println(pageCount);
+        System.out.println("11111111111111111111111111111111111111111111");
+        return (Integer) (int) Math.ceil(pageCount);
     }
 
     // @Override
@@ -187,9 +194,17 @@ public class PostServiceImpl implements PostService {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
         Page<PostEntity> postEntityPage = postRepository.findAllByUserId(userId, pageRequest);
         List<PostEntity> posts = postEntityPage.getContent();
+        System.out.println(99999999);
         for (int i = 0; i < posts.size(); i++) {
             int finalI = i;
             PostEntity tmpEntity = posts.get(finalI);
+            List<ImageEntity> images = new ArrayList<>(5);
+            for (int j = 0; j < 5; j++) {
+                ImageEntity imageEntityTmp = new ImageEntity();
+                imageEntityTmp.setImageUrl("4254wrgsdligjsj");
+                images.add(imageEntityTmp);
+            }
+            tmpEntity.setImages(images);
             if (likeRepository.findAllByUserId(userId) != null) {
                 if (likeRepository.findAllByUserId(userId).stream().anyMatch(
                         likeEntity -> likeEntity.getPostId().equals(posts.get(finalI).getId()))) {

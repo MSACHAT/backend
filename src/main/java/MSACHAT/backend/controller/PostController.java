@@ -153,6 +153,7 @@ public class PostController {
         returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
+    // 捕获照片为空问题
 
     @PatchMapping("/like")
     public ResponseEntity<Object> likePost(
