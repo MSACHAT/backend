@@ -18,7 +18,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody LoginDto loginDto) {
-        System.out.println(authService.IsUserExist(loginDto.getEmail()));
+
         if (!authService.IsUserExist(loginDto.getEmail())) {
             return new ResponseEntity<>(new ErrorDto("User Do Not Exist",10001),HttpStatus.UNAUTHORIZED);
         };

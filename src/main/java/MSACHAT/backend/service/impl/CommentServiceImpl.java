@@ -2,13 +2,13 @@ package MSACHAT.backend.service.impl;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import MSACHAT.backend.entity.UserEntity;
 import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import MSACHAT.backend.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,16 +36,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum,Integer pageSize) {
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
+        Pageable pageRequest = PageRequest.of(pageNum, pageSize);
         Page<CommentEntity> commentEntityPage = commentRepository.findAllByPostIdOrderByTimeStampDesc(postId,pageRequest);
-        List<CommentEntity> comments = commentEntityPage.getContent();
+        List<CommentEntity> comments = commentEntityPage.get().collect(Collectors.toList());
         for (int i = 0; i < comments.size(); i++){
-            int finalI = i;
-            CommentEntity tmpEntity=comments.get(finalI);
+            CommentEntity tmpEntity=comments.get(i);
             UserEntity user=userRepository.findUserEntityById(tmpEntity.getUserId());
             tmpEntity.setUserAvatar(user.getAvatar());
             tmpEntity.setUserName(user.getUsername());
-            comments.set(finalI,tmpEntity);
+            comments.set(i,tmpEntity);
         }
         return comments;
     }

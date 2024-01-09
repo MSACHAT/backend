@@ -18,4 +18,6 @@ public interface CommentService {
     public void updateCommentsNumber(Integer postId);
 
     public Integer countTotalPagesByPageSize(Integer pageSize);
+
+
 }

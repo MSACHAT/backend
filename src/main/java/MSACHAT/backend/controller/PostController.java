@@ -5,6 +5,7 @@ import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.CommentService;
+import MSACHAT.backend.service.ImageService;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.mapper.Mapper;
@@ -16,9 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/post")
@@ -26,6 +24,7 @@ public class PostController {
     private final CommentService commentService;
     private final PostService postService;
     private final AuthService authService;
+    private final ImageService imageService;
 
 
     private Mapper<PostEntity, PostDto> postMapper;
@@ -33,12 +32,12 @@ public class PostController {
     public PostController(
             PostService postService,
             AuthService authService,
-            CommentService commentService
-    ) {
+            CommentService commentService,
+            ImageService imageService) {
         this.postService = postService;
         this.authService = authService;
         this.commentService = commentService;
-
+        this.imageService = imageService;
     }
 
     @PostMapping("/add")
@@ -193,9 +192,10 @@ public class PostController {
 
             return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
         }
+        String Avatar = imageService.getAvatar(userId);
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
-        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(),  post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(),  post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked(),Avatar);
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
@@ -211,9 +211,9 @@ public class PostController {
         if (post == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
+        String Avatar = imageService.getAvatar(userId);
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
-        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked());
+        PostReturnDto postReturn = new PostReturnDto(post.getId(),post.getUserName(), post.getContent(), imageList,post.getTimeStamp(),post.getLikeCount(),post.getCommentCount(),post.isLiked(),Avatar);
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
