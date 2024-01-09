@@ -155,11 +155,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+<<<<<<< HEAD
     public Integer countTotalPagesByPageSize(Integer pageSize) {
         double pageCount = postRepository.count() / (pageSize * 1.0);
         System.out.println(pageCount);
         System.out.println("11111111111111111111111111111111111111111111");
         return (Integer) (int) Math.ceil(pageCount);
+=======
+    public Integer countTotalPagesByPageSize(Integer pageSize){
+        double pageCount=postRepository.count()/(pageSize*1.0);
+        return (int)Math.ceil(pageCount)-1;
+>>>>>>> 7fec300a921853d8c57df5074633854c93a03bfc
     }
 
     // @Override

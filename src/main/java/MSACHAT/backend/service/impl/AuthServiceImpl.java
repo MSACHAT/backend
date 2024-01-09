@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
     public String login(LoginDto loginDto) {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+                loginDto.getEmail(), loginDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String getTokenFromHeader(String bearerToken) {
-
+        System.out.println(bearerToken+"123");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring("Bearer ".length()).trim();
         }
@@ -65,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
 
     }
     @Override
-    public Boolean IsUserExist(String usernameOrEmail){
-        return userRepository.existsByEmailOrUsername(usernameOrEmail,usernameOrEmail);
+    public Boolean IsUserExist(String email){
+        return userRepository.existsByEmail(email);
     }
 }

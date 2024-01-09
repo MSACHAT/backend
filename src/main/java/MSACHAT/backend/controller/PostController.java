@@ -44,9 +44,10 @@ public class PostController {
     @PostMapping("/add")
     public ResponseEntity<Object> addPost(@RequestBody PostDto postDto,
             @RequestHeader("Authorization") String bearerToken) {
+        String token = authService.getTokenFromHeader(bearerToken);
+        Integer userId = authService.getUserIdFromToken(token);
 
         if (postDto.getContent() != null) {
-            Integer userId = authService.getUserIdFromToken(bearerToken);
             PostEntity savedPostEntity = postService.addPost(userId, postDto.getContent());
             if (postDto.getImage() != null) {
                 for (String image : postDto.getImage()) {
@@ -61,40 +62,21 @@ public class PostController {
 
     // 测试代码
     @PostMapping("/add/test")
-    public ResponseEntity<String> addPostTest(@RequestBody PostDto postDto) {
+    public ResponseEntity<Object> addPost(@RequestBody PostDto postDto) {
+        Integer userId = 1;
+
         if (postDto.getContent() != null) {
-            Integer userId = 1;
 
             PostEntity savedPostEntity = postService.addPost(userId, postDto.getContent());
-
-            List<String> images = postDto.getImage();
-            List<Future<Void>> imageUploadTasks = new ArrayList<>();
-
-            ExecutorService executorService = Executors.newFixedThreadPool(images.size());
-
-            for (String image : images) {
-
-                Future<Void> imageUploadTask = executorService.submit(() -> {
+            if (postDto.getImage() != null) {
+                for (String image : postDto.getImage()) {
                     postService.addImage(savedPostEntity, image);
-                    return null;
-                });
-                imageUploadTasks.add(imageUploadTask);
-            }
-
-            for (Future<Void> task : imageUploadTasks) {
-                try {
-                    task.get();
-                } catch (Exception e) {
-
-                    e.printStackTrace();
                 }
             }
 
-            executorService.shutdown();
-
-            return new ResponseEntity<>("success", HttpStatus.OK);
+            return new ResponseEntity<>("success: true", HttpStatus.CREATED);
         }
-        return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>((new ErrorDto("error: Missing Parameters", 10001)), HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/getbypagenumandpagesize")
@@ -118,8 +100,8 @@ public class PostController {
     @GetMapping("/getbypagenumandpagesize/test")
     public ResponseEntity<Object> getPostsTest(
 
-            @RequestParam(value = "pageNum") Integer pageNum,
-            @RequestParam(value = "pageSize") Integer pageSize) {
+            @RequestParam(value = "pageNum", required = false) Integer pageNum,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         System.out.println("PageNum Param: " + pageNum);
         System.out.println("PageSize Param: " + pageSize);
         if (pageSize == null || pageNum == null) {// RequestBody Info Insufficient 10001 Error
@@ -263,5 +245,26 @@ public class PostController {
         CommentEntity comment = commentService.addComment(userId, postId, content);
         commentService.updateCommentsNumber(postId);
         return new ResponseEntity<>("success: true", HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}/comment/test")
+    public ResponseEntity<Object> addCommentTest(
+            @RequestBody CommentInfoDto commentInfo,
+            @PathVariable("id") Integer postId) {
+        // if (postService.IsPostExist(postId)){
+        // return new ResponseEntity<>(new ErrorDto("Post not found", 1001),
+        // HttpStatus.NOT_FOUND);
+        // }
+        Integer userId = 1;
+        String content = commentInfo.getContent();
+        CommentEntity comment = commentService.addComment(userId, postId, content);
+        commentService.updateCommentsNumber(postId);
+        return new ResponseEntity<>("success: true", HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getPostById(@PathVariable("id") Integer postId) {
+
+        return new ResponseEntity<>(postService.IsPostExist(postId), HttpStatus.OK);
     }
 }

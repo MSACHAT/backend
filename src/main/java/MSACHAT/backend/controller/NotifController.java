@@ -1,9 +1,11 @@
 package MSACHAT.backend.controller;
 
 import MSACHAT.backend.dto.ErrorDto;
+import MSACHAT.backend.dto.NewNotifDto;
 import MSACHAT.backend.dto.NotifDto;
 import MSACHAT.backend.dto.PageNumDto;
 import MSACHAT.backend.entity.NotifEntity;
+import MSACHAT.backend.entity.NotifTagEntity;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.NotifService;
 import org.aspectj.weaver.ast.Not;
@@ -20,7 +22,6 @@ import java.util.Map;
 public class NotifController {
     private AuthService authService;
     private NotifService notifService;
-
     public NotifController(
             AuthService authService,
             NotifService notifService
@@ -39,10 +40,21 @@ public class NotifController {
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List<NotifEntity> notifs = notifService.getNotifsByPageNum(authService.getUserIdFromToken(token), pageNum, pageSize);
+        Integer userId=authService.getUserIdFromToken(token);
+        List<NotifEntity> notifs = notifService.getNotifsByPageNum(userId, pageNum, pageSize);
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("notifs", notifs);
         returnResult.put("totalPages", notifService.countTotalPagesByPageSize(pageSize));
+        NotifTagEntity notifTag= notifService.findNotifTagByUserId(userId);
+        if(notifTag==null){
+            notifService.setNotifTag(notifs.get(0).getTimeStamp(),userId);
+            returnResult.put("notifTag",null);
+        }
+        else{
+            notifService.setNotifTag(notifs.get(0).getTimeStamp(),userId);
+            returnResult.put("notifTag",notifTag.getTimeStamp());
+        }
+        returnResult.put("totalNotifs",notifService.countNotifNums());
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
@@ -55,24 +67,42 @@ public class NotifController {
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List<NotifEntity> notifs = notifService.getNotifsByPageNum(1, pageNum, pageSize);
+        Integer userId=1;
+        List<NotifEntity> notifs = notifService.getNotifsByPageNum(userId, pageNum, pageSize);
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("notifs", notifs);
         returnResult.put("totalPages", notifService.countTotalPagesByPageSize(pageSize));
+        NotifTagEntity notifTag= notifService.findNotifTagByUserId(userId);
+        if(notifTag==null){
+            notifService.newNotifTag(notifs.get(0).getTimeStamp(),userId);
+        }
+        else{
+            System.out.println("assihasiudhas"+notifs.get(0).getTimeStamp());
+            notifService.setNotifTag(notifs.get(0).getTimeStamp(),userId);
+        }
+        returnResult.put("totalNotifs",notifService.countNotifNums());
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
-    @PostMapping("/isread")
-    public ResponseEntity<Object> isRead(
-            @RequestBody List<NotifEntity> notifs
-            ){
-        if(notifs==null){
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-        }
-        notifService.isRead(notifs);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping("/countnewnotifs")
+    public NewNotifDto countNewNotifs(@RequestHeader String token){
+        Integer userId= authService.getUserIdFromToken(token);
+        NotifTagEntity notifTag=notifService.findNotifTagByUserId(userId);
+        NewNotifDto newNotifDto=new NewNotifDto();
+        newNotifDto.setNewNotifCounts(notifService.countNewNotifs(userId,notifTag.getTimeStamp()));
+        newNotifDto.setNotifTag(notifTag.getTimeStamp());
+        return newNotifDto;
     }
+
+    @GetMapping("/countnewnotifs/test")
+    public NewNotifDto countNewNotifs(@RequestParam Integer userId){
+        NotifTagEntity notifTag=notifService.findNotifTagByUserId(userId);
+        NewNotifDto newNotifDto=new NewNotifDto();
+        newNotifDto.setNewNotifCounts(notifService.countNewNotifs(userId,notifTag.getTimeStamp()));
+        newNotifDto.setNotifTag(notifTag.getTimeStamp());
+        return newNotifDto;
+    }
+
     @GetMapping("/test")
     public String testConnection() {
         return "Connected!";

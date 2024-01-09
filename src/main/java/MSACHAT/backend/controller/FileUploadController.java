@@ -18,8 +18,7 @@ import java.nio.file.StandardCopyOption;
 public class FileUploadController {
 
     // 设置上传文件保存的本地路径
-    @Value("${upload-dir}")
-    private String uploadDir;
+    String uploadDir = "C:\\Users\\zhang\\Downloads\\testImage";
 
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestPart("file") MultipartFile file) {
@@ -35,7 +34,7 @@ public class FileUploadController {
 
             // 返回存储的本地地址
             String localFilePath = filePath.toAbsolutePath().toString();
-            return ResponseEntity.ok("File uploaded successfully. Local file path: " + localFilePath);
+            return ResponseEntity.ok(localFilePath);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading file");

@@ -7,8 +7,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+
 @Repository
 public interface NotifRepository extends CrudRepository<NotifEntity, Integer>,
         PagingAndSortingRepository<NotifEntity, Integer> {
-    Page<NotifEntity> findAllByReceiverIdOrderByTimeStamp(Integer receiverId, PageRequest pageRequest);
+    Page<NotifEntity> findAllByReceiverIdOrderByTimeStampDesc(Integer receiverId, PageRequest pageRequest);
+
+    NotifEntity findNotifEntityById(Integer notifId);
+
+    Integer countAllByReceiverIdAndTimeStampAfter(Integer receiverId, Date timeStamp);
 }
+

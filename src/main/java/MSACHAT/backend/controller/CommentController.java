@@ -27,7 +27,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping("/get/{postId}")
     public ResponseEntity<Object> getAllCommentsByPostId(
             @PathVariable Integer postId,
             @RequestParam Integer pageNum) {

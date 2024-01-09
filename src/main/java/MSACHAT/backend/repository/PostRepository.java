@@ -34,8 +34,6 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
     void deleteById(Integer id);
 
-    Page<PostEntity> findAllByUserId(Integer userId, PageRequest pageable);
-
     boolean existsById(Integer id);
 
     @Modifying

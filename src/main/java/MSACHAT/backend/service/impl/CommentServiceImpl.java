@@ -33,9 +33,15 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum) {
         PageRequest pageRequest = PageRequest.of(pageNum, 10);
-        Page<CommentEntity> commentEntityPage = commentRepository.findAll(pageRequest);
+        Page<CommentEntity> commentEntityPage = commentRepository.findAllByPostIdOrderByTimeStampDesc(postId,
+                pageRequest);
         List<CommentEntity> posts = commentEntityPage.getContent();
         return posts;
+    }
+
+    @Override
+    public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum, Integer pageSize) {
+        return null;
     }
 
     @Override
