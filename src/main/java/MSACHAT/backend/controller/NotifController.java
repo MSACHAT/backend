@@ -2,7 +2,6 @@ package MSACHAT.backend.controller;
 
 import MSACHAT.backend.dto.ErrorDto;
 import MSACHAT.backend.dto.NewNotifDto;
-import MSACHAT.backend.dto.NotifDto;
 import MSACHAT.backend.dto.PageNumDto;
 import MSACHAT.backend.entity.NotifEntity;
 import MSACHAT.backend.entity.NotifTagEntity;
@@ -32,7 +31,7 @@ public class NotifController {
 
     @GetMapping("/getbypagenumandpagesize")
     public ResponseEntity<Object> getNotifs(
-            @RequestHeader String token,
+            @RequestHeader("Authorization") String bearerToken,
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize
     ) {
@@ -40,19 +39,23 @@ public class NotifController {
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        Integer userId=authService.getUserIdFromToken(token);
+        String token=authService.getTokenFromHeader(bearerToken);
+        Integer userId= authService.getUserIdFromToken(token);
+        System.out.println("UID:   "+userId);
         List<NotifEntity> notifs = notifService.getNotifsByPageNum(userId, pageNum, pageSize);
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("notifs", notifs);
         returnResult.put("totalPages", notifService.countTotalPagesByPageSize(pageSize));
         NotifTagEntity notifTag= notifService.findNotifTagByUserId(userId);
-        if(notifTag==null){
-            notifService.setNotifTag(notifs.get(0).getTimeStamp(),userId);
-            returnResult.put("notifTag",null);
-        }
-        else{
-            notifService.setNotifTag(notifs.get(0).getTimeStamp(),userId);
-            returnResult.put("notifTag",notifTag.getTimeStamp());
+        System.out.println("还没报错");
+        System.out.println(notifs);
+        if(!notifs.isEmpty()) {
+            if (notifTag == null) {
+                notifService.newNotifTag(notifs.get(0).getTimeStamp(), userId);
+            } else {
+                System.out.println("assihasiudhas" + notifs.get(0).getTimeStamp());
+                notifService.setNotifTag(notifs.get(0).getTimeStamp(), userId);
+            }
         }
         returnResult.put("totalNotifs",notifService.countNotifNums());
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
@@ -73,25 +76,35 @@ public class NotifController {
         returnResult.put("notifs", notifs);
         returnResult.put("totalPages", notifService.countTotalPagesByPageSize(pageSize));
         NotifTagEntity notifTag= notifService.findNotifTagByUserId(userId);
-        if(notifTag==null){
-            notifService.newNotifTag(notifs.get(0).getTimeStamp(),userId);
-        }
-        else{
-            System.out.println("assihasiudhas"+notifs.get(0).getTimeStamp());
-            notifService.setNotifTag(notifs.get(0).getTimeStamp(),userId);
+        if(!notifs.isEmpty()) {
+            if (notifTag == null) {
+                notifService.newNotifTag(notifs.get(0).getTimeStamp(), userId);
+            } else {
+                System.out.println("assihasiudhas" + notifs.get(0).getTimeStamp());
+                notifService.setNotifTag(notifs.get(0).getTimeStamp(), userId);
+            }
         }
         returnResult.put("totalNotifs",notifService.countNotifNums());
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
     @GetMapping("/countnewnotifs")
-    public NewNotifDto countNewNotifs(@RequestHeader String token){
+    public NewNotifDto countNewNotifs(@RequestHeader("Authorization") String bearerToken){
+        String token=authService.getTokenFromHeader(bearerToken);
         Integer userId= authService.getUserIdFromToken(token);
         NotifTagEntity notifTag=notifService.findNotifTagByUserId(userId);
-        NewNotifDto newNotifDto=new NewNotifDto();
-        newNotifDto.setNewNotifCounts(notifService.countNewNotifs(userId,notifTag.getTimeStamp()));
-        newNotifDto.setNotifTag(notifTag.getTimeStamp());
-        return newNotifDto;
+        if(notifTag==null){
+            NewNotifDto newNotifDto=new NewNotifDto();
+            newNotifDto.setNewNotifCounts(0);
+            newNotifDto.setNotifTag(null);
+            return newNotifDto;
+        }
+        else {
+            NewNotifDto newNotifDto = new NewNotifDto();
+            newNotifDto.setNewNotifCounts(notifService.countNewNotifs(userId, notifTag.getTimeStamp()));
+            newNotifDto.setNotifTag(notifTag.getTimeStamp());
+            return newNotifDto;
+        }
     }
 
     @GetMapping("/countnewnotifs/test")
@@ -104,7 +117,9 @@ public class NotifController {
     }
 
     @GetMapping("/test")
-    public String testConnection() {
-        return "Connected!";
+    public String testConnection(@RequestHeader("Authorization")String bearerToken) {
+        String token=authService.getTokenFromHeader(bearerToken);
+        Integer userId=authService.getUserIdFromToken(token);
+        return "Connected!"+userId.toString();
     }
 }

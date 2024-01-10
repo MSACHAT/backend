@@ -2,11 +2,13 @@ package MSACHAT.backend.service.impl;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import MSACHAT.backend.entity.UserEntity;
 import MSACHAT.backend.repository.PostRepository;
+import MSACHAT.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import MSACHAT.backend.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,31 +20,35 @@ import MSACHAT.backend.repository.CommentRepository;
 import MSACHAT.backend.service.CommentService;
 import jakarta.transaction.Transactional;
 
-
 @Service
 @Transactional
 public class CommentServiceImpl implements CommentService {
 
     private CommentRepository commentRepository;
     private PostRepository postRepository;
+    private UserRepository userRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository,PostRepository postRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository,
+            UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
-
-    @Override
-    public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum) {
-        PageRequest pageRequest = PageRequest.of(pageNum, 10);
-        Page<CommentEntity> commentEntityPage = commentRepository.findAllByPostIdOrderByTimeStampDesc(postId,pageRequest);
-        List<CommentEntity> posts = commentEntityPage.getContent();
-        return posts;
-    }
-
 
     @Override
     public List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum, Integer pageSize) {
-        return null;
+        Pageable pageRequest = PageRequest.of(pageNum, pageSize);
+        Page<CommentEntity> commentEntityPage = commentRepository.findAllByPostIdOrderByTimeStampDesc(postId,
+                pageRequest);
+        List<CommentEntity> comments = commentEntityPage.get().collect(Collectors.toList());
+        for (int i = 0; i < comments.size(); i++) {
+            CommentEntity tmpEntity = comments.get(i);
+            UserEntity user = userRepository.findUserEntityById(tmpEntity.getUserId());
+            tmpEntity.setUserAvatar(user.getAvatar());
+            tmpEntity.setUserName(user.getUsername());
+            comments.set(i, tmpEntity);
+        }
+        return comments;
     }
 
     @Override
@@ -64,8 +70,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Integer countTotalPagesByPageSize(Integer pageSize){
-        double pageCount=postRepository.count()/(pageSize*1.0);
-        return (Integer) (int)Math.ceil(pageCount)-1;
+    public Integer countTotalPagesByPageSize(Integer pageSize) {
+        double pageCount = postRepository.count() / (pageSize * 1.0);
+        return (Integer) (int) Math.ceil(pageCount) - 1;
+    }
+
+    @Override
+    public CommentEntity findCommentById(Integer commentId) {
+        return commentRepository.findCommentEntityById(commentId);
+
+    }
+
+    @Override
+    public String deleteComment(Integer commentId) {
+
+        commentRepository.deleteById(commentId);
+        return "comment Deleted successfully";
     }
 }

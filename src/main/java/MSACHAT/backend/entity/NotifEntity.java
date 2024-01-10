@@ -29,4 +29,6 @@ public class NotifEntity {
     private String previewType;
     @Transient
     private String previewString;
+    @Transient
+    private String userAvatar;
 }

@@ -15,4 +15,6 @@ public interface LikeRepository extends CrudRepository<LikeEntity, Integer> {
     void deleteAllByPostId(Integer postId);
 
     boolean existsByUserIdAndPostId(Integer userId, Integer postId);
+
+    LikeEntity findByUserIdAndPostId(Integer userId, Integer postId);
 }

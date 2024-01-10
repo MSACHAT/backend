@@ -1,39 +1,24 @@
 package MSACHAT.backend.entity;
 
-<<<<<<< HEAD
+<<<<<<<HEAD
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-<<<<<<< HEAD
-import java.time.LocalDateTime;
-=======
-=======
-import jakarta.persistence.*;
->>>>>>> ac06df0c1f8b04ce94c65a3848c3a7b510029156
+import jakarta.persistence.Table;<<<<<<<HEAD
+import java.time.LocalDateTime;==============
+import jakarta.persistence.*;>>>>>>>ac06df0c1f8b04ce94c65a3848c3a7b510029156
 
 import java.util.Date;
 
->>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
+>>>>>>>5f a82f9c98206472df488a5c9638d98d42aafa32
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import java.sql.Date;
-=======
->>>>>>> ac06df0c1f8b04ce94c65a3848c3a7b510029156
-
-<<<<<<< HEAD
-
->>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
-=======
->>>>>>> 5fa82f9c98206472df488a5c9638d98d42aafa32
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -59,9 +44,8 @@ public class CommentEntity {
     private Integer postId;
     private String content;
     private Date timeStamp;
-<<<<<<< HEAD
-
->>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
-=======
->>>>>>> ac06df0c1f8b04ce94c65a3848c3a7b510029156
+    @Transient
+    private String userAvatar;
+    @Transient
+    private String userName;
 }

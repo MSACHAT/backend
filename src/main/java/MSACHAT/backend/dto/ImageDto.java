@@ -13,4 +13,5 @@ public class ImageDto {
     private Integer id;
     private Integer semiId;
     private Integer postId;
+    private String imageUrl;
 }

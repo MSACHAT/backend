@@ -24,14 +24,13 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 public interface CommentService {
-    List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum, Integer pageSize);
-
     public CommentEntity addComment(Integer userId, Integer postId, String content);
 
-    List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum);
+    List<CommentEntity> findAllCommentsByPostId(Integer postId, Integer pageNum, Integer pageSize);
 
     public void updateCommentsNumber(Integer postId);
 
     public Integer countTotalPagesByPageSize(Integer pageSize);
+
 }
 >>>>>>> ae838c8d1ff94a9add56e2c0e50f44aafbcc10fe
