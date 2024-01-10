@@ -94,8 +94,22 @@ public class PostController {
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
         List<PostEntity> posts = postService.findPostsByPageNum(userId, pageNum, pageSize);
+        List<PostReturnDto> postsReturn=new ArrayList<>();
+        for(PostEntity post:posts){
+            postsReturn.add(new PostReturnDto(
+                    post.getId(),
+                    post.getUserName(),
+                    post.getContent(),
+                    post.getImages().stream().map(ImageEntity::getImageUrl).toList(),
+                    post.getTimeStamp(),
+                    post.getLikeCount(),
+                    post.getCommentCount(),
+                    post.isLiked(),
+                    imageService.getAvatar(userId)
+            ));
+        }
         Map<String, Object> returnResult = new HashMap<>();
-        returnResult.put("posts", posts);
+        returnResult.put("posts", postsReturn);
         returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }

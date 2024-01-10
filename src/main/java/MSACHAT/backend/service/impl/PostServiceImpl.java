@@ -9,6 +9,7 @@ import MSACHAT.backend.entity.PostEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -39,26 +40,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum,Integer pageSize) {
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
-        Page<PostEntity> postEntityPage = postRepository.findAll(pageRequest);
-        List<PostEntity> posts = postEntityPage.get().collect(Collectors.toList());
-        for (int i = 0; i < posts.size(); i++) {
-            int finalI = i;
-            PostEntity tmpEntity = posts.get(finalI);
-            if (likeRepository.findAllByUserId(userId) != null) {
-                if (likeRepository.findAllByUserId(userId).stream().anyMatch(
-                        likeEntity -> likeEntity.getPostId().equals(posts.get(finalI).getId())
-                )) {
-                    tmpEntity.setLiked(true);
-                    posts.set(finalI, tmpEntity);
-                }
-            } else {
-                tmpEntity.setLiked(false);
-                posts.set(finalI, tmpEntity);
-            }
+    public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum, Integer pageSize) {
+        Pageable pageRequest = PageRequest.of(pageNum, pageSize);
+        Page<PostEntity> posts = postRepository.findAll(pageRequest);
+        for(PostEntity post:posts){
+            post.setLiked(likeRepository.existsByUserIdAndPostId(userId,post.getId()));
         }
-        return posts;
+        return posts.getContent();
     }
 
     @Override
@@ -127,6 +115,7 @@ public class PostServiceImpl implements PostService {
         }
         return post;
     }
+
     @Override
     public ImageEntity addImage(PostEntity postEntity, String imagePath) {
         ImageEntity imageEntity = new ImageEntity();
@@ -134,18 +123,20 @@ public class PostServiceImpl implements PostService {
         imageEntity.setImageUrl(imagePath);
         return imageRepository.save(imageEntity);
     }
+
     @Override
     public Boolean IsPostExist(Integer postId) {
         return postRepository.existsById(postId);
     }
+
     @Override
-    public PostEntity findPostById(Integer postId){
+    public PostEntity findPostById(Integer postId) {
         return postRepository.findPostEntityById(postId);
     }
 
     @Override
-    public Integer countTotalPagesByPageSize(Integer pageSize){
-        double pageCount=postRepository.count()/(pageSize*1.0);
-        return (int)Math.ceil(pageCount)-1;
+    public Integer countTotalPagesByPageSize(Integer pageSize) {
+        double pageCount = postRepository.count() / (pageSize * 1.0);
+        return (int) Math.ceil(pageCount) - 1;
     }
 }
