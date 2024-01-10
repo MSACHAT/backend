@@ -4,23 +4,25 @@ import MSACHAT.backend.dto.PostDto;
 import MSACHAT.backend.dto.PostUserIsLikeDto;
 import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.repository.*;
-
+import MSACHAT.backend.repository.PostRepository.PostResponse;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.LikeEntity;
 import MSACHAT.backend.entity.PostEntity;
 import jakarta.transaction.Transactional;
 
 import org.hibernate.annotations.DialectOverride.OverridesAnnotation;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
+// import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+// import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Array;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -133,6 +135,9 @@ public class PostServiceImpl implements PostService {
         } else {
             post.setLiked(false);
         }
+
+        System.out.println(post.getImages().get(0).getImageUrl());
+        System.out.println("888888888888888888888888");
         return post;
     }
 
@@ -155,17 +160,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-<<<<<<< HEAD
     public Integer countTotalPagesByPageSize(Integer pageSize) {
         double pageCount = postRepository.count() / (pageSize * 1.0);
         System.out.println(pageCount);
         System.out.println("11111111111111111111111111111111111111111111");
-        return (Integer) (int) Math.ceil(pageCount);
-=======
-    public Integer countTotalPagesByPageSize(Integer pageSize){
-        double pageCount=postRepository.count()/(pageSize*1.0);
-        return (int)Math.ceil(pageCount)-1;
->>>>>>> 7fec300a921853d8c57df5074633854c93a03bfc
+        return (Integer) (int) Math.ceil(pageCount) - 1;
     }
 
     // @Override
@@ -196,33 +195,28 @@ public class PostServiceImpl implements PostService {
     // 'getPostsByUserId'");
     // }
     @Override
-    public List<PostEntity> getAllPostsByUserId(Integer userId, Integer pageNum, Integer pageSize) {
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
-        Page<PostEntity> postEntityPage = postRepository.findAllByUserId(userId, pageRequest);
-        List<PostEntity> posts = postEntityPage.getContent();
-        System.out.println(99999999);
-        for (int i = 0; i < posts.size(); i++) {
-            int finalI = i;
-            PostEntity tmpEntity = posts.get(finalI);
-            List<ImageEntity> images = new ArrayList<>(5);
-            for (int j = 0; j < 5; j++) {
-                ImageEntity imageEntityTmp = new ImageEntity();
-                imageEntityTmp.setImageUrl("4254wrgsdligjsj");
-                images.add(imageEntityTmp);
-            }
-            tmpEntity.setImages(images);
-            if (likeRepository.findAllByUserId(userId) != null) {
-                if (likeRepository.findAllByUserId(userId).stream().anyMatch(
-                        likeEntity -> likeEntity.getPostId().equals(posts.get(finalI).getId()))) {
-                    tmpEntity.setLiked(true);
-                    posts.set(finalI, tmpEntity);
-                }
-            } else {
-                tmpEntity.setLiked(false);
-                posts.set(finalI, tmpEntity);
-            }
+    public PostResponse getAllPostsByUserId(Integer userId, Integer pageNum, Integer pageSize) {
+        Page<PostEntity> pageResult = postRepository.findAllByUserId(userId, PageRequest.of(pageNum, pageSize));
+
+        List<PostEntity> posts = pageResult.getContent();
+
+        // 提取PostId并返回S
+        List<Integer> postIds = posts.stream()
+                .map(PostEntity::getPostId)
+                .toList();
+
+        // 获取每个帖子的详情
+        List<PostEntity> postDetails = new ArrayList<>();
+        for (int i = 0; i < postIds.size(); i++) {
+            postDetails.add(postRepository.findPostEntityById(postIds.get(i)));
         }
-        return posts;
+        System.out.println("999999999999999999999999999999999");
+        for (int i = 0; i < postIds.size(); i++) {
+            System.out.println(postDetails.get(i).getImages().get(0).getImageUrl());
+        }
+
+        List<PostEntity> postDetails1 = new ArrayList<PostEntity>();
+        return new PostResponse(pageResult.getTotalPages(), pageNum, postDetails1);
     }
 
     // @Override

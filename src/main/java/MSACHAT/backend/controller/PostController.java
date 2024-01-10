@@ -8,6 +8,7 @@ import MSACHAT.backend.service.CommentService;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.mapper.Mapper;
+import MSACHAT.backend.repository.PostRepository.PostResponse;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -115,25 +116,38 @@ public class PostController {
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
-    @GetMapping("/getbypagenumandpagesize/{userId}/test")
-    public ResponseEntity<Object> getPostsTestByUserId(
+    // @GetMapping("/getbypagenumandpagesize/{userId}/test")
+    // public ResponseEntity<Object> getPostsTestByUserId(
+    // @PathVariable Integer userId,
+    // @RequestParam(value = "pageNum") Integer pageNum,
+    // @RequestParam(value = "pageSize") Integer pageSize) {
+    // System.out.println("PageNum Param: " + pageNum);
+    // System.out.println("PageSize Param: " + pageSize);
+
+    // if (pageSize == null || pageNum == null) {
+    // ErrorDto err = new ErrorDto("Request body incomplete. Required fields
+    // missing.", 10001);
+    // return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    // }
+
+    // List<PostEntity> posts = postService.getAllPostsByUserId(userId, pageNum,
+    // pageSize);
+
+    // Map<String, Object> returnResult = new HashMap<>();
+    // returnResult.put("posts", posts);
+    // returnResult.put("totalPages",
+    // postService.countTotalPagesByPageSize(pageSize));
+    // return new ResponseEntity<>(returnResult, HttpStatus.OK);
+    // }
+
+    @GetMapping(value = "/getbypagenumandpagesize/{userId}")
+    public ResponseEntity<PostResponse> getPostsByUserId(
             @PathVariable Integer userId,
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize) {
         System.out.println("PageNum Param: " + pageNum);
         System.out.println("PageSize Param: " + pageSize);
-
-        if (pageSize == null || pageNum == null) {
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-        }
-
-        List<PostEntity> posts = postService.getAllPostsByUserId(userId, pageNum, pageSize);
-
-        Map<String, Object> returnResult = new HashMap<>();
-        returnResult.put("posts", posts);
-        returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
-        return new ResponseEntity<>(returnResult, HttpStatus.OK);
+        return new ResponseEntity<>(postService.getAllPostsByUserId(userId, pageNum, pageSize), HttpStatus.OK);
     }
     // 捕获照片为空问题
 

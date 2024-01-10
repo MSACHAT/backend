@@ -4,6 +4,7 @@ import MSACHAT.backend.dto.PostDto;
 import MSACHAT.backend.dto.PostUserIsLikeDto;
 import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.entity.PostEntity;
+import MSACHAT.backend.repository.PostRepository.PostResponse;
 import jakarta.transaction.Transactional;
 
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
@@ -33,7 +34,7 @@ public interface PostService {
 
     public Page<PostDto> getAllByUserId(Integer userId, Integer pageNum, Integer pageSize);
 
-    public List<PostEntity> getAllPostsByUserId(Integer userId, Integer pageNum, Integer pageSize);
+    public PostResponse getAllPostsByUserId(Integer userId, Integer pageNum, Integer pageSize);
 
     Boolean IsPostExist(Integer postId);
 

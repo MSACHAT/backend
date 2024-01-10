@@ -6,12 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-<<<<<<< HEAD
 import java.sql.Date;
-=======
-import java.util.Date;
-import java.util.ArrayList;
->>>>>>> 7fec300a921853d8c57df5074633854c93a03bfc
 import java.util.List;
 
 @NoArgsConstructor
@@ -34,4 +29,8 @@ public class PostEntity {
     private Integer commentCount;
     @Transient
     private boolean isLiked;
+
+    public Integer getPostId() {
+        return id;
+    }
 }

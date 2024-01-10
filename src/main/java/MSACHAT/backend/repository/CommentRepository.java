@@ -23,4 +23,6 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
     CommentEntity findAllCommentsByPostId(Integer postId, PageRequest pageRequest);
 
     Page<CommentEntity> findAllByPostIdOrderByTimeStampDesc(Integer postId, PageRequest pageRequest);
+
+    CommentEntity findCommentEntityById(Integer commentId);
 }
