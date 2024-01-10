@@ -42,10 +42,11 @@ public class ImageController {
     @PostMapping("/uploadavatar")
     public ResponseEntity<String> uploadAvatar(
             @RequestPart("file") MultipartFile file,
-            @RequestHeader String token
+            @RequestHeader("Authorization") String bearerToken
     ) {
         try {
-            Integer userId=authService.getUserIdFromToken(token);
+            String token=authService.getTokenFromHeader(bearerToken);
+            Integer userId= authService.getUserIdFromToken(token);
             String fileName = file.getOriginalFilename();
             // 构建本地文件路径
             Path filePath = Path.of(uploadDir, fileName);
@@ -55,7 +56,7 @@ public class ImageController {
             // 返回存储的本地地址
             String serverFilePath = uploadRootPath+fileName;
             imageService.uploadAvatar(serverFilePath,userId);
-            return ResponseEntity.ok("success");
+            return ResponseEntity.ok(serverFilePath);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading file");
@@ -84,8 +85,9 @@ public class ImageController {
     }
     @GetMapping("/getavatar")
     public ResponseEntity<String> getAvatar(
-            @RequestHeader String token
+            @RequestHeader("Authorization") String bearerToken
     ){
+        String token=authService.getTokenFromHeader(bearerToken);
         Integer userId= authService.getUserIdFromToken(token);
         String userAvatar=imageService.getAvatar(userId);
         return new ResponseEntity<>(userAvatar,HttpStatus.OK);
@@ -97,5 +99,14 @@ public class ImageController {
         Integer userId=2;
         String userAvatar=imageService.getAvatar(userId);
         return new ResponseEntity<>(userAvatar,HttpStatus.OK);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<Integer> testConnection(
+            @RequestHeader("Authorization") String bearerToken
+    ){
+        String token=authService.getTokenFromHeader(bearerToken);
+        Integer userId=authService.getUserIdFromToken(token);
+        return new ResponseEntity<>(userId,HttpStatus.OK);
     }
 }

@@ -51,26 +51,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum, Integer pageSize) {
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
-        Page<PostEntity> postEntityPage = postRepository.findAll(pageRequest);
-        List<PostEntity> posts = postEntityPage.getContent();
-        for (int i = 0; i < posts.size(); i++) {
-            int finalI = i;
-            PostEntity tmpEntity = posts.get(finalI);
-            // List<ImageEntity> images = new ArrayList<>();
-            // images.get(0).setImageUrl("2312312313123");
-            if (likeRepository.findAllByUserId(userId) != null) {
-                if (likeRepository.findAllByUserId(userId).stream().anyMatch(
-                        likeEntity -> likeEntity.getPostId().equals(posts.get(finalI).getId()))) {
-                    tmpEntity.setLiked(true);
-                    posts.set(finalI, tmpEntity);
-                }
-            } else {
-                tmpEntity.setLiked(false);
-                posts.set(finalI, tmpEntity);
-            }
+        Pageable pageRequest = PageRequest.of(pageNum, pageSize);
+        Page<PostEntity> posts = postRepository.findAll(pageRequest);
+        for(PostEntity post:posts){
+            post.setLiked(likeRepository.existsByUserIdAndPostId(userId,post.getId()));
         }
-        return posts;
+        return posts.getContent();
     }
 
     @Override
@@ -162,9 +148,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Integer countTotalPagesByPageSize(Integer pageSize) {
         double pageCount = postRepository.count() / (pageSize * 1.0);
-        System.out.println(pageCount);
-        System.out.println("11111111111111111111111111111111111111111111");
-        return (Integer) (int) Math.ceil(pageCount) - 1;
+        return (int) Math.ceil(pageCount) - 1;
     }
 
     // @Override
