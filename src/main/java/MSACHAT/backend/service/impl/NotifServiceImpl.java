@@ -3,10 +3,8 @@ package MSACHAT.backend.service.impl;
 import MSACHAT.backend.entity.NotifEntity;
 import MSACHAT.backend.entity.NotifTagEntity;
 import MSACHAT.backend.entity.PostEntity;
-import MSACHAT.backend.repository.NotifRepository;
-import MSACHAT.backend.repository.NotifTagRepository;
-import MSACHAT.backend.repository.PostRepository;
-import MSACHAT.backend.repository.UserRepository;
+import MSACHAT.backend.entity.UserEntity;
+import MSACHAT.backend.repository.*;
 import MSACHAT.backend.service.NotifService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -44,6 +42,8 @@ public class NotifServiceImpl implements NotifService {
         for(int i=0;i<notifs.size();i++){
             NotifEntity notifDetail=notifs.get(i);
             notifDetail.setUserName(userRepository.findNameById(notifDetail.getSenderId()));
+            UserEntity user=userRepository.findUserEntityById(notifDetail.getSenderId());
+            notifDetail.setUserAvatar(user.getAvatar());
             Integer postId=notifDetail.getPostId();
             PostEntity post=postRepository.findPostEntityById(postId);
             if(!post.getImages().isEmpty()){

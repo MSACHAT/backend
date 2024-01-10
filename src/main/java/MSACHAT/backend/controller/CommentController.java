@@ -15,7 +15,9 @@ import MSACHAT.backend.dto.PageNumDto;
 import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.service.CommentService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/comments")
@@ -30,29 +32,13 @@ public class CommentController {
     @GetMapping("/get/{postId}")
     public ResponseEntity<Object> getAllCommentsByPostId(
             @PathVariable Integer postId,
-            @RequestParam Integer pageNum) {
-        List<CommentEntity> comments = commentService.findAllCommentsByPostId(postId, pageNum);
-
-        // Check for null content in comments
-        for (CommentEntity comment : comments) {
-            if (comment.getContent() == null) {
-                ErrorDto err = new ErrorDto("Comment Content is null.", 10002);
-                return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-            }
-        }
-
-        return ResponseEntity.ok(comments);
-    }
-
-    @DeleteMapping("/{id}/delete")
-    public ResponseEntity<Object> deletePost(
-            @PathVariable("id") Integer commentId) {
-        if (commentService.findCommentById(commentId) == null) {
-            ErrorDto err = new ErrorDto("comment No Longer Exists.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
-        }
-        commentService.deleteComment(commentId);
-        return new ResponseEntity<>(HttpStatus.OK);
+            @RequestParam Integer pageNum,
+            @RequestParam Integer pageSize) {
+        List<CommentEntity> comments = commentService.findAllCommentsByPostId(postId, pageNum, pageSize);
+        Map<String, Object> returnResult = new HashMap<>();
+        returnResult.put("comments", comments);
+        returnResult.put("totalPages", commentService.countTotalPagesByPageSize(pageSize));
+        return ResponseEntity.ok(returnResult);
     }
 
 }

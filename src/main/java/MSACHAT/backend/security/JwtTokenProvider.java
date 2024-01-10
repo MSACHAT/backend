@@ -43,7 +43,6 @@ public class JwtTokenProvider {
 
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
         Integer userId = userRepository.findUserIdByEmailOrByUsername(username);
-
         String token = Jwts.builder()
                 .claim("UserId", userId)
                 .setSubject(username)
@@ -51,6 +50,7 @@ public class JwtTokenProvider {
                 .setExpiration(expireDate)
                 .signWith(key())
                 .compact();
+
         return token;
     }
 
@@ -69,7 +69,6 @@ public class JwtTokenProvider {
                 Decoders.BASE64.decode(jwtSecret)
         );
     }
-
     // get username from Jwt token
     public String getUsername(String token) {
         Claims claims = Jwts.parserBuilder()

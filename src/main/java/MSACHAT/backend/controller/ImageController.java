@@ -24,21 +24,15 @@ public class ImageController {
         this.authService=authService;
     }
     private String uploadRootPath="http://localhost:8085/uploads/";//TODO:改成自己的
-    private String uploadDir="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/UserAvatar";//TODO:改成自己的
+    private String uploadDir="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/UserAvatar";//TODO:改成自己的,注意uploaddir的路径结尾没有"/"
     @PostMapping("/uploadimage")
     public ResponseEntity<String> uploadImage(@RequestPart("file") MultipartFile file) {
         try {
-            // 获取文件名
             String fileName = file.getOriginalFilename();
-
-            // 构建本地文件路径
             Path filePath = Path.of(uploadDir, fileName);
-
             file.transferTo(new File(String.valueOf(filePath)));
-
-            // 返回存储的本地地址
             String serverFilePath = uploadRootPath+fileName;
-            return ResponseEntity.ok("File uploaded successfully. Local file path: " + uploadRootPath);
+            return ResponseEntity.ok("File uploaded successfully. Local file path: " + serverFilePath);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading file");

@@ -5,6 +5,7 @@ import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.CommentService;
+import MSACHAT.backend.service.ImageService;
 import MSACHAT.backend.service.PostService;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.mapper.Mapper;
@@ -19,9 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/post")
@@ -29,17 +27,19 @@ public class PostController {
     private final CommentService commentService;
     private final PostService postService;
     private final AuthService authService;
+    private final ImageService imageService;
 
     private Mapper<PostEntity, PostDto> postMapper;
 
     public PostController(
             PostService postService,
             AuthService authService,
-            CommentService commentService) {
+            CommentService commentService,
+            ImageService imageService) {
         this.postService = postService;
         this.authService = authService;
         this.commentService = commentService;
-
+        this.imageService = imageService;
     }
 
     @PostMapping("/add")
@@ -85,12 +85,13 @@ public class PostController {
             @RequestHeader("Authorization") String bearerToken,
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize) {
+        String token = authService.getTokenFromHeader(bearerToken);
+        Integer userId = authService.getUserIdFromToken(token);
         if (pageSize == null || pageNum == null) {// RequestBody Info Insufficient 10001 Error
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List<PostEntity> posts = postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNum,
-                pageSize);
+        List<PostEntity> posts = postService.findPostsByPageNum(userId, pageNum, pageSize);
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("posts", posts);
         returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
@@ -154,7 +155,9 @@ public class PostController {
     @PatchMapping("/like")
     public ResponseEntity<Object> likePost(
             @RequestBody Object posts,
-            @RequestHeader String token) {
+            @RequestHeader String bearerToken) {
+        String token = authService.getTokenFromHeader(bearerToken);
+        Integer userId = authService.getUserIdFromToken(token);
         Map<String, Boolean> postsMap = (Map<String, Boolean>) posts;
         List<Object> postIds = new ArrayList<>();
         for (Map.Entry<String, Boolean> entry : postsMap.entrySet()) {
@@ -219,10 +222,11 @@ public class PostController {
 
             return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
         }
+        String Avatar = imageService.getAvatar(userId);
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
         PostReturnDto postReturn = new PostReturnDto(post.getId(), post.getUserName(), post.getContent(), imageList,
-                post.getTimeStamp(), post.getLikeCount(), post.getCommentCount(), post.isLiked());
+                post.getTimeStamp(), post.getLikeCount(), post.getCommentCount(), post.isLiked(), Avatar);
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }
@@ -237,10 +241,10 @@ public class PostController {
         if (post == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
+        String Avatar = imageService.getAvatar(userId);
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
         PostReturnDto postReturn = new PostReturnDto(post.getId(), post.getUserName(), post.getContent(), imageList,
-                post.getTimeStamp(), post.getLikeCount(), post.getCommentCount(), post.isLiked());
+                post.getTimeStamp(), post.getLikeCount(), post.getCommentCount(), post.isLiked(), Avatar);
 
         return new ResponseEntity<>(postReturn, HttpStatus.OK);
     }

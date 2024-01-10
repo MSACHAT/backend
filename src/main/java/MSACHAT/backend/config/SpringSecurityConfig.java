@@ -39,9 +39,6 @@ public class SpringSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> {
                     authorize.requestMatchers("/**").permitAll();
-
-
-
                 });
         http.rememberMe(e -> e.tokenValiditySeconds(60 * 60 * 24 * 30));
 
