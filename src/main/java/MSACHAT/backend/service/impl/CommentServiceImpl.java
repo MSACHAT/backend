@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.entity.UserEntity;
 import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.repository.UserRepository;
@@ -64,12 +65,14 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void updateCommentsNumber(Integer postId) {
-        postRepository.addLikesCount(postId);
+        PostEntity post=postRepository.findPostEntityById(postId);
+        post.setCommentCount(post.getCommentCount()+1);
+        postRepository.save(post);
     }
 
     @Override
     public Integer countTotalPagesByPageSize(Integer pageSize){
-        double pageCount=postRepository.count()/(pageSize*1.0);
-        return (Integer) (int)Math.ceil(pageCount)-1;
+        double pageCount=commentRepository.count()/(pageSize*1.0);
+        return (int)Math.ceil(pageCount)-1;
     }
 }

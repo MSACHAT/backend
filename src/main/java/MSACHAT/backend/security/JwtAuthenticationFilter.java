@@ -22,25 +22,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
+
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
+    public void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
 
         String token = getTokenFromRequest(request);
-
+        System.out.println("节点1");
 
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
 
-
+            Integer userId = jwtTokenProvider.getUserId(token);
             String username = jwtTokenProvider.getUsername(token);
-
+            System.out.println(userId);
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 

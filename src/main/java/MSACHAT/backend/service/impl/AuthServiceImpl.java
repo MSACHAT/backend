@@ -56,11 +56,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String getTokenFromHeader(String bearerToken) {
-        System.out.println(bearerToken+"123");
+
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring("Bearer ".length()).trim();
         }
-        System.out.println(bearerToken);
+
         return null;
 
     }
