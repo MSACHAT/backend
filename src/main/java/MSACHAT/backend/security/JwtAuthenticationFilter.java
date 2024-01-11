@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
         String token = getTokenFromRequest(request);
-        System.out.println("节点1");
+
 
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
 
