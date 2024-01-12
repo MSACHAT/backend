@@ -20,16 +20,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/posts")
 public class PostController {
     private final CommentService commentService;
     private final PostService postService;
     private final AuthService authService;
     private final ImageService imageService;
-
-    private Mapper<PostEntity, PostDto> postMapper;
 
     public PostController(
             PostService postService,
@@ -79,8 +78,21 @@ public class PostController {
         }
         return new ResponseEntity<>((new ErrorDto("error: Missing Parameters", 10001)), HttpStatus.BAD_REQUEST);
     }
+    private PostReturnDto convertToDto(PostEntity post) {
+        return new PostReturnDto(
+                post.getId(),
+                post.getUserName(),
+                post.getContent(),
+                post.getImages().stream().map(ImageEntity::getImageUrl).collect(Collectors.toList()),
+                post.getTimeStamp(),
+                post.getLikeCount(),
+                post.getCommentCount(),
+                post.isLiked(),
+                imageService.getAvatar(post.getUserId()) // Assuming post has userId
+        );
+    }
 
-    @GetMapping("/getbypagenumandpagesize")
+    @GetMapping("/")
     public ResponseEntity<Object> getPosts(
             @RequestHeader("Authorization") String bearerToken,
             @RequestParam(value = "pageNum") Integer pageNum,
@@ -91,44 +103,15 @@ public class PostController {
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List<PostEntity> posts = postService.findPostsByPageNum(userId, pageNum, pageSize);
-        List<PostReturnDto> postsReturn=new ArrayList<>();
-        for(PostEntity post:posts){
-            postsReturn.add(new PostReturnDto(
-                    post.getId(),
-                    post.getUserName(),
-                    post.getContent(),
-                    post.getImages().stream().map(ImageEntity::getImageUrl).toList(),
-                    post.getTimeStamp(),
-                    post.getLikeCount(),
-                    post.getCommentCount(),
-                    post.isLiked(),
-                    imageService.getAvatar(userId)
-            ));
-        }
+        List<PostReturnDto> postsReturn = postService.findPostsByPageNum(userId, pageNum, pageSize)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("posts", postsReturn);
         returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
-        return new ResponseEntity<>(returnResult, HttpStatus.OK);
-    }
-
-    // For API Test
-    @GetMapping("/getbypagenumandpagesize/test")
-    public ResponseEntity<Object> getPostsTest(
-
-            @RequestParam(value = "pageNum", required = false) Integer pageNum,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        System.out.println("PageNum Param: " + pageNum);
-        System.out.println("PageSize Param: " + pageSize);
-        if (pageSize == null || pageNum == null) {// RequestBody Info Insufficient 10001 Error
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-        }
-        List<PostEntity> posts = postService.findPostsByPageNum(1, pageNum, pageSize);
-        Map<String, Object> returnResult = new HashMap<>();
-        returnResult.put("posts", posts);
-        returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
-        return new ResponseEntity<>(returnResult, HttpStatus.OK);
+        System.out.println(postsReturn);
+        return ResponseEntity.ok(returnResult);
     }
 
     // @GetMapping("/getbypagenumandpagesize/{userId}/test")
@@ -166,47 +149,21 @@ public class PostController {
     }
     // 捕获照片为空问题
 
-    @PatchMapping("/like")
+    @PatchMapping("/{postId}/like")
     public ResponseEntity<Object> likePost(
-            @RequestBody Object posts,
-            @RequestHeader String bearerToken) {
+            @RequestHeader("Authorization") String bearerToken,
+            @PathVariable Integer postId,
+            @RequestBody IsLikedDto isLiked) {
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
-        Map<String, Boolean> postsMap = (Map<String, Boolean>) posts;
-        List<Object> postIds = new ArrayList<>();
-        for (Map.Entry<String, Boolean> entry : postsMap.entrySet()) {
-            int postId = Integer.parseInt(entry.getKey());
-            Boolean isLiked = entry.getValue();
-            if (postService.findPostById(postId) == null) {
-                ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
-                return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
-            }
-            if (isLiked) {
-                postService.likePost(postId, authService.getUserIdFromToken(token));
-            } else {
-                postService.unlikePost(postId, authService.getUserIdFromToken(token));
-            }
+        if (postService.findPostById(postId) == null) {
+            ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
+            return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(postIds, HttpStatus.OK);
+        String returnMessage = isLiked.getIsLiked() ? postService.likePost(postId, userId) : postService.unlikePost(postId, userId);
+        return new ResponseEntity<>(returnMessage,HttpStatus.OK);
     }
 
-    // For API Test
-    @PatchMapping("/like/test")
-    public ResponseEntity<Object> likePostTest(
-            @RequestBody Object posts) {
-        Map<String, Boolean> postsMap = (Map<String, Boolean>) posts;
-        List<Object> postIds = new ArrayList<>();
-        for (Map.Entry<String, Boolean> entry : postsMap.entrySet()) {
-            int postId = Integer.parseInt(entry.getKey());
-            Boolean isLiked = entry.getValue();
-            if (isLiked) {
-                postService.likePost(postId, 1);// 这里1是userId
-            } else {
-                postService.unlikePost(postId, 1);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Object> deletePost(

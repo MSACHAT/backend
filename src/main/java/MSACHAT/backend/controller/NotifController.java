@@ -47,8 +47,6 @@ public class NotifController {
         returnResult.put("notifs", notifs);
         returnResult.put("totalPages", notifService.countTotalPagesByPageSize(pageSize));
         NotifTagEntity notifTag= notifService.findNotifTagByUserId(userId);
-        System.out.println("还没报错");
-        System.out.println(notifs);
         if(!notifs.isEmpty()) {
             if (notifTag == null) {
                 notifService.newNotifTag(notifs.get(0).getTimeStamp(), userId);
