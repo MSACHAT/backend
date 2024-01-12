@@ -10,4 +10,6 @@ public interface ImageService {
     public void uploadAvatar(String avatarPath, Integer userId);
 
     public String getAvatar(Integer userId);
+
+    public String uploadImage(String imagePath,Integer postTd);
 }

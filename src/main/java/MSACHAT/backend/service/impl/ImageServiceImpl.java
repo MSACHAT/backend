@@ -27,5 +27,10 @@ public class ImageServiceImpl implements ImageService {
         return userRepository.findUserEntityById(userId).getAvatar();
     }
 
+    @Override
+    public String uploadImage(String imagePath, Integer postTd) {
+        return null;
+    }
+
 
 }
