@@ -31,9 +31,8 @@ public class AuthController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<Integer> Test( @RequestHeader("Authorization") String bearerToken){
-        String token = authService.getTokenFromHeader(bearerToken);
-        Integer userId = authService.getUserIdFromToken(token);
-        return new ResponseEntity<>(userId, HttpStatus.ACCEPTED);
+    public ResponseEntity<String> Test( ){
+
+        return new ResponseEntity<>("ok",HttpStatus.ACCEPTED);
     }
 }

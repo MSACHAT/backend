@@ -1,5 +1,6 @@
 package MSACHAT.backend.config;
 
+import MSACHAT.backend.security.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SpringSecurityConfig {
 
-    public SpringSecurityConfig(UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SpringSecurityConfig(UserDetailsService userDetailsService,JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     private UserDetailsService userDetailsService;
@@ -38,9 +42,12 @@ public class SpringSecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers("/**").permitAll();
+                    authorize.requestMatchers("/login").permitAll();
+                    authorize.anyRequest().authenticated();
                 });
         http.rememberMe(e -> e.tokenValiditySeconds(60 * 60 * 24 * 30));
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
