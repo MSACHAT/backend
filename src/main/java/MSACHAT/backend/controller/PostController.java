@@ -88,7 +88,7 @@ public class PostController {
                 post.getLikeCount(),
                 post.getCommentCount(),
                 post.isLiked(),
-                imageService.getAvatar(post.getUserId()) // Assuming post has userId
+                imageService.getAvatar(post.getUserId())
         );
     }
 
@@ -255,5 +255,12 @@ public class PostController {
     public ResponseEntity<Object> getPostById(@PathVariable("id") Integer postId) {
 
         return new ResponseEntity<>(postService.IsPostExist(postId), HttpStatus.OK);
+    }
+
+    @PostMapping("/test/post")
+    public String postTesting(
+            @RequestHeader("Authorization")String token
+    ) {
+        return "connnectehfbsdf";
     }
 }
