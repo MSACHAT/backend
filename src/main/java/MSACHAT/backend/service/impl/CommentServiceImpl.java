@@ -77,9 +77,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentEntity findCommentById(Integer commentId) {
-        return commentRepository.findCommentEntityById(commentId);
-
+        return null;
     }
+
 
     @Override
     public String deleteComment(Integer commentId) {

@@ -1,5 +1,6 @@
 package MSACHAT.backend.security;
 
+import MSACHAT.backend.dto.GetUserIdDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             Integer userId = jwtTokenProvider.getUserId(token);
             String username = jwtTokenProvider.getUsername(token);
-            System.out.println(userId);
+
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -53,7 +54,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+
+
+            authenticationToken.setDetails(userId);
+
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+            System.out.println(authenticationToken);
 
         }
 

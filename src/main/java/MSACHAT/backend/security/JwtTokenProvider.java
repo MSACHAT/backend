@@ -33,7 +33,7 @@ public class JwtTokenProvider {
 
 
 
-    // generate JWT token
+
     public String generateToken(Authentication authentication) {
 
         String username = authentication.getName();
@@ -81,7 +81,7 @@ public class JwtTokenProvider {
     }
 
 
-    // validate Jwt token
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()

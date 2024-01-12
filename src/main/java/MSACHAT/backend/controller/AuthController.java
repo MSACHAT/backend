@@ -3,11 +3,15 @@ package MSACHAT.backend.controller;
 import MSACHAT.backend.dto.ErrorDto;
 import MSACHAT.backend.dto.JWTAuthResponse;
 import MSACHAT.backend.dto.LoginDto;
+import MSACHAT.backend.dto.UserDto;
+import MSACHAT.backend.entity.UserEntity;
+import MSACHAT.backend.service.UserService;
 import lombok.AllArgsConstructor;
 
 import MSACHAT.backend.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private AuthService authService;
+
+    private UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody LoginDto loginDto) {
@@ -31,8 +37,26 @@ public class AuthController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<String> Test( ){
-
+    public ResponseEntity<String> Test(Authentication authentication ){
+        Object userId = authentication.getDetails();
+        Object UserName= authentication.getName();
+        System.out.println(userId);
+        System.out.println(UserName);
         return new ResponseEntity<>("ok",HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<Object> register(@RequestBody UserDto userDto) {
+        if (userDto.getUsername() == null || userDto.getPassword() == null) {
+            return new ResponseEntity<>("Username and password are required", HttpStatus.BAD_REQUEST);
+        }
+
+
+        try {
+            UserEntity registeredUser = userService.registerNewUserAccount(userDto);
+            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+        } catch (IllegalArgumentException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 }

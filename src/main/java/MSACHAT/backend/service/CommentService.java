@@ -19,4 +19,7 @@ public interface CommentService {
 
     public Integer countTotalPagesByPageSize(Integer pageSize);
 
+    CommentEntity findCommentById(Integer commentId);
+
+    String deleteComment(Integer commentId);
 }
