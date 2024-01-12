@@ -48,12 +48,8 @@ public class ImageController {
             String token=authService.getTokenFromHeader(bearerToken);
             Integer userId= authService.getUserIdFromToken(token);
             String fileName = file.getOriginalFilename();
-            // 构建本地文件路径
             Path filePath = Path.of(uploadDir, fileName);
-
             file.transferTo(new File(String.valueOf(filePath)));
-
-            // 返回存储的本地地址
             String serverFilePath = uploadRootPath+fileName;
             imageService.uploadAvatar(serverFilePath,userId);
             return ResponseEntity.ok(serverFilePath);

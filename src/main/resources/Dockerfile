@@ -1,7 +1,5 @@
-FROM amazoncorretto:21
-MAINTAINER MoonDance
+FROM openjdk:17
+VOLUME /tmp
 EXPOSE 8085
-ADD target/backend-0.0.1-SNAPSHOT.jar app.jar
-
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
-
+COPY ../../../target/backend-0.0.1-SNAPSHOT.jar backend.jar
+ENTRYPOINT ["java","-jar","backend.jar"]

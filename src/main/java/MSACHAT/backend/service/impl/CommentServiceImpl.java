@@ -72,19 +72,19 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Integer countTotalPagesByPageSize(Integer pageSize) {
         double pageCount = postRepository.count() / (pageSize * 1.0);
-        return (Integer) (int) Math.ceil(pageCount) - 1;
+        return (int) Math.ceil(pageCount) - 1;
     }
 
-    @Override
-    public CommentEntity findCommentById(Integer commentId) {
-        return commentRepository.findCommentEntityById(commentId);
-
-    }
-
-    @Override
-    public String deleteComment(Integer commentId) {
-
-        commentRepository.deleteById(commentId);
-        return "comment Deleted successfully";
-    }
+//    @Override
+//    public CommentEntity findCommentById(Integer commentId) {
+//        return commentRepository.findCommentEntityById(commentId);
+//
+//    }
+//
+//    @Override
+//    public String deleteComment(Integer commentId) {
+//
+//        commentRepository.deleteById(commentId);
+//        return "comment Deleted successfully";
+//    }
 }
