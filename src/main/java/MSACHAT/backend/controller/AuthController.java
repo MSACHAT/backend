@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import MSACHAT.backend.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -19,9 +20,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody LoginDto loginDto) {
 
-        if (!authService.IsUserExist(loginDto.getEmail())) {
-            return new ResponseEntity<>(new ErrorDto("User Do Not Exist",10001),HttpStatus.UNAUTHORIZED);
-        };
         String token = authService.login(loginDto);
         System.out.println("token"+token);
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
@@ -31,8 +29,8 @@ public class AuthController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<String> Test( ){
-
+    public ResponseEntity<String> Test(Authentication authentication){
+        System.out.println(authentication.getName());
         return new ResponseEntity<>("ok",HttpStatus.ACCEPTED);
     }
 }
