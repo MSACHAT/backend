@@ -122,8 +122,6 @@ public class PostServiceImpl implements PostService {
             post.setLiked(false);
         }
 
-        System.out.println(post.getImages().get(0).getImageUrl());
-        System.out.println("888888888888888888888888");
         return post;
     }
 

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/notif")
+@RequestMapping("/notifications")
 public class NotifController {
     private AuthService authService;
     private NotifService notifService;
@@ -29,7 +29,7 @@ public class NotifController {
         this.notifService = notifService;
     }
 
-    @GetMapping("/getbypagenumandpagesize")
+    @GetMapping("/")
     public ResponseEntity<Object> getNotifs(
             @RequestHeader("Authorization") String bearerToken,
             @RequestParam(value = "pageNum") Integer pageNum,
@@ -86,7 +86,7 @@ public class NotifController {
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
-    @GetMapping("/countnewnotifs")
+    @GetMapping("/newMessage")
     public NewNotifDto countNewNotifs(@RequestHeader("Authorization") String bearerToken){
         String token=authService.getTokenFromHeader(bearerToken);
         Integer userId= authService.getUserIdFromToken(token);

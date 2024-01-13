@@ -26,7 +26,7 @@ public class AuthController {
     public ResponseEntity<Object> authenticate(@RequestBody LoginDto loginDto) {
 
         if (!authService.IsUserExist(loginDto.getEmail())) {
-            return new ResponseEntity<>(new ErrorDto("User Do Not Exist",10001),HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ErrorDto("User Does Not Exist",10001),HttpStatus.UNAUTHORIZED);
         };
         String token = authService.login(loginDto);
         System.out.println("token"+token);

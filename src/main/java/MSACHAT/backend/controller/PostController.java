@@ -165,7 +165,7 @@ public class PostController {
     }
 
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletePost(
             @PathVariable("id") Integer postId) {
         if (postService.findPostById(postId) == null) {
@@ -191,7 +191,7 @@ public class PostController {
         PostEntity post = postService.findPostByIdAndUserId(postId, userId);
         if (post == null) {
 
-            return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ErrorDto("Post does not exist", 1001), HttpStatus.NOT_FOUND);
         }
         String Avatar = imageService.getAvatar(userId);
 
