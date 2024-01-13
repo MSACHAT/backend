@@ -39,9 +39,9 @@ public class AuthController {
     @GetMapping("/test")
     public ResponseEntity<String> Test(Authentication authentication ){
 
-        Object UserName= authentication.getName();
+        String UserName= authentication.getName();
 
-        return new ResponseEntity<>("ok",HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(UserName,HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/register")
