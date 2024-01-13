@@ -11,12 +11,9 @@ import MSACHAT.backend.entity.PostEntity;
 import jakarta.transaction.Transactional;
 
 import org.hibernate.annotations.DialectOverride.OverridesAnnotation;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 // import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 // import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Array;
@@ -51,7 +48,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum, Integer pageSize) {
-        Pageable pageRequest = PageRequest.of(pageNum, pageSize);
+        Sort sort = Sort.by(Sort.Direction.DESC, "timeStamp");
+        Pageable pageRequest = PageRequest.of(pageNum, pageSize,sort);
         Page<PostEntity> posts = postRepository.findAll(pageRequest);
         for(PostEntity post:posts){
             post.setLiked(likeRepository.existsByUserIdAndPostId(userId,post.getId()));

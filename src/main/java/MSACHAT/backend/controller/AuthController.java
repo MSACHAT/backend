@@ -38,10 +38,9 @@ public class AuthController {
 
     @GetMapping("/test")
     public ResponseEntity<String> Test(Authentication authentication ){
-        Object userId = authentication.getDetails();
+
         Object UserName= authentication.getName();
-        System.out.println(userId);
-        System.out.println(UserName);
+
         return new ResponseEntity<>("ok",HttpStatus.ACCEPTED);
     }
 

@@ -49,7 +49,7 @@ public class SpringSecurityConfig{
                     authorize.anyRequest().authenticated();
 
                 });
-        http.rememberMe(e -> e.tokenValiditySeconds(60 * 60 * 24 * 30));
+//        http.rememberMe(e -> e.tokenValiditySeconds(60 * 60 * 24 * 30));
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -60,4 +60,6 @@ public class SpringSecurityConfig{
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
+
 }
