@@ -27,7 +27,7 @@ public class ImageController {
     public ResponseEntity<String> uploadImage(
             @RequestPart("file") MultipartFile file) {
         try {
-            String fileName = file.getOriginalFilename();
+            String fileName = System.currentTimeMillis()+".png";
             Path filePath = Path.of(uploadDirForImages, fileName);
             file.transferTo(new File(String.valueOf(filePath)));
             String serverFilePath = uploadRootPath+fileName;
@@ -46,7 +46,7 @@ public class ImageController {
         try {
             String token=authService.getTokenFromHeader(bearerToken);
             Integer userId= authService.getUserIdFromToken(token);
-            String fileName = file.getOriginalFilename();
+            String fileName = System.currentTimeMillis()+".png";
             Path filePath = Path.of(uploadDirForAvatar, fileName);
             file.transferTo(new File(String.valueOf(filePath)));
             String serverFilePath = uploadRootPath+fileName;
