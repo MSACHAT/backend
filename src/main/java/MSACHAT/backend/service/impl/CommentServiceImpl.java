@@ -75,16 +75,16 @@ public class CommentServiceImpl implements CommentService {
         return (Integer) (int) Math.ceil(pageCount) - 1;
     }
 
-    @Override
-    public CommentEntity findCommentById(Integer commentId) {
-        return commentRepository.findCommentEntityById(commentId);
+    // @Override
+    // public CommentEntity findCommentById(Integer commentId) {
+    // return commentRepository.findCommentEntityById(commentId);
 
-    }
+    // }
 
-    @Override
-    public String deleteComment(Integer commentId) {
+    // @Override
+    // public String deleteComment(Integer commentId) {
 
-        commentRepository.deleteById(commentId);
-        return "comment Deleted successfully";
-    }
+    // commentRepository.deleteById(commentId);
+    // return "comment Deleted successfully";
+    // }
 }

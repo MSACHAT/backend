@@ -53,8 +53,8 @@ public class PostServiceImpl implements PostService {
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum, Integer pageSize) {
         Pageable pageRequest = PageRequest.of(pageNum, pageSize);
         Page<PostEntity> posts = postRepository.findAll(pageRequest);
-        for(PostEntity post:posts){
-            post.setLiked(likeRepository.existsByUserIdAndPostId(userId,post.getId()));
+        for (PostEntity post : posts) {
+            post.setLiked(likeRepository.existsByUserIdAndPostId(userId, post.getId()));
         }
         return posts.getContent();
     }
@@ -121,9 +121,10 @@ public class PostServiceImpl implements PostService {
         } else {
             post.setLiked(false);
         }
+        System.out.println(post);
 
-        System.out.println(post.getImages().get(0).getImageUrl());
-        System.out.println("888888888888888888888888");
+        // System.out.println(post.getImages().get(0).getImageUrl());
+        // System.out.println("888888888888888888888888");
         return post;
     }
 
@@ -194,13 +195,14 @@ public class PostServiceImpl implements PostService {
         for (int i = 0; i < postIds.size(); i++) {
             postDetails.add(postRepository.findPostEntityById(postIds.get(i)));
         }
-        System.out.println("999999999999999999999999999999999");
-        for (int i = 0; i < postIds.size(); i++) {
-            System.out.println(postDetails.get(i).getImages().get(0).getImageUrl());
-        }
+        // System.out.println("999999999999999999999999999999999");
+        // for (int i = 0; i < postIds.size(); i++) {
+        // System.out.println(postDetails.get(i).getImages().get(0).getImageUrl());
+        // }
 
         List<PostEntity> postDetails1 = new ArrayList<PostEntity>();
-        return new PostResponse(pageResult.getTotalPages(), pageNum, postDetails1);
+
+        return new PostResponse(pageResult.getTotalPages(), pageNum, postDetails);
     }
 
     // @Override

@@ -92,8 +92,8 @@ public class PostController {
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
         List<PostEntity> posts = postService.findPostsByPageNum(userId, pageNum, pageSize);
-        List<PostReturnDto> postsReturn=new ArrayList<>();
-        for(PostEntity post:posts){
+        List<PostReturnDto> postsReturn = new ArrayList<>();
+        for (PostEntity post : posts) {
             postsReturn.add(new PostReturnDto(
                     post.getId(),
                     post.getUserName(),
@@ -103,8 +103,7 @@ public class PostController {
                     post.getLikeCount(),
                     post.getCommentCount(),
                     post.isLiked(),
-                    imageService.getAvatar(userId)
-            ));
+                    imageService.getAvatar(userId)));
         }
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("posts", postsReturn);
@@ -162,6 +161,7 @@ public class PostController {
             @RequestParam(value = "pageSize") Integer pageSize) {
         System.out.println("PageNum Param: " + pageNum);
         System.out.println("PageSize Param: " + pageSize);
+        System.out.println(postService.getAllPostsByUserId(userId, pageNum, pageSize));
         return new ResponseEntity<>(postService.getAllPostsByUserId(userId, pageNum, pageSize), HttpStatus.OK);
     }
     // 捕获照片为空问题

@@ -1,6 +1,5 @@
 package MSACHAT.backend.service.impl;
 
-
 import MSACHAT.backend.repository.UserRepository;
 
 import MSACHAT.backend.security.JwtTokenProvider;
@@ -23,7 +22,6 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-
     public AuthServiceImpl(
             JwtTokenProvider jwtTokenProvider,
             UserRepository userRepository,
@@ -37,6 +35,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String login(LoginDto loginDto) {
+        System.out.println(loginDto.getPassword());
+        System.out.println("99999999999999999999999999999999");
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(), loginDto.getPassword()));
@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String getTokenFromHeader(String bearerToken) {
-        System.out.println(bearerToken+"123");
+        System.out.println(bearerToken + "123");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring("Bearer ".length()).trim();
         }
@@ -64,8 +64,9 @@ public class AuthServiceImpl implements AuthService {
         return null;
 
     }
+
     @Override
-    public Boolean IsUserExist(String email){
+    public Boolean IsUserExist(String email) {
         return userRepository.existsByEmail(email);
     }
 }
