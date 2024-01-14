@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -34,7 +35,8 @@ public interface PostService {
 
     public Page<PostDto> getAllByUserId(Integer userId, Integer pageNum, Integer pageSize);
 
-    public PostResponse getAllPostsByUserId(Integer userId, Integer pageNum, Integer pageSize);
+    // public PostResponse getAllPostsByUserId(Integer userId, Integer pageNum,
+    // Integer pageSize);
 
     Boolean IsPostExist(Integer postId);
 
@@ -44,6 +46,7 @@ public interface PostService {
 
     public Integer countTotalPagesByPageSize(Integer pageSize);
 
+    public Map<String, Object> getPostsByUserId(Integer userId, Integer pageNum, Integer pageSize);
     // public List<PostEntity> findPostsByUserIdAndPageNum(Integer userId, Integer
     // pageNum, Integer pageSize);
 

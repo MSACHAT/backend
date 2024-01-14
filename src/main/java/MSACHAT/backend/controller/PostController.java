@@ -78,6 +78,7 @@ public class PostController {
         }
         return new ResponseEntity<>((new ErrorDto("error: Missing Parameters", 10001)), HttpStatus.BAD_REQUEST);
     }
+
     private PostReturnDto convertToDto(PostEntity post) {
         return new PostReturnDto(
                 post.getId(),
@@ -88,8 +89,7 @@ public class PostController {
                 post.getLikeCount(),
                 post.getCommentCount(),
                 post.isLiked(),
-                imageService.getAvatar(post.getUserId())
-        );
+                imageService.getAvatar(post.getUserId()));
     }
 
     @GetMapping("/")
@@ -137,17 +137,44 @@ public class PostController {
     // postService.countTotalPagesByPageSize(pageSize));
     // return new ResponseEntity<>(returnResult, HttpStatus.OK);
     // }
+    @GetMapping("getbypagenumandpagesize/{userId}")
+    public ResponseEntity<Object> getPostByUserId(
+            @PathVariable("userId") Integer userId,
+            @RequestParam(value = "pageNum", required = false) Integer pageNum,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
-    @GetMapping(value = "/getbypagenumandpagesize/{userId}")
-    public ResponseEntity<PostResponse> getPostsByUserId(
-            @PathVariable Integer userId,
-            @RequestParam(value = "pageNum") Integer pageNum,
-            @RequestParam(value = "pageSize") Integer pageSize) {
-        System.out.println("PageNum Param: " + pageNum);
-        System.out.println("PageSize Param: " + pageSize);
-        return new ResponseEntity<>(postService.getAllPostsByUserId(userId, pageNum, pageSize), HttpStatus.OK);
+        if (pageSize == null || pageNum == null) {
+            return new ResponseEntity<>(new ErrorDto(
+                    "Request body incomplete. Required fields missing.",
+                    10001),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        Map<String, Object> postResponse = postService.getPostsByUserId(userId, pageNum, pageSize);
+
+        // bug: @data and @entity cannot use together
+        // temporary use dto to avoid exceptions
+        // todo: fix PostRepository
+        List<PostReturnDto> postsReturnDtos = new ArrayList<>();
+
+        for (PostEntity post : (Page<PostEntity>) postResponse.get("posts")) {
+            postsReturnDtos.add(new PostReturnDto(
+                    post.getId(),
+                    post.getUserName(),
+                    post.getContent(),
+                    post.getImages().stream().map(ImageEntity::getImageUrl).toList(),
+                    post.getTimeStamp(),
+                    post.getLikeCount(),
+                    post.getCommentCount(),
+                    post.isLiked(),
+                    imageService.getAvatar(userId)));
+            System.out.println(post.getContent());
+        }
+
+        postResponse.put("posts", postsReturnDtos);
+
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
-    // 捕获照片为空问题
 
     @PatchMapping("/{postId}/like")
     public ResponseEntity<Object> likePost(
@@ -160,10 +187,10 @@ public class PostController {
             ErrorDto err = new ErrorDto("Post No Longer Exists.", 10002);
             return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
         }
-        String returnMessage = isLiked.getIsLiked() ? postService.likePost(postId, userId) : postService.unlikePost(postId, userId);
-        return new ResponseEntity<>(returnMessage,HttpStatus.OK);
+        String returnMessage = isLiked.getIsLiked() ? postService.likePost(postId, userId)
+                : postService.unlikePost(postId, userId);
+        return new ResponseEntity<>(returnMessage, HttpStatus.OK);
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletePost(
@@ -259,8 +286,7 @@ public class PostController {
 
     @PostMapping("/test/post")
     public String postTesting(
-            @RequestHeader("Authorization")String token
-    ) {
+            @RequestHeader("Authorization") String token) {
         return "connnectehfbsdf";
     }
 }
