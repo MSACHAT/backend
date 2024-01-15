@@ -89,7 +89,7 @@ public class PostController {
         );
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<Object> getPosts(
             @RequestHeader("Authorization") String bearerToken,
             @RequestParam(value = "pageNum") Integer pageNum,
@@ -135,15 +135,6 @@ public class PostController {
     // return new ResponseEntity<>(returnResult, HttpStatus.OK);
     // }
 
-    @GetMapping(value = "/getbypagenumandpagesize/{userId}")
-    public ResponseEntity<PostResponse> getPostsByUserId(
-            @PathVariable Integer userId,
-            @RequestParam(value = "pageNum") Integer pageNum,
-            @RequestParam(value = "pageSize") Integer pageSize) {
-        System.out.println("PageNum Param: " + pageNum);
-        System.out.println("PageSize Param: " + pageSize);
-        return new ResponseEntity<>(postService.getAllPostsByUserId(userId, pageNum, pageSize), HttpStatus.OK);
-    }
     // 捕获照片为空问题
 
     @PatchMapping("/{postId}/like")

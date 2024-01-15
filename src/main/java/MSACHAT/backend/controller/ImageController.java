@@ -26,11 +26,12 @@ public class ImageController {
     private String uploadDirForImages="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/PostImages";
     @PostMapping("/uploadimage")
     public ResponseEntity<String> uploadImage(
-            Authentication authentication,
+            @RequestHeader("Authorization") String bearerToken,
             @RequestPart("file") MultipartFile file
     ) {
         try {
-            Integer userId=Integer.parseInt(authentication.getName());
+            String token=authService.getTokenFromHeader(bearerToken);
+            Integer userId=authService.getUserIdFromToken(token);
             String fileName = System.currentTimeMillis()+userId.toString()+file.getOriginalFilename();
             Path filePath = Path.of(uploadDirForImages, fileName);
             file.transferTo(new File(String.valueOf(filePath)));

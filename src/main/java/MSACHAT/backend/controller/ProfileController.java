@@ -4,6 +4,7 @@ import MSACHAT.backend.dto.ErrorDto;
 import MSACHAT.backend.dto.PostDto;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.mapper.Mapper;
+import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.CommentService;
 import MSACHAT.backend.service.PostService;
@@ -31,6 +32,18 @@ public class ProfileController {
         this.postService = postService;
         this.authService = authService;
         this.commentService = commentService;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<PostRepository.PostResponse> getPostsByUserId(
+            @RequestHeader("Authorization") String bearerToken,
+            @RequestParam(value = "pageNum") Integer pageNum,
+            @RequestParam(value = "pageSize") Integer pageSize) {
+        System.out.println("PageNum Param: " + pageNum);
+        System.out.println("PageSize Param: " + pageSize);
+        String token=authService.getTokenFromHeader(bearerToken);
+        Integer userId=authService.getUserIdFromToken(token);
+        return new ResponseEntity<>(postService.getAllPostsByUserId(userId, pageNum, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("/getbypagenumandpagesize")
