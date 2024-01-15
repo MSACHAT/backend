@@ -42,7 +42,8 @@ public class ProfileController {
             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
         }
-        List<PostEntity> posts = postService.findPostsByPageNum(authService.getUserIdFromToken(bearerToken), pageNum,
+        String token=authService.getTokenFromHeader(bearerToken);
+        List<PostEntity> posts = postService.findPostsByPageNum(authService.getUserIdFromToken(token), pageNum,
                 pageSize);
         Map<String, Object> returnResult = new HashMap<>();
         returnResult.put("posts", posts);

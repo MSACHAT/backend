@@ -102,5 +102,18 @@ public class NotifServiceImpl implements NotifService {
         return notifRepository.countAllByReceiverIdAndTimeStampAfter(receiverId,timeStamp);
     }
 
+    @Override
+    public void addNewNotif(Integer senderId, Integer receiverId, Integer postId,String commentContent) {
+        NotifEntity notifEntity=new NotifEntity();
+        notifEntity.setPostId(postId);
+        notifEntity.setSenderId(senderId);
+        notifEntity.setReceiverId(receiverId);
+        if(commentContent != null){
+            notifEntity.setCommentContent(commentContent);
+        }
+        notifEntity.setTimeStamp(new Date(System.currentTimeMillis()));
+        notifRepository.save(notifEntity);
+    }
+
 
 }

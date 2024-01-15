@@ -2,6 +2,7 @@ package MSACHAT.backend.controller;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.ImageService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,9 +26,12 @@ public class ImageController {
     private String uploadDirForImages="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/PostImages";
     @PostMapping("/uploadimage")
     public ResponseEntity<String> uploadImage(
-            @RequestPart("file") MultipartFile file) {
+            Authentication authentication,
+            @RequestPart("file") MultipartFile file
+    ) {
         try {
-            String fileName = System.currentTimeMillis()+".png";
+            Integer userId=Integer.parseInt(authentication.getName());
+            String fileName = System.currentTimeMillis()+userId.toString()+file.getOriginalFilename();
             Path filePath = Path.of(uploadDirForImages, fileName);
             file.transferTo(new File(String.valueOf(filePath)));
             String serverFilePath = uploadRootPath+fileName;
@@ -46,7 +50,7 @@ public class ImageController {
         try {
             String token=authService.getTokenFromHeader(bearerToken);
             Integer userId= authService.getUserIdFromToken(token);
-            String fileName = System.currentTimeMillis()+".png";
+            String fileName = System.currentTimeMillis()+userId.toString()+file.getOriginalFilename()+".png";
             Path filePath = Path.of(uploadDirForAvatar, fileName);
             file.transferTo(new File(String.valueOf(filePath)));
             String serverFilePath = uploadRootPath+fileName;

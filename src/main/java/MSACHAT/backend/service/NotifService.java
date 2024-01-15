@@ -19,11 +19,13 @@ public interface NotifService {
 
     public NotifEntity getNotifById(Integer notifId);
 
-    public void setNotifTag(Date time,Integer userId);
+    public void setNotifTag(Date time, Integer userId);
 
     void newNotifTag(Date time, Integer userId);
 
     public NotifTagEntity findNotifTagByUserId(Integer userId);
 
-    public Integer countNewNotifs(Integer receiverId,Date timeStamp);
+    public Integer countNewNotifs(Integer receiverId, Date timeStamp);
+
+    public void addNewNotif(Integer senderId, Integer receiverId,Integer postId,String commentContent);
 }
