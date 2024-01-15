@@ -18,6 +18,7 @@ public class UserEntity {
     private Integer id;
     private String name;
     private String avatar;
+
     @Column(nullable = false, unique = true)
     private String username;
 

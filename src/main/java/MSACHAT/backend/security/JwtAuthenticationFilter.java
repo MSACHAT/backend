@@ -53,9 +53,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
 
-            System.out.println("---------------------------");
-            System.out.println(authenticationToken.getDetails());
-//            authenticationToken.setDetails(userId);
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
