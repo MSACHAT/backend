@@ -21,46 +21,10 @@ public class ImageController {
         this.imageService=imageService;
         this.authService=authService;
     }
-    private String uploadRootPath="http://localhost:8085/uploads/";//TODO:改成自己的
-    private String uploadDirForAvatar ="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/UserAvatar";//TODO:改成自己的,注意uploaddir的路径结尾没有"/"
-    private String uploadDirForImages="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/PostImages";
-    @PostMapping("/uploadimage")
-    public ResponseEntity<String> uploadImage(
-            Authentication authentication,
-            @RequestPart("file") MultipartFile file
-    ) {
-        try {
-            Integer userId=Integer.parseInt(authentication.getName());
-            String fileName = System.currentTimeMillis()+userId.toString()+file.getOriginalFilename();
-            Path filePath = Path.of(uploadDirForImages, fileName);
-            file.transferTo(new File(String.valueOf(filePath)));
-            String serverFilePath = uploadRootPath+fileName;
-            return ResponseEntity.ok(serverFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Error uploading file");
-        }
-    }
+    private final String uploadRootPath="http://localhost:8085/uploads/";//TODO:改成自己的
+    private final String uploadDirForAvatar ="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/UserAvatar";//TODO:改成自己的,注意uploaddir的路径结尾没有"/"
+    private final String uploadDirForImages="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/PostImages";
 
-    @PostMapping("/uploadavatar")
-    public ResponseEntity<String> uploadAvatar(
-            @RequestPart("file") MultipartFile file,
-            @RequestHeader("Authorization") String bearerToken
-    ) {
-        try {
-            String token=authService.getTokenFromHeader(bearerToken);
-            Integer userId= authService.getUserIdFromToken(token);
-            String fileName = System.currentTimeMillis()+userId.toString()+file.getOriginalFilename()+".png";
-            Path filePath = Path.of(uploadDirForAvatar, fileName);
-            file.transferTo(new File(String.valueOf(filePath)));
-            String serverFilePath = uploadRootPath+fileName;
-            imageService.uploadAvatar(serverFilePath,userId);
-            return ResponseEntity.ok(serverFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Error uploading file");
-        }
-    }
     @PostMapping("/uploadavatar/test")
     public ResponseEntity<String> uploadAvatar(
             @RequestPart("file") MultipartFile file

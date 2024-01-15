@@ -111,29 +111,25 @@ public class PostController {
         return ResponseEntity.ok(returnResult);
     }
 
-    // @GetMapping("/getbypagenumandpagesize/{userId}/test")
-    // public ResponseEntity<Object> getPostsTestByUserId(
-    // @PathVariable Integer userId,
-    // @RequestParam(value = "pageNum") Integer pageNum,
-    // @RequestParam(value = "pageSize") Integer pageSize) {
-    // System.out.println("PageNum Param: " + pageNum);
-    // System.out.println("PageSize Param: " + pageSize);
-
-    // if (pageSize == null || pageNum == null) {
-    // ErrorDto err = new ErrorDto("Request body incomplete. Required fields
-    // missing.", 10001);
-    // return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-    // }
-
-    // List<PostEntity> posts = postService.getAllPostsByUserId(userId, pageNum,
-    // pageSize);
-
-    // Map<String, Object> returnResult = new HashMap<>();
-    // returnResult.put("posts", posts);
-    // returnResult.put("totalPages",
-    // postService.countTotalPagesByPageSize(pageSize));
-    // return new ResponseEntity<>(returnResult, HttpStatus.OK);
-    // }
+//     @GetMapping("/test/getbypagenumandpagesize/{userId}")
+//     public ResponseEntity<Object> getPostsTest(
+//             @PathVariable("userId")Integer userId,
+//             @RequestParam(value = "pageNum") Integer pageNum,
+//             @RequestParam(value = "pageSize") Integer pageSize) {
+//         if (pageSize == null || pageNum == null) {// RequestBody Info Insufficient 10001 Error
+//             ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
+//             return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+//         }
+//         List<PostReturnDto> postsReturn = postService.findPostsByPageNum(userId, pageNum, pageSize)
+//                 .stream()
+//                 .map(this::convertToDto)
+//                 .collect(Collectors.toList());
+//         Map<String, Object> returnResult = new HashMap<>();
+//         returnResult.put("posts", postsReturn);
+//         returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
+//         System.out.println(postsReturn);
+//         return ResponseEntity.ok(returnResult);
+//     }
 
     @GetMapping(value = "/getbypagenumandpagesize/{userId}")
     public ResponseEntity<PostResponse> getPostsByUserId(
