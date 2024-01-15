@@ -137,12 +137,15 @@ public class PostController {
     // postService.countTotalPagesByPageSize(pageSize));
     // return new ResponseEntity<>(returnResult, HttpStatus.OK);
     // }
-    @GetMapping("getbypagenumandpagesize/{userId}")
+    @GetMapping("getbypagenumandpagesize")
     public ResponseEntity<Object> getPostByUserId(
-            @PathVariable("userId") Integer userId,
-            @RequestParam(value = "pageNum", required = false) Integer pageNum,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-
+            @RequestHeader("Authorization") String bearerToken,
+            @RequestParam(value = "pageNum") Integer pageNum,
+            @RequestParam(value = "pageSize") Integer pageSize) {
+        String token = authService.getTokenFromHeader(bearerToken);
+        Integer userId = authService.getUserIdFromToken(token);
+        System.out.println("____________________________");
+        System.out.println(userId);
         if (pageSize == null || pageNum == null) {
             return new ResponseEntity<>(new ErrorDto(
                     "Request body incomplete. Required fields missing.",
