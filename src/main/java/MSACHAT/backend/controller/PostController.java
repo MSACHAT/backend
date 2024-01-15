@@ -3,10 +3,7 @@ package MSACHAT.backend.controller;
 import MSACHAT.backend.dto.*;
 import MSACHAT.backend.entity.CommentEntity;
 import MSACHAT.backend.entity.ImageEntity;
-import MSACHAT.backend.service.AuthService;
-import MSACHAT.backend.service.CommentService;
-import MSACHAT.backend.service.ImageService;
-import MSACHAT.backend.service.PostService;
+import MSACHAT.backend.service.*;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.mapper.Mapper;
 import MSACHAT.backend.repository.PostRepository.PostResponse;
@@ -16,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,12 +23,15 @@ public class PostController {
     private final PostService postService;
     private final AuthService authService;
     private final ImageService imageService;
+    private final NotifService notifService;
 
     public PostController(
+            NotifService notifService,
             PostService postService,
             AuthService authService,
             CommentService commentService,
             ImageService imageService) {
+        this.notifService = notifService;
         this.postService = postService;
         this.authService = authService;
         this.commentService = commentService;
@@ -54,7 +51,6 @@ public class PostController {
                     postService.addImage(savedPostEntity, image);
                 }
             }
-
             return new ResponseEntity<>("success: true", HttpStatus.CREATED);
         }
         return new ResponseEntity<>((new ErrorDto("error: Missing Parameters", 10001)), HttpStatus.BAD_REQUEST);
@@ -255,14 +251,20 @@ public class PostController {
             @RequestBody CommentInfoDto commentInfo,
             @PathVariable("id") Integer postId,
             @RequestHeader("Authorization") String bearerToken) {
-        if (postService.IsPostExist(postId)) {
+        if (!postService.IsPostExist(postId)) {
             return new ResponseEntity<>(new ErrorDto("Post not found", 1001), HttpStatus.NOT_FOUND);
         }
         String token = authService.getTokenFromHeader(bearerToken);
         Integer userId = authService.getUserIdFromToken(token);
         String content = commentInfo.getContent();
-        CommentEntity comment = commentService.addComment(userId, postId, content);
+        PostEntity post = postService.findPostById(postId);
+        commentService.addComment(userId, postId, content);
         commentService.updateCommentsNumber(postId);
+        System.out.println(userId);
+        System.out.println(post.getUserId());
+        if (!Objects.equals(userId, post.getUserId())) {
+            notifService.addNewNotif(userId, post.getUserId(), postId, content);
+        }
         return new ResponseEntity<>("success: true", HttpStatus.CREATED);
     }
 
