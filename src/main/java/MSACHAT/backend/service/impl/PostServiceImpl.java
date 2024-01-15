@@ -19,8 +19,10 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,10 +51,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostEntity> findPostsByPageNum(Integer userId, Integer pageNum, Integer pageSize) {
         Sort sort = Sort.by(Sort.Direction.DESC, "timeStamp");
-        Pageable pageRequest = PageRequest.of(pageNum, pageSize,sort);
+        Pageable pageRequest = PageRequest.of(pageNum, pageSize, sort);
         Page<PostEntity> posts = postRepository.findAll(pageRequest);
-        for(PostEntity post:posts){
-            post.setLiked(likeRepository.existsByUserIdAndPostId(userId,post.getId()));
+        for (PostEntity post : posts) {
+            post.setLiked(likeRepository.existsByUserIdAndPostId(userId, post.getId()));
         }
         return posts.getContent();
     }
@@ -172,32 +174,21 @@ public class PostServiceImpl implements PostService {
     // // TODO Auto-generated method stub
     // throw new UnsupportedOperationException("Unimplemented method
     // 'getPostsByUserId'");
-    // }
-    @Override
-    public PostResponse getAllPostsByUserId(Integer userId, Integer pageNum, Integer pageSize) {
-        Page<PostEntity> pageResult = postRepository.findAllByUserId(userId, PageRequest.of(pageNum, pageSize));
-
-        List<PostEntity> posts = pageResult.getContent();
-
-        // 提取PostId并返回S
-        List<Integer> postIds = posts.stream()
-                .map(PostEntity::getPostId)
-                .toList();
-
-        // 获取每个帖子的详情
-        List<PostEntity> postDetails = new ArrayList<>();
-        for (int i = 0; i < postIds.size(); i++) {
-            postDetails.add(postRepository.findPostEntityById(postIds.get(i)));
-        }
-        System.out.println("999999999999999999999999999999999");
-        for (int i = 0; i < postIds.size(); i++) {
-            System.out.println(postDetails.get(i).getImages().get(0).getImageUrl());
+    // }@Override
+    public Map<String, Object> getPostsByUserId(Integer userId, Integer pageNum, Integer pageSize) {
+        Page<PostEntity> posts = postRepository.findAllByUserId(userId, PageRequest.of(pageNum, pageSize));
+        for (PostEntity post : posts) {
+            post.setLiked(likeRepository.existsByUserIdAndPostId(userId, post.getId()));
         }
 
-        List<PostEntity> postDetails1 = new ArrayList<PostEntity>();
-        return new PostResponse(pageResult.getTotalPages(), pageNum, postDetails1);
+        Integer totalPages = ((int) postRepository.countByUserId(userId) + pageSize - 1) / pageSize;
+
+        Map<String, Object> postsResponse = new HashMap<>();
+        postsResponse.put("posts", posts);
+        postsResponse.put("totalPages", totalPages);
+
+        return postsResponse;
     }
-
     // @Override
     // public List<PostEntity> findPostsByUserIdAndPageNum(Integer userId, Integer
     // pageNum, Integer pageSize) {

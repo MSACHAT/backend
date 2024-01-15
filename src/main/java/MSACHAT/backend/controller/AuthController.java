@@ -26,10 +26,11 @@ public class AuthController {
     public ResponseEntity<Object> authenticate(@RequestBody LoginDto loginDto) {
 
         if (!authService.IsUserExist(loginDto.getEmail())) {
-            return new ResponseEntity<>(new ErrorDto("User Does Not Exist",10001),HttpStatus.UNAUTHORIZED);
-        };
+            return new ResponseEntity<>(new ErrorDto("User Does Not Exist", 10001), HttpStatus.UNAUTHORIZED);
+        }
+        ;
         String token = authService.login(loginDto);
-        System.out.println("token"+token);
+        System.out.println("token" + token);
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
         jwtAuthResponse.setAccessToken(token);
 
@@ -37,11 +38,12 @@ public class AuthController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<String> Test(Authentication authentication ){
+    public ResponseEntity<String> Test(Authentication authentication) {
 
-        Object UserName= authentication.getName();
+        Object UserName = authentication.getName();
+        System.out.println(UserName);
 
-        return new ResponseEntity<>("ok",HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("ok", HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/register")
@@ -49,7 +51,6 @@ public class AuthController {
         if (userDto.getUsername() == null || userDto.getPassword() == null) {
             return new ResponseEntity<>("Username and password are required", HttpStatus.BAD_REQUEST);
         }
-
 
         try {
             UserEntity registeredUser = userService.registerNewUserAccount(userDto);

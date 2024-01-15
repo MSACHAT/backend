@@ -34,6 +34,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
     Page<PostEntity> findAllByUserId(Integer userId, Pageable pageable);
 
+    Integer countByUserId(Integer userId);
+
     Page<PostEntity> findByUserId(Integer userId, Pageable pageable);
 
     @Data
