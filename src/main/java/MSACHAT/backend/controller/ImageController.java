@@ -21,7 +21,7 @@ public class ImageController {
         this.imageService=imageService;
         this.authService=authService;
     }
-    private final String uploadRootPath="http://localhost:8085/uploads/";//TODO:改成自己的
+    private final String uploadRootPathForImages="http://localhost:8085/uploads/postimages/";//TODO:改成自己的
     private final String uploadDirForAvatar ="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/UserAvatar";//TODO:改成自己的,注意uploaddir的路径结尾没有"/"
     private final String uploadDirForImages="C:/Users/17354/Desktop/MSACHAT-V2/frontend_MSACHAT/src/assets/PostImages";
     @PostMapping("/uploadimage")
@@ -35,53 +35,13 @@ public class ImageController {
             String fileName = System.currentTimeMillis()+userId.toString()+file.getOriginalFilename();
             Path filePath = Path.of(uploadDirForImages, fileName);
             file.transferTo(new File(String.valueOf(filePath)));
-            String serverFilePath = uploadRootPath+fileName;
+            String serverFilePath = uploadRootPathForImages+fileName;
             return ResponseEntity.ok(serverFilePath);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading file");
         }
     }
-
-    @PostMapping("/uploadavatar/test")
-    public ResponseEntity<String> uploadAvatar(
-            @RequestPart("file") MultipartFile file
-    ) {
-        try {
-            Integer userId=2;
-            String fileName = file.getOriginalFilename();
-            // 构建本地文件路径
-            Path filePath = Path.of(uploadDirForAvatar, fileName);
-
-            file.transferTo(new File(String.valueOf(filePath)));
-
-            // 返回存储的本地地址
-            String serverFilePath = uploadRootPath+fileName;
-            imageService.uploadAvatar(serverFilePath,userId);
-            return ResponseEntity.ok(serverFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Error uploading file");
-        }
-    }
-    @GetMapping("/getavatar")
-    public ResponseEntity<String> getAvatar(
-            @RequestHeader("Authorization") String bearerToken
-    ){
-        String token=authService.getTokenFromHeader(bearerToken);
-        Integer userId= authService.getUserIdFromToken(token);
-        String userAvatar=imageService.getAvatar(userId);
-        return new ResponseEntity<>(userAvatar,HttpStatus.OK);
-    }
-
-    @GetMapping("/getavatar/test")
-    public ResponseEntity<String> getAvatarTest(
-    ){
-        Integer userId=2;
-        String userAvatar=imageService.getAvatar(userId);
-        return new ResponseEntity<>(userAvatar,HttpStatus.OK);
-    }
-
     @GetMapping("/test")
     public ResponseEntity<Integer> testConnection(
             @RequestHeader("Authorization") String bearerToken
