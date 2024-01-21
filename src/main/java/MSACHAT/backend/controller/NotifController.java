@@ -51,7 +51,6 @@ public class NotifController {
             if (notifTag == null) {
                 notifService.newNotifTag(notifs.get(0).getTimeStamp(), userId);
             } else {
-                System.out.println("assihasiudhas" + notifs.get(0).getTimeStamp());
                 notifService.setNotifTag(notifs.get(0).getTimeStamp(), userId);
             }
         }

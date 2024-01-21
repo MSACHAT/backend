@@ -3,6 +3,7 @@ package MSACHAT.backend.repository;
 import MSACHAT.backend.dto.PostDto;
 import MSACHAT.backend.dto.PostUserIsLikeDto;
 import MSACHAT.backend.entity.CommentEntity;
+import MSACHAT.backend.entity.NotifEntity;
 import MSACHAT.backend.entity.PostEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,5 +1,4 @@
-FROM openjdk:17
-VOLUME /tmp
+FROM openjdk:21
 EXPOSE 8085
-COPY ../../../target/backend-0.0.1-SNAPSHOT.jar backend.jar
-ENTRYPOINT ["java","-jar","backend.jar"]
+COPY *.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]

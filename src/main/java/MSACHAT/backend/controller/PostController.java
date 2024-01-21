@@ -88,7 +88,7 @@ public class PostController {
                 imageService.getAvatar(post.getUserId()));
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<Object> getPosts(
             @RequestHeader("Authorization") String bearerToken,
             @RequestParam(value = "pageNum") Integer pageNum,
