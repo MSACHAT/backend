@@ -146,12 +146,8 @@ public class PostController {
                     10001),
                     HttpStatus.BAD_REQUEST);
         }
-
         Map<String, Object> postResponse = postService.getPostsByUserId(userId, pageNum, pageSize);
 
-        // bug: @data and @entity cannot use together
-        // temporary use dto to avoid exceptions
-        // todo: fix PostRepository
         List<PostReturnDto> postsReturnDtos = new ArrayList<>();
 
         for (PostEntity post : (Page<PostEntity>) postResponse.get("posts")) {
