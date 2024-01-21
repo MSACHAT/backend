@@ -32,7 +32,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
 
     boolean existsById(Integer id);
 
-    Page<PostEntity> findAllByUserId(Integer userId, Pageable pageable);
+    Page<PostEntity> findAllByUserIdOrderByTimeStampDesc(Integer userId, Pageable pageable);
 
     Integer countByUserId(Integer userId);
 

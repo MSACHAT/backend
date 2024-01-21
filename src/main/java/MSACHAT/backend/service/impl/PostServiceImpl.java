@@ -176,7 +176,8 @@ public class PostServiceImpl implements PostService {
     // 'getPostsByUserId'");
     // }@Override
     public Map<String, Object> getPostsByUserId(Integer userId, Integer pageNum, Integer pageSize) {
-        Page<PostEntity> posts = postRepository.findAllByUserId(userId, PageRequest.of(pageNum, pageSize));
+        Page<PostEntity> posts = postRepository.findAllByUserIdOrderByTimeStampDesc(userId,
+                PageRequest.of(pageNum, pageSize));
         for (PostEntity post : posts) {
             post.setLiked(likeRepository.existsByUserIdAndPostId(userId, post.getId()));
         }

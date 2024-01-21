@@ -22,6 +22,7 @@ public class PostReturnDto {
     Integer likeCount;
     Integer commentCount;
     Boolean isLiked;
+    Integer userId;
 
     String avatar;
 }
