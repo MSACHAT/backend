@@ -33,14 +33,16 @@ public class PostServiceImpl implements PostService {
     private final CommentRepository commentRepository;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
-
+    private final NotifRepository notifRepository;
     public PostServiceImpl(
+            NotifRepository notifRepository,
             PostRepository postRepository,
             LikeRepository likeRepository,
             CommentRepository commentRepository,
             ImageRepository imageRepository,
 
             UserRepository userRepository) {
+        this.notifRepository=notifRepository;
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
         this.commentRepository = commentRepository;
@@ -103,6 +105,7 @@ public class PostServiceImpl implements PostService {
         postRepository.deleteById(postId);
         likeRepository.deleteAllByPostId(postId);
         commentRepository.deleteAllByPostId(postId);
+        notifRepository.deleteAllByPostId(postId);
         return "post Deleted successfully";
     }
 

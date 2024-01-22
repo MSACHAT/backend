@@ -111,67 +111,6 @@ public class PostController {
         return ResponseEntity.ok(returnResult);
     }
 
-    // @GetMapping("/getbypagenumandpagesize/{userId}/test")
-    // public ResponseEntity<Object> getPostsTestByUserId(
-    // @PathVariable Integer userId,
-    // @RequestParam(value = "pageNum") Integer pageNum,
-    // @RequestParam(value = "pageSize") Integer pageSize) {
-    // System.out.println("PageNum Param: " + pageNum);
-    // System.out.println("PageSize Param: " + pageSize);
-
-    // if (pageSize == null || pageNum == null) {
-    // ErrorDto err = new ErrorDto("Request body incomplete. Required fields
-    // missing.", 10001);
-    // return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
-    // }
-
-    // List<PostEntity> posts = postService.getAllPostsByUserId(userId, pageNum,
-    // pageSize);
-
-    // Map<String, Object> returnResult = new HashMap<>();
-    // returnResult.put("posts", posts);
-    // returnResult.put("totalPages",
-    // postService.countTotalPagesByPageSize(pageSize));
-    // return new ResponseEntity<>(returnResult, HttpStatus.OK);
-    // }
-    // @GetMapping("/profile")
-    // public ResponseEntity<Object> getPostByUserId(
-    // @RequestHeader("Authorization") String bearerToken,
-    // @RequestParam(value = "pageNum") Integer pageNum,
-    // @RequestParam(value = "pageSize") Integer pageSize) {
-    // String token = authService.getTokenFromHeader(bearerToken);
-    // Integer userId = authService.getUserIdFromToken(token);
-    // if (pageSize == null || pageNum == null) {
-    // return new ResponseEntity<>(new ErrorDto(
-    // "Request body incomplete. Required fields missing.",
-    // 10001),
-    // HttpStatus.BAD_REQUEST);
-    // }
-    // Map<String, Object> postResponse = postService.getPostsByUserId(userId,
-    // pageNum, pageSize);
-
-    // List<PostReturnDto> postsReturnDtos = new ArrayList<>();
-
-    // for (PostEntity post : (Page<PostEntity>) postResponse.get("posts")) {
-    // postsReturnDtos.add(new PostReturnDto(
-    // post.getId(),
-    // post.getUserName(),
-    // post.getContent(),
-    // post.getImages().stream().map(ImageEntity::getImageUrl).toList(),
-    // post.getTimeStamp(),
-    // post.getLikeCount(),
-    // post.getCommentCount(),
-    // post.isLiked(),
-    // post.getUserId(),
-    // imageService.getAvatar(userId)));
-    // System.out.println(post.getContent());
-    // }
-
-    // postResponse.put("posts", postsReturnDtos);
-
-    // return new ResponseEntity<>(postResponse, HttpStatus.OK);
-    // }
-
     @PatchMapping("/{postId}/like")
     public ResponseEntity<Object> likePost(
             @RequestHeader("Authorization") String bearerToken,
