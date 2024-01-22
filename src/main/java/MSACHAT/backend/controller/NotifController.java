@@ -54,7 +54,7 @@ public class NotifController {
                 notifService.setNotifTag(notifs.get(0).getTimeStamp(), userId);
             }
         }
-        returnResult.put("totalNotifs",notifService.countNotifNums());
+        returnResult.put("totalNotifs",notifService.countNotifNumsByReceiverId(userId));
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
@@ -81,7 +81,7 @@ public class NotifController {
                 notifService.setNotifTag(notifs.get(0).getTimeStamp(), userId);
             }
         }
-        returnResult.put("totalNotifs",notifService.countNotifNums());
+        returnResult.put("totalNotifs",notifService.countNotifNumsByReceiverId(userId));
         return new ResponseEntity<>(returnResult, HttpStatus.OK);
     }
 
@@ -92,7 +92,7 @@ public class NotifController {
         NotifTagEntity notifTag=notifService.findNotifTagByUserId(userId);
         if(notifTag==null){
             NewNotifDto newNotifDto=new NewNotifDto();
-            newNotifDto.setNewNotifCounts(0);
+            newNotifDto.setNewNotifCounts(notifService.countNotifNumsByReceiverId(userId));
             newNotifDto.setNotifTag(null);
             return newNotifDto;
         }
@@ -104,14 +104,6 @@ public class NotifController {
         }
     }
 
-    @GetMapping("/countnewnotifs/test")
-    public NewNotifDto countNewNotifs(@RequestParam Integer userId){
-        NotifTagEntity notifTag=notifService.findNotifTagByUserId(userId);
-        NewNotifDto newNotifDto=new NewNotifDto();
-        newNotifDto.setNewNotifCounts(notifService.countNewNotifs(userId,notifTag.getTimeStamp()));
-        newNotifDto.setNotifTag(notifTag.getTimeStamp());
-        return newNotifDto;
-    }
 
     @GetMapping("/test")
     public String testConnection(@RequestHeader("Authorization")String bearerToken) {

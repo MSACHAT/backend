@@ -15,7 +15,7 @@ public interface NotifService {
 
     public Integer countTotalPagesByPageSize(Integer pageSize);
 
-    public Long countNotifNums();
+    public Integer countNotifNumsByReceiverId(Integer ReceiverId);
 
     public NotifEntity getNotifById(Integer notifId);
 
@@ -28,4 +28,5 @@ public interface NotifService {
     public Integer countNewNotifs(Integer receiverId, Date timeStamp);
 
     public void addNewNotif(Integer senderId, Integer receiverId,Integer postId,String commentContent);
+
 }

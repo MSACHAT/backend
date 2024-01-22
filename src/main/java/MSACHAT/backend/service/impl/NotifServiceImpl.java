@@ -66,8 +66,8 @@ public class NotifServiceImpl implements NotifService {
 
 
     @Override
-    public Long countNotifNums(){
-        return notifRepository.count();
+    public Integer countNotifNumsByReceiverId(Integer receiverId){
+        return notifRepository.countAllByReceiverId(receiverId);
     }
 
     @Override
