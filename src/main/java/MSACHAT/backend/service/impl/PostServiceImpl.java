@@ -97,6 +97,7 @@ public class PostServiceImpl implements PostService {
         likeRepository.deleteByUserIdAndPostId(userId, postId);
         post.setLikeCount(post.getLikeCount() - 1);
         postRepository.save(post);
+        notifRepository.deleteAllBySenderIdAndCommentContent(userId,"");
         return "successfully unliked";
     }
 
