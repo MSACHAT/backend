@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/images")
@@ -30,9 +31,10 @@ public class ImageController {
             @RequestPart("file") MultipartFile file
     ) {
         try {
+            Random rand=new Random();
             String token=authService.getTokenFromHeader(bearerToken);
             Integer userId=authService.getUserIdFromToken(token);
-            String fileName = System.currentTimeMillis()+userId.toString()+file.getOriginalFilename();
+            String fileName = System.currentTimeMillis()+userId.toString()+file.getOriginalFilename()+rand.nextInt(100);
             Path filePath = Path.of(uploadDirForImages, fileName);
             file.transferTo(new File(String.valueOf(filePath)));
             String serverFilePath = uploadRootPathForImages+fileName;
