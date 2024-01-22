@@ -29,8 +29,10 @@ public class UserController {
         this.imageService=imageService;
     }
 
-    @GetMapping("/getinfo")
-    public UserInfoDto getUserInfo(@RequestParam Integer userId){
+    @GetMapping("/info")
+    public UserInfoDto getUserInfo(@RequestHeader("Authorization") String bearerToken){
+        String token= authService.getTokenFromHeader(bearerToken);
+        Integer userId=authService.getUserIdFromToken(token);
          return userService.getUserInfo(userId);
     }
 
