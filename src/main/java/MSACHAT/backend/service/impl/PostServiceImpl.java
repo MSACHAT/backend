@@ -3,6 +3,7 @@ package MSACHAT.backend.service.impl;
 import MSACHAT.backend.dto.PostDto;
 import MSACHAT.backend.dto.PostUserIsLikeDto;
 import MSACHAT.backend.entity.ImageEntity;
+import MSACHAT.backend.entity.NotifEntity;
 import MSACHAT.backend.repository.*;
 import MSACHAT.backend.repository.PostRepository.PostResponse;
 import MSACHAT.backend.service.PostService;
@@ -17,12 +18,8 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.sql.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,14 +30,16 @@ public class PostServiceImpl implements PostService {
     private final CommentRepository commentRepository;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
-
+    private final NotifRepository notifRepository;
     public PostServiceImpl(
+            NotifRepository notifRepository,
             PostRepository postRepository,
             LikeRepository likeRepository,
             CommentRepository commentRepository,
             ImageRepository imageRepository,
 
             UserRepository userRepository) {
+        this.notifRepository=notifRepository;
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
         this.commentRepository = commentRepository;
@@ -85,6 +84,14 @@ public class PostServiceImpl implements PostService {
         newLike.setTimeStamp(date);
         likeRepository.save(newLike);
         post.setLikeCount(post.getLikeCount() + 1);
+        if(!Objects.equals(userId, post.getUserId())) {
+            NotifEntity notif = new NotifEntity();
+            notif.setReceiverId(post.getUserId());
+            notif.setSenderId(userId);
+            notif.setTimeStamp(new Date(System.currentTimeMillis()));
+            notif.setPostId(postId);
+            notifRepository.save(notif);
+        }
         postRepository.save(post);
         return "new like saved";
     }
@@ -95,6 +102,7 @@ public class PostServiceImpl implements PostService {
         likeRepository.deleteByUserIdAndPostId(userId, postId);
         post.setLikeCount(post.getLikeCount() - 1);
         postRepository.save(post);
+        notifRepository.deleteAllBySenderIdAndPostIdAndCommentContent(userId,postId,null);
         return "successfully unliked";
     }
 
@@ -103,6 +111,7 @@ public class PostServiceImpl implements PostService {
         postRepository.deleteById(postId);
         likeRepository.deleteAllByPostId(postId);
         commentRepository.deleteAllByPostId(postId);
+        notifRepository.deleteAllByPostId(postId);
         return "post Deleted successfully";
     }
 
@@ -145,8 +154,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Integer countTotalPagesByPageSize(Integer pageSize) {
-        double pageCount = postRepository.count() / (pageSize * 1.0);
-        return (int) Math.ceil(pageCount) - 1;
+        return ((int) postRepository.count() + pageSize - 1) / pageSize;
     }
 
     // @Override
@@ -177,7 +185,8 @@ public class PostServiceImpl implements PostService {
     // 'getPostsByUserId'");
     // }@Override
     public Map<String, Object> getPostsByUserId(Integer userId, Integer pageNum, Integer pageSize) {
-        Page<PostEntity> posts = postRepository.findAllByUserId(userId, PageRequest.of(pageNum, pageSize));
+        Page<PostEntity> posts = postRepository.findAllByUserIdOrderByTimeStampDesc(userId,
+                PageRequest.of(pageNum, pageSize));
         for (PostEntity post : posts) {
             post.setLiked(likeRepository.existsByUserIdAndPostId(userId, post.getId()));
         }

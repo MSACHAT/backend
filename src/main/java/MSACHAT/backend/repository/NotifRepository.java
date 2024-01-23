@@ -17,5 +17,11 @@ public interface NotifRepository extends CrudRepository<NotifEntity, Integer>,
     NotifEntity findNotifEntityById(Integer notifId);
 
     Integer countAllByReceiverIdAndTimeStampAfter(Integer receiverId, Date timeStamp);
+
+    void deleteAllByPostId(Integer postId);
+
+    void deleteAllBySenderIdAndPostIdAndCommentContent(Integer SenderId,Integer postId,String CommentContent);
+
+    Integer countAllByReceiverId(Integer receiverId);
 }
 

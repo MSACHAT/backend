@@ -2,15 +2,21 @@ package MSACHAT.backend.controller;
 
 import MSACHAT.backend.dto.ErrorDto;
 import MSACHAT.backend.dto.PostDto;
+import MSACHAT.backend.dto.PostReturnDto;
+import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.entity.PostEntity;
 import MSACHAT.backend.mapper.Mapper;
+import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.AuthService;
 import MSACHAT.backend.service.CommentService;
+import MSACHAT.backend.service.ImageService;
 import MSACHAT.backend.service.PostService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,51 +27,100 @@ public class ProfileController {
     private PostService postService;
     private AuthService authService;
     private CommentService commentService;
-
+    private ImageService imageService;
     private Mapper<PostEntity, PostDto> postMapper;
 
     public ProfileController(
+            ImageService imageService,
             PostService postService,
             AuthService authService,
             CommentService commentService) {
+        this.imageService = imageService;
         this.postService = postService;
         this.authService = authService;
         this.commentService = commentService;
     }
 
-    @GetMapping("/getbypagenumandpagesize")
-    public ResponseEntity<Object> getPosts(
+    @GetMapping("")
+    public ResponseEntity<Object> getPostsByUserId(
             @RequestHeader("Authorization") String bearerToken,
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize) {
+        String token = authService.getTokenFromHeader(bearerToken);
+        Integer userId = authService.getUserIdFromToken(token);
         if (pageSize == null || pageNum == null) {
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ErrorDto(
+                    "Request body incomplete. Required fields missing.",
+                    10001),
+                    HttpStatus.BAD_REQUEST);
         }
-        String token=authService.getTokenFromHeader(bearerToken);
-        List<PostEntity> posts = postService.findPostsByPageNum(authService.getUserIdFromToken(token), pageNum,
-                pageSize);
-        Map<String, Object> returnResult = new HashMap<>();
-        returnResult.put("posts", posts);
-        returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
-        return new ResponseEntity<>(returnResult, HttpStatus.OK);
+
+        Map<String, Object> postResponse = postService.getPostsByUserId(userId, pageNum, pageSize);
+
+        // bug: @data and @entity cannot use together
+        // temporary use dto to avoid exceptions
+        // todo: fix PostRepository
+        List<PostReturnDto> postsReturnDtos = new ArrayList<>();
+
+        for (PostEntity post : (Page<PostEntity>) postResponse.get("posts")) {
+            postsReturnDtos.add(new PostReturnDto(
+                    post.getId(),
+                    post.getUserName(),
+                    post.getContent(),
+                    post.getImages().stream().map(ImageEntity::getImageUrl).toList(),
+                    post.getTimeStamp(),
+                    post.getLikeCount(),
+                    post.getCommentCount(),
+                    post.isLiked(),
+                    post.getUserId(),
+                    imageService.getAvatar(userId)));
+            System.out.println(post.getContent());
+        }
+
+        postResponse.put("posts", postsReturnDtos);
+
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
-    // For API Test
-    @GetMapping("/getbypagenumandpagesize/test")
-    public ResponseEntity<Object> getPostsTest(
+    @GetMapping("/{userId}")
+    public ResponseEntity<Object> getPostsByUserId(
+            @PathVariable Integer userId,
             @RequestParam(value = "pageNum") Integer pageNum,
             @RequestParam(value = "pageSize") Integer pageSize) {
-        System.out.println("PageNum Param: " + pageNum);
-        System.out.println("PageSize Param: " + pageSize);
+
         if (pageSize == null || pageNum == null) {
-            ErrorDto err = new ErrorDto("Request body incomplete. Required fields missing.", 10001);
-            return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ErrorDto(
+                    "Request body incomplete. Required fields missing.",
+                    10001),
+                    HttpStatus.BAD_REQUEST);
         }
-        List<PostEntity> posts = postService.findPostsByPageNum(1, pageNum, pageSize);
-        Map<String, Object> returnResult = new HashMap<>();
-        returnResult.put("posts", posts);
-        returnResult.put("totalPages", postService.countTotalPagesByPageSize(pageSize));
-        return new ResponseEntity<>(returnResult, HttpStatus.OK);
+
+        Map<String, Object> postResponse = postService.getPostsByUserId(userId, pageNum, pageSize);
+
+        // bug: @data and @entity cannot use together
+        // temporary use dto to avoid exceptions
+        // todo: fix PostRepository
+        List<PostReturnDto> postsReturnDtos = new ArrayList<>();
+
+        for (PostEntity post : (Page<PostEntity>) postResponse.get("posts")) {
+            postsReturnDtos.add(new PostReturnDto(
+                    post.getId(),
+                    post.getUserName(),
+                    post.getContent(),
+                    post.getImages().stream().map(ImageEntity::getImageUrl).toList(),
+                    post.getTimeStamp(),
+                    post.getLikeCount(),
+                    post.getCommentCount(),
+                    post.isLiked(),
+                    post.getUserId(),
+                    imageService.getAvatar(userId)));
+
+            System.out.println(post.getContent());
+        }
+
+        postResponse.put("posts", postsReturnDtos);
+
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
+
 }
