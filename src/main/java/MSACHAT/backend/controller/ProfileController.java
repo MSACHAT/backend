@@ -5,12 +5,13 @@ import MSACHAT.backend.dto.PostDto;
 import MSACHAT.backend.dto.PostReturnDto;
 import MSACHAT.backend.entity.ImageEntity;
 import MSACHAT.backend.entity.PostEntity;
+import MSACHAT.backend.entity.UserEntity;
 import MSACHAT.backend.mapper.Mapper;
 import MSACHAT.backend.repository.PostRepository;
 import MSACHAT.backend.service.AuthService;
-import MSACHAT.backend.service.CommentService;
 import MSACHAT.backend.service.ImageService;
 import MSACHAT.backend.service.PostService;
+import MSACHAT.backend.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ import java.util.Map;
 public class ProfileController {
     private PostService postService;
     private AuthService authService;
-    private CommentService commentService;
+    private UserService userService;
     private ImageService imageService;
     private Mapper<PostEntity, PostDto> postMapper;
 
@@ -34,11 +35,11 @@ public class ProfileController {
             ImageService imageService,
             PostService postService,
             AuthService authService,
-            CommentService commentService) {
+             UserService userService) {
         this.imageService = imageService;
         this.postService = postService;
         this.authService = authService;
-        this.commentService = commentService;
+        this.userService = userService;
     }
 
     @GetMapping("")
@@ -117,9 +118,9 @@ public class ProfileController {
 
             System.out.println(post.getContent());
         }
-
+        String avatar=userService.getUserInfo(userId).getAvatar();
         postResponse.put("posts", postsReturnDtos);
-
+        postResponse.put("avatar",avatar);
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 

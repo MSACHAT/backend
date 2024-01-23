@@ -155,7 +155,7 @@ public class PostController {
 
             return new ResponseEntity<>(new ErrorDto("Post does not exist", 1001), HttpStatus.NOT_FOUND);
         }
-        String Avatar = imageService.getAvatar(userId);
+        String Avatar = imageService.getAvatar(post.getUserId());
 
         List<String> imageList = post.getImages().stream().map(ImageEntity::getImageUrl).toList();
         PostReturnDto postReturn = new PostReturnDto(post.getId(), post.getUserName(), post.getContent(), imageList,
