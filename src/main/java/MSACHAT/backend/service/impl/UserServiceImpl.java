@@ -45,7 +45,6 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(userDto.getEmail())){
             throw new IllegalArgumentException("Username already exists");
         }
-
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 
         UserEntity newUser = new UserEntity();
@@ -53,6 +52,7 @@ public class UserServiceImpl implements UserService {
         newUser.setUsername(userDto.getUsername());
         newUser.setName(userDto.getUsername());
         newUser.setPassword(encodedPassword);
+        newUser.setAvatar("https://th.bing.com/th/id/OIP.YYU_BaV_k5zW7HOf9-YSFAAAAA?w=181&h=182&c=7&r=0&o=5&dpr=1.1&pid=1.7");
         Set<RoleEntity> role = roleRepository.findRoleEntitiesByName("ROLE_USER");
         newUser.setRoles(role);
 

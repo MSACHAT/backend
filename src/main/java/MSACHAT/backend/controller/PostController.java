@@ -198,10 +198,7 @@ public class PostController {
         PostEntity post = postService.findPostById(postId);
         commentService.addComment(userId, postId, content);
         commentService.updateCommentsNumber(postId);
-        notifService.addNewNotif(userId,post.getUserId(),postId,content);
-        System.out.println(userId);
-        System.out.println(post.getUserId());
-        if (!Objects.equals(userId, post.getUserId())) {
+        if(!Objects.equals(userId, post.getUserId())) {
             notifService.addNewNotif(userId, post.getUserId(), postId, content);
         }
         return new ResponseEntity<>("success: true", HttpStatus.CREATED);
